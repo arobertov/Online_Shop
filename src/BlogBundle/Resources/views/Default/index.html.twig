@@ -1,0 +1,8 @@
+{% extends '@basic/base.html.twig' %}
+
+{% block body %}
+    <p>Hello word
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {{ app.user.username }}</p>
+        {% endif %}
+{% endblock %}
