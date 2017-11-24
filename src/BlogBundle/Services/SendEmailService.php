@@ -56,5 +56,19 @@ class SendEmailService
         return true;
     }
 
+    public function forgotPasswordEmail($randomPassword,User $user){
+	    $message = (new \Swift_Message('Send new password'))
+		    ->setFrom($this->adminEmail)
+		    ->setTo($user->getEmail())
+		    ->setBody(
+			    $this->template->render('@basic/Emails/forgot_password_email.html.twig',[
+				    'user' => $user,
+				    'password' => $randomPassword
+			    ]),
+			    'text/html'
+		    );
+	    $this->mailer->send($message);
+	    return true;
+    }
 
 }

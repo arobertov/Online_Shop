@@ -156,8 +156,8 @@ class SecurityController extends Controller
 
         if($form->isSubmitted() && $form->isValid()){
             $userService = $this->get(UserService::class);
-            $random =  $userService->forgotPassword($validate);
-            return new Response($random);
+            $userService->forgotPassword($validate);
+            return $this->redirectToRoute('login');
         }
         return $this->render("@basic/security/forgot_password.html.twig",array(
             'form'=>$form->createView()
