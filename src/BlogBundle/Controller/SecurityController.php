@@ -150,13 +150,13 @@ class SecurityController extends Controller
      * @Route("/forgot_password",name="forgot_password")
      */
     public function forgotPasswordAction(Request $request){
-        $validate= new ForgotPassword();
-        $form = $this->createForm(ForgotPasswordType::class,$validate);
+        $userData= new ForgotPassword();
+        $form = $this->createForm(ForgotPasswordType::class,$userData);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
             $userService = $this->get(UserService::class);
-            $userService->forgotPassword($validate);
+            $userService->forgotPassword($userData);
             return $this->redirectToRoute('login');
         }
         return $this->render("@basic/security/forgot_password.html.twig",array(
