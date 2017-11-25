@@ -1,6 +1,6 @@
 <?php
 
-namespace BlogBundle\Entity;
+namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * User
  *
  * @ORM\Table(name="user")
- * @ORM\Entity(repositoryClass="BlogBundle\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="Email already taken")
  * @UniqueEntity(fields="username", message="Username already taken")
  *
@@ -81,7 +81,7 @@ class User implements AdvancedUserInterface, \Serializable
 
     /**
      * @var Role
-     * @ORM\ManyToOne(targetEntity="BlogBundle\Entity\Role",inversedBy="users")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role",inversedBy="users")
      * @ORM\JoinColumn(name="roleId",referencedColumnName="id")
      */
     private $roles;
@@ -237,8 +237,11 @@ class User implements AdvancedUserInterface, \Serializable
         $this->isActive = $isActive;
     }
 
-    public function setRoles($roles)
+    public function setRoles(Role $roles)
     {
+        if($this->roles === null){
+            $this->roles = $roles->getId();
+        }
         $this->roles = $roles;
     }
 

@@ -6,10 +6,10 @@
  * Time: 9:12
  */
 
-namespace BlogBundle\Services;
+namespace AppBundle\Services;
 
 
-use BlogBundle\Entity\User;
+use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
 

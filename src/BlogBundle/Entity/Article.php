@@ -2,8 +2,8 @@
 
 namespace BlogBundle\Entity;
 
+use AppBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Article
@@ -58,7 +58,7 @@ class Article
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="BlogBundle\Entity\User",inversedBy="articles")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="articles")
      * @ORM\JoinColumn(name="authorId",referencedColumnName="id")
      */
     private $author;

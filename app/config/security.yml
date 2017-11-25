@@ -6,13 +6,13 @@ security:
             ROLE_BLOG_ADMIN:  [ROLE_EDITOR,ROLE_USER]
             ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_BLOG_ADMIN]
     encoders:
-        BlogBundle\Entity\User:
+        AppBundle\Entity\User:
            algorithm: bcrypt
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         db_provider:
               entity:
-                  class: BlogBundle:User
+                  class: AppBundle\Entity\User
                   property: username
 
     firewalls:

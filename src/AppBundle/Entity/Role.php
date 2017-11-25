@@ -1,6 +1,6 @@
 <?php
 
-namespace BlogBundle\Entity;
+namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Role
  *
  * @ORM\Table(name="role")
- * @ORM\Entity(repositoryClass="BlogBundle\Repository\RoleRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RoleRepository")
  */
 class Role
 {
@@ -32,7 +32,7 @@ class Role
 
     /**
      * @var User
-     * @ORM\OneToMany(targetEntity="BlogBundle\Entity\User",mappedBy="roles")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\User",mappedBy="roles")
      */
     private $users;
 

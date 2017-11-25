@@ -1,6 +1,6 @@
 <?php
 
-namespace BlogBundle\Form;
+namespace AppBundle\Form;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

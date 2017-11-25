@@ -6,11 +6,11 @@
  * Time: 15:58
  */
 
-namespace BlogBundle\Services;
+namespace AppBundle\Services;
 
 
-use BlogBundle\Entity\ForgotPassword;
-use BlogBundle\Entity\User;
+use AppBundle\Entity\ForgotPassword;
+use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 

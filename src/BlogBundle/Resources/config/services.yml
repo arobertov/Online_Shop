@@ -21,7 +21,5 @@ services:
               tags: ['controller.service_arguments']
 
       # ----------- Send Email Services ------------ #
-      BlogBundle\Services\SendEmailService:
-            arguments:
-                $adminEmail: '%admin_email%'
+
 

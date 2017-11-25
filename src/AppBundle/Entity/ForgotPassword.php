@@ -6,7 +6,7 @@
  * Time: 14:04
  */
 
-namespace BlogBundle\Entity;
+namespace AppBundle\Entity;
 
 
 class ForgotPassword
