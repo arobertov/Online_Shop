@@ -9,9 +9,11 @@
 namespace AppBundle\Services;
 
 
-use AppBundle\Entity\ForgotPassword;
+use AppBundle\Entity\UserEdit;
+use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService {
@@ -42,12 +44,27 @@ class UserService {
 		$this->passwordEncoder  = $encoder;
 	}
 
+    public  function registerUser(User $user){
+        $password = $this->passwordEncoder
+            ->encodePassword($user, $user->getPlainPassword());
+        $em = $this->em;
+        $user->setPassword($password);
+        $user->setRoles($em->getRepository(Role::class)->findOneBy(['name'=>'ROLE_USER']));
+        $em->persist($user);
+        $em->flush();
 
-	public function forgotPassword( ForgotPassword $validate ) {
-		if ( isset( $validate ) ) {
-			$username = $validate->getUsername();
-			$email    = $validate->getEmail();
-		}
+        // send user confirmation email
+        $verifyEmail = $this->sendEmailService;
+        $verifyEmail->verifyRegistrationEmail($user);
+    }
+
+	public function forgotPassword(UserEdit $userData ) {
+		if ( isset( $userData ) ) {
+			$username = $userData->getUsername();
+			$email    = $userData->getEmail();
+		} else {
+		  throw new Exception('Invalid user data!');
+        }
 		$userObject = $this->em->getRepository( User::class )->findOneBy( array( 'username' => $username ) );
 
 		if ( $userObject === null ) {
@@ -69,6 +86,18 @@ class UserService {
 		$this->em->persist( $userObject );
 		$this->em->flush();
 
-
 	}
+
+	public function changePassword(User $user,UserEdit $userEdit){
+        if($this->passwordEncoder->isPasswordValid($user,$userEdit->getOldPassword())) {
+            $password = $this->passwordEncoder
+                ->encodePassword($user, $userEdit->getNewPassword());
+            $em = $this->em;
+            $user->setPassword($password);
+            $em->persist($user);
+            $em->flush();
+        } else {
+            throw new Exception('Password no change !');
+        }
+    }
 }

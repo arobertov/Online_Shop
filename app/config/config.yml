@@ -39,7 +39,8 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     paths:
-          '%kernel.project_dir%/src/BlogBundle/Resources/views': basic
+          '%kernel.project_dir%/src/AppBundle/Resources/views': basic
+          '%kernel.project_dir%/src/BlogBundle/Resources/views': article
 
 # Doctrine Configuration
 doctrine:

@@ -16,7 +16,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserType extends AbstractType
 {
+
+    /**
+     * @var bool
+     */
     static $register;
+
     /**
      * @var EntityManagerInterface
      */
@@ -49,10 +54,10 @@ class UserType extends AbstractType
         } else {
             $builder
                 ->add('roles', EntityType::class, array(
-                    'class' => 'BlogBundle:Role',
+                    'class' => 'AppBundle:Role',
                     'choice_label' => 'name',
                     //set default value !!!!
-                    'data' => $this->em->getReference('BlogBundle:Role',
+                    'data' => $this->em->getReference('AppBundle:Role',
                         $options['role']
                     )
                 ))

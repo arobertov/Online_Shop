@@ -9,25 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/",name="home_page")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', [
-            'link'=>'about',
-            'base_dir' => realpath($this->getParameter('kernel.project_dir')).DIRECTORY_SEPARATOR
-            ]);
+        return $this->render('@basic/Default/index.html.twig');
     }
-
-    /**
-     * @Route("/about", name="about_us")
-     */
-    public function aboutAction(){
-        return $this->render('default/about.html.twig',[
-            'plain_text'=>'This is about us page',
-        ]);
-    }
-
-
 }

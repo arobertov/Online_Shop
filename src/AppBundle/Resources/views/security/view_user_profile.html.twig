@@ -5,4 +5,5 @@
     <li>Your username : {{ user.username }}</li>
     <li>Your name : {{ user.fullName }}</li>
     <li>Your email : {{ user.email }}</li>
+    <p><a href="{{ path('change_password',{'id':user.id}) }}">Change password</a></p>
 {% endblock %}
