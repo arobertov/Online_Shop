@@ -1,9 +1,26 @@
 {% extends '@basic/base.html.twig' %}
 
 {% block body %}
+    <div class="span9">
+        <ul class="breadcrumb">
+            <li><a href="index.html">Home</a> <span class="divider">/</span></li>
+            <li class="active">Registration</li>
+        </ul>
+        <h3> Registration</h3>
+        <div class="well">
 
-    {{ form_start(form) }}
-     {{ form_widget(form) }}
-    {{ form_end(form) }}
+            <h4>Your personal information</h4>
+            {% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+
+                {{ form_start(form) }}
+
+
+                    {{ form_widget(form) }}
+                {{ form_end(form) }}
+
+
+        </div>
+    </div>
 
 {% endblock %}

@@ -34,6 +34,16 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\Column(name="username", type="string", length=255, unique=true)
      *
      * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 30,
+     *      minMessage = "Your username must be at least {{ limit }} characters long",
+     *      maxMessage = "Your username cannot be longer than {{ limit }} characters"
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
      */
     private $username;
 
@@ -43,6 +53,16 @@ class User implements AdvancedUserInterface, \Serializable
      * @ORM\Column(name="full_name",type="string",length=255)
      *
      * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 30,
+     *      minMessage = "Your username must be at least {{ limit }} characters long",
+     *      maxMessage = "Your username cannot be longer than {{ limit }} characters"
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
      */
     private $fullName;
 
@@ -51,13 +71,20 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @ORM\Column(name="email", type="string", length=255, unique=true)
      * @Assert\NotBlank()
-     * @Assert\Email()
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email."
+     * )
      */
     private $email;
 
     /**
      * @Assert\NotBlank()
-     * @Assert\Length(max=4096)
+     * @Assert\Length(
+     *     min = 6,
+     *     max = 4096,
+     *     minMessage = "Your username must be at least {{ limit }} characters long",
+     *     maxMessage = "Your username cannot be longer than {{ limit }} characters"
+     *     )
      */
     private $plainPassword;
 
@@ -70,6 +97,10 @@ class User implements AdvancedUserInterface, \Serializable
 
     /**
      * @ORM\Column(name="is_active", type="boolean")
+     * @Assert\Type(
+     *     type="bool",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
      */
     private $isActive;
 
@@ -83,6 +114,7 @@ class User implements AdvancedUserInterface, \Serializable
      * @var Role
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role",inversedBy="users")
      * @ORM\JoinColumn(name="roleId",referencedColumnName="id")
+     *
      */
     private $roles;
 

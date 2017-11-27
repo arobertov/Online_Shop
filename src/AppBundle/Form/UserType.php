@@ -71,6 +71,7 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefault('role','role');
+
     }
 
     public function getBlockPrefix()
