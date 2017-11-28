@@ -54,10 +54,10 @@ class User implements AdvancedUserInterface, \Serializable
      *
      * @Assert\NotBlank()
      * @Assert\Length(
-     *      min = 3,
+     *      min = 6,
      *      max = 30,
-     *      minMessage = "Your username must be at least {{ limit }} characters long",
-     *      maxMessage = "Your username cannot be longer than {{ limit }} characters"
+     *      minMessage = "Your name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your name cannot be longer than {{ limit }} characters"
      * )
      * @Assert\Type(
      *     type="string",
@@ -82,8 +82,8 @@ class User implements AdvancedUserInterface, \Serializable
      * @Assert\Length(
      *     min = 6,
      *     max = 4096,
-     *     minMessage = "Your username must be at least {{ limit }} characters long",
-     *     maxMessage = "Your username cannot be longer than {{ limit }} characters"
+     *     minMessage = "Your password must be at least {{ limit }} characters long",
+     *     maxMessage = "Your password cannot be longer than {{ limit }} characters"
      *     )
      */
     private $plainPassword;
