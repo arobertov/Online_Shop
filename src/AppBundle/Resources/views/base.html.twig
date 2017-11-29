@@ -35,7 +35,9 @@
 <div id="header">
     <div class="container">
         <div id="welcomeLine" class="row">
-            <div class="span6">Welcome!<strong> User</strong></div>
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <div class="span6">Welcome!<strong> {{ app.user.username }}</strong></div>
+            {% endif %}
             <div class="span6">
                 <div class="pull-right">
                     <a href="product_summary.html"><span class="">Fr</span></a>
@@ -70,40 +72,51 @@
                     <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
                 </form>
                 <ul id="topMenu" class="nav pull-right">
-                    <li class=""><a href="special_offer.html">Specials Offer</a></li>
-                    <li class=""><a href="normal.html">Delivery</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('user_manager') }}">Users</a></li>
+                    {% endif %}
+                    <li><a href="{{ path('article_index') }}">Blog</a></li>
                     <li class=""><a href="contact.html">Contact</a></li>
                     <li class="">
-                        <a href="#login" role="button" data-toggle="modal" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a>
-
-                        <div id="login" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="false" >
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h3>Login Block</h3>
+                        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                            <a href="{{ path('logout') }}" ><span class="btn btn-large btn-success">Logout</span></a>
+                        {% else %}
+                            <a href="#login" role="button" data-toggle="modal" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a>
+                            <div id="login" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="login" aria-hidden="false" >
+                                <div class="modal-dialog">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                        <h3>Login Block</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ path('login') }}" method="post" class="form-horizontal loginFrm">
+                                            <div class="control-group">
+                                                {% if error %}
+                                                    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                                                {% endif %}
+                                                <label for="username">Username:</label>
+                                                <input type="text" id="username" name="_username"  />
+                                            </div>
+                                            <div class="control-group">
+                                                <label for="password">Password:</label>
+                                                <input type="password" id="password" name="_password" /><br/>
+                                            </div>
+                                            <input type="hidden" name="_csrf_token"
+                                                   value="{{ csrf_token('authenticate') }}"
+                                            >
+                                            <div class="control-group">
+                                                <input type="checkbox" id="remember_me" name="_remember_me" checked />
+                                                <label for="remember_me">Remember me !</label><br/>
+                                            </div>
+                                            <input type="submit" value="Sign in" class="btn btn-success"/>
+                                            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <form action="{{ path('login') }}" method="post" class="form-horizontal loginFrm">
-                                    <div class="control-group">
-                                        <label for="username">Username:</label>
-                                        <input type="text" id="username" name="_username"  />
-                                    </div>
-                                    <div class="control-group">
-                                        <label for="password">Password:</label>
-                                        <input type="password" id="password" name="_password" /><br/>
-                                    </div>
-                                    <input type="hidden" name="_csrf_token"
-                                           value="{{ csrf_token('authenticate') }}"
-                                    >
-                                    <div class="control-group">
-                                        <input type="checkbox" id="remember_me" name="_remember_me" checked />
-                                        <label for="remember_me">Remember me !</label><br/>
-                                    </div>
-                                    <input type="submit" value="Sign in" class="btn btn-success"/>
-                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                                </form>
-                            </div>
-                        </div>
 
+                            <script src="{{ asset('bundles/sideclickbootstrapmodal/js/sideclick-bootstrap-modal.js') }}"></script>
+                        {% endif %}
                     </li>
                 </ul>
             </div>
@@ -112,7 +125,7 @@
 </div>
 <!-- Header End====================================================================== -->
     {% block carousel %}
-        {% include '@App/theme/carousel.html.twig' %}
+
     {% endblock %}
 <div id="mainBody">
     <div class="container">
@@ -134,12 +147,14 @@
     <div class="container">
         <div class="row">
             <div class="span3">
-                <h5>ACCOUNT</h5>
-                <a href="login.html">YOUR ACCOUNT</a>
-                <a href="login.html">PERSONAL INFORMATION</a>
-                <a href="login.html">ADDRESSES</a>
-                <a href="login.html">DISCOUNT</a>
-                <a href="login.html">ORDER HISTORY</a>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <h5>ACCOUNT</h5>
+                    <a href="{{ path('my_profile',{'id':app.user.id}) }}">YOUR ACCOUNT</a>
+                    <a href="login.html">PERSONAL INFORMATION</a>
+                    <a href="login.html">ADDRESSES</a>
+                    <a href="login.html">DISCOUNT</a>
+                    <a href="login.html">ORDER HISTORY</a>
+                {% endif %}
             </div>
             <div class="span3">
                 <h5>INFORMATION</h5>

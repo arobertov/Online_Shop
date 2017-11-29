@@ -1,39 +1,51 @@
 {% extends '@basic/base.html.twig' %}
-
+{% block carousel %}
+{% endblock %}
 {% block body %}
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>User is active</th>
-                <th>User Role</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-    {% for user in users %}
-        <tr>
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
-            <td>
-        {% if user.isactive == 1 %}
-            Yes
-            {% else %}
-                No
-                {% endif %}
-            </td>
-            <td>
-                {% for user in user.roles %}
-                    {{ user }}
-                    {% endfor %}
-            </td>
-            <td>
-                <a href="{{ path('user_edit',{'id':user.id}) }}">Edit!</a>
-                <a href="{{ path('user_delete',{'id':user.id}) }}">Delete!</a>
-            </td>
-        </tr>
-    {% endfor %}
-        </tbody>
-    </table>
+    <div class="span9">
+        <ul class="breadcrumb">
+            <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+            <li class="active">All_user</li>
+        </ul>
+        <div class="well">
+
+            <h3> Preview all users</h3>
+            <table border="1">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>User is active</th>
+                    <th>User Role</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.isactive == 1 %}
+                                Yes
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for user in user.roles %}
+                                {{ user }}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a href="{{ path('user_edit',{'id':user.id}) }}">Edit!</a>
+                            <a href="{{ path('user_delete',{'id':user.id}) }}">Delete!</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 {% endblock %}
