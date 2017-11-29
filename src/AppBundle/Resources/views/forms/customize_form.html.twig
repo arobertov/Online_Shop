@@ -1,4 +1,4 @@
-
+{% extends 'bootstrap_3_horizontal_layout.html.twig' %}
 
 {% block form_row %}
     <div class="control-group">
@@ -9,6 +9,20 @@
         </div>
     </div>
 {% endblock form_row %}
+
+
+{% block form_label %}
+    {{ parent() }}
+
+    {% if required %}
+        <style>
+            label.required:after{
+                content: " * ";
+                color: red;
+            }
+        </style>
+    {% endif %}
+{% endblock %}
 
 {% block form_errors %}
     {% spaceless %}
@@ -28,3 +42,12 @@
         {{- form_widget(form,{'attr':{'class':'btn btn-large btn-success'}}) -}}
     </div>
 {%- endblock submit_row %}
+
+
+{% block form_widget_simple %}
+    {{ parent() }}
+
+    {% if help is defined %}
+        <span class="text-warning">{{ help }}</span>
+    {% endif %}
+{% endblock %}

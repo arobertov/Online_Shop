@@ -41,7 +41,9 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username', TextType::class)
-            ->add('fullName', TextType::class)
+            ->add('fullName', TextType::class,array(
+            	'required'=>false
+            ))
             ->add('email', EmailType::class);
         /*------- Render password fields when render register template -------- */
         if (self::$register) {
