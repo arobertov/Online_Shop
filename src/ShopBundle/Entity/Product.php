@@ -3,7 +3,7 @@
 namespace ShopBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Product
@@ -52,7 +52,9 @@ class Product
 
     /**
      * @var int
-     *
+     * @Assert\Range(
+     *     min="1"
+     * )
      * @ORM\Column(name="quantity", type="integer")
      */
     private $quantity;
@@ -78,11 +80,15 @@ class Product
     private $price;
 
     /**
-     * @var string
-     *
+     * @var \DateTime
      * @ORM\Column(name="date_created",type="datetime")
      */
     private $dateCreated;
+
+	/**
+	 * @var float
+	 */
+    private $subtotal;
 
 
     /**
@@ -91,14 +97,8 @@ class Product
      */
     private $category;
 
-    /**
-     * Product constructor.
-     * @param string $dateCreated
-     */
-    public function __construct()
-    {
-        $this->dateCreated = new DateTime('now');
-    }
+
+    
 
 
     /**
@@ -312,27 +312,40 @@ class Product
         $this->price = $price;
     }
 
-
-
     /**
-     * @return string
+     * @return \DateTime
      */
     public function getDateCreated()
     {
         return $this->dateCreated;
     }
 
-    /**
-     * @param DateTime $dateCreated
-     * @ORM\PrePersist()
-     * @return Product
-     */
+	/**
+	 * @param \DateTime $dateCreated
+	 *
+	 * @return $this
+	 */
     public function setDateCreated($dateCreated)
     {
-        if (!$this->dateCreated) {
-            $this->dateCreated = new \DateTime();
-        }
-        return $this;
+	    $this->dateCreated = $dateCreated;
+
+	    return $this;
     }
+
+	/**
+	 * @return float
+	 */
+	public function getSubtotal() {
+		return $this->subtotal;
+	}
+
+	/**
+	 * @param float $subtotal
+	 */
+	public function setSubtotal( $subtotal ) {
+		$this->subtotal = $subtotal;
+	}
+
+
 }
 

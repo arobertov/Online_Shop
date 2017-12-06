@@ -1,0 +1,9 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+
+    {% for product in products %}
+       <p> <a href="{{ path('view_product',{'id':product.id}) }}">{{ product.title }}</a> </p>
+    {% endfor %}
+
+{% endblock %}

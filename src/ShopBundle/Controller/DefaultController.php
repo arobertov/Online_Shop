@@ -7,11 +7,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class DefaultController extends Controller
 {
-    /**
-     * @Route("/")
-     */
-    public function indexAction()
-    {
-        return $this->render('ShopBundle:Default:index.html.twig');
-    }
+	/**
+	 * @Route("/",name="home_page")
+	 */
+	public function indexAction()
+	{
+		return $this->render('@Shop/Default/blank.html.twig');
+	}
 }

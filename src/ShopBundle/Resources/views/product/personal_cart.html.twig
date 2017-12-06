@@ -1,0 +1,29 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+     {% if app.session.get('cart')|length >0 %}
+         <p>Products:</p>
+         <p>======================================================================</p>
+        {% for product in app.session.get('cart') %}
+            {% if product.id|length %}
+                <p>Product name :{{ product.title }}
+                    <span><a href="{{ path('session_clear',{'id':product.id}) }}">   Remove X</a></span>
+                </p>
+                <p>Price: {{ product.price }}</p>
+                <p>Quantity: {{ product.quantity }}</p>
+                <p>Discount : <strong>{{ product.discount }} %</strong>
+                    Product total :<strong> {{ product.subtotal }}</strong>
+                </p>
+            {% endif %}
+            <p>======================================================================</p>
+        {% endfor %}
+         <p>======================</p>
+         <p>Total: <strong>{{ app.session.get('total') }}</strong> </p>
+         <p>======================</p>
+         <p> <a href="{{ path('product_list') }}">&#60;&#60; Continue shopping</a> || <a href="#">Buy now &#62;&#62;</a></p>
+    {% else %}
+       <h2>No products in your cart ! </h2>
+    {% endif %}
+
+{% endblock %}
+

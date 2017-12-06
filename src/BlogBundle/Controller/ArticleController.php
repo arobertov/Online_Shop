@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 
 /**
@@ -36,9 +37,10 @@ class ArticleController extends Controller
 
     /**
      * Creates a new article entity.
-     *
+     * @param Request $request
      * @Route("/new", name="article_new")
      * @Method({"GET", "POST"})
+     * @return Response
      */
     public function newAction(Request $request)
     {
