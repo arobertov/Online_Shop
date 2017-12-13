@@ -7,7 +7,8 @@
 
 
     <link rel="shortcut icon" href="{{ asset('themes/images/ico/favicon.ico') }}">
-
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    -->
 </head>
 <body>
 <div class="container">
@@ -51,12 +52,15 @@
                         <li><a href="{{ path('user_manager') }}">Users</a></li>
                     {% endif %}
                     <li><a href="{{ path('article_index') }}">Blog</a></li>
-                    <li class=""><a href="contact.html">Contact</a></li>
+                    <li><a href="{{ path('category_index') }}">All Categories</a></li>
+                    <li><a href="{{ path('promotion_index') }}">All Promotion</a></li>
+                    <li class=""><a href="#">Contact</a></li>
                     <li class="">
                         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                             <a href="{{ path('logout') }}" ><span class="btn btn-large btn-success">Logout</span></a>
                         {% else %}
                             <a href="{{ path('login') }}" role="button" data-toggle="modal" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a>
+                            <a href="{{ path('user_register') }}">Register</a>
 
                         {% endif %}
                     </li>
@@ -127,6 +131,8 @@
 <!-- Placed at the end of the document so the pages load faster ============================================= -->
 
 <!-- Themes switcher section ============================================================================================= -->
-
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 </body>
 </html>

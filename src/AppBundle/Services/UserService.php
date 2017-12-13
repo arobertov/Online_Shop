@@ -49,11 +49,23 @@ class UserService {
             ->encodePassword($user, $user->getPlainPassword());
         $em = $this->em;
         $user->setPassword($password);
-        $user->setRoles($em->getRepository(Role::class)->findOneBy(['name'=>'ROLE_USER']));
+        //--  initialise firs user and set role super admin
+        if(!($em->getRepository(User::class)->findAll())){
+            $roleAdmin = new Role();
+            $roleUser = new Role();
+            $roleAdmin->setName('ROLE_SUPER_ADMIN');
+            $roleUser->setName('ROLE_USER');
+            $em->persist($roleAdmin);
+            $em->persist($roleUser);
+            $em->flush();
+            $user->setRoles($em->getRepository(Role::class)->findOneBy(['name'=>'ROLE_SUPER_ADMIN']));
+        }else {
+            $user->setRoles($em->getRepository(Role::class)->findOneBy(['name' => 'ROLE_USER']));
+        }
         $em->persist($user);
         $em->flush();
 
-        // send user confirmation email
+        //-- send user confirmation email
         $verifyEmail = $this->sendEmailService;
         $verifyEmail->verifyRegistrationEmail($user);
     }

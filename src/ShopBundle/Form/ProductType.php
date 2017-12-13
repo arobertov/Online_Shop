@@ -34,12 +34,16 @@ class ProductType extends AbstractType
 				            'required'=>false
 			          ))
 				    ->add('rating',IntegerType::class)
-				    ->add('discount',PercentType::class)
 				    ->add('price',MoneyType::class)
 				    ->add('category',EntityType::class,array(
 					    'class'=>'ShopBundle\Entity\ProductCategory',
 					    'choice_label'=>'name'
-				    ));
+				    ))
+                    ->add('promotion',EntityType::class,array(
+                        'class'=>'ShopBundle\Entity\Promotion',
+                        'choice_label'=>'title'
+                    ))
+                ;
 		    }
 	    } );
 

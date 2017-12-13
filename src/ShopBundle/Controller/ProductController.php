@@ -85,7 +85,7 @@ class ProductController extends Controller
 
 
 	/**
-	 * @param Request $request
+	 *
 	 * @Route("/personal_cart",name="personal_cart")
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response

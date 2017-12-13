@@ -3,6 +3,7 @@
 namespace ShopBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ShopBundle\Entity\Promotion;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -66,12 +67,6 @@ class Product
      */
     private $rating;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="discount", type="decimal",precision=2,scale=2)
-     */
-    private $discount;
 
     /**
      * @var float
@@ -92,13 +87,18 @@ class Product
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\ProductCategory",inversedBy="products")
+     * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\ProductCategory",inversedBy="products",)
      * @ORM\JoinColumn(name="categoryId",referencedColumnName="id")
      */
     private $category;
 
-
-    
+    /**
+     * @var Promotion $promotion
+     *
+     * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\Promotion",inversedBy="products")
+     * @ORM\JoinColumn(name="promotion_id",referencedColumnName="id",nullable=true)
+     */
+    private $promotion;
 
 
     /**
@@ -272,29 +272,6 @@ class Product
         return $this->rating;
     }
 
-    /**
-     * Set discount
-     *
-     * @param boolean $discount
-     *
-     * @return Product
-     */
-    public function setDiscount($discount)
-    {
-        $this->discount = ($discount/100);
-
-        return $this;
-    }
-
-    /**
-     * Get discount
-     *
-     * @return bool
-     */
-    public function getDiscount()
-    {
-        return $this->discount*100;
-    }
 
     /**
      * @return float
@@ -347,5 +324,28 @@ class Product
 	}
 
 
-}
 
+    /**
+     * Set promotion
+     *
+     * @param Promotion $promotion
+     *
+     * @return Product
+     */
+    public function setPromotion(Promotion $promotion = null)
+    {
+        $this->promotion = $promotion;
+
+        return $this;
+    }
+
+    /**
+     * Get promotion
+     *
+     * @return Promotion
+     */
+    public function getPromotion()
+    {
+        return $this->promotion;
+    }
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
+<body>
+<ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="{{ path('article_index') }}">Article</a></li>
+    {% if is_granted('ROLE_ADMIN') %}
+        <li><a href="{{ path('user_manager') }}">Users</a></li>
+    {% endif %}
+    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <li><a href="{{ path('my_profile',{'id':app.user.id}) }}">My profile</a></li>
+        <li><a href="{{ path('logout') }}">Logout</a></li>
+    {% else %}
+        <li><a href="{{ path('login') }}">Login</a></li>
+        <li><a href="{{ path('user_register') }}">Register</a></li>
+    {% endif %}
+</ul>
+{% block body %}{% endblock %}
+{% block javascripts %}{% endblock %}
+</body>
+</html>
