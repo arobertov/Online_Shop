@@ -145,7 +145,9 @@ class Promotion
      */
     public function getDiscount()
     {
-        return $this->discount;
+    	if($this->discount !== null) {
+		    return $this->discount*100;
+	    } return null;
     }
 
     /**

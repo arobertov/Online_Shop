@@ -2,6 +2,8 @@
 
 namespace ShopBundle\Form;
 
+use Doctrine\ORM\EntityRepository;
+use ShopBundle\Entity\ProductCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -17,8 +19,14 @@ class ProductCategoryType extends AbstractType
     {
         $builder->add('name',TextType::class)
             ->add('parent',EntityType::class,array(
-                'class'=>'ShopBundle\Entity\Promotion',
-                'choice_label'=>'title'
+                'class'=>'ShopBundle\Entity\ProductCategory',
+                'choice_label'=> 'name',
+                'placeholder'=>'First Level Category',
+                'query_builder'=> function (EntityRepository $er) {
+		                return $er->createQueryBuilder('c')
+		                          ->where('c.parent is NULL');
+	                },
+	            'required'=>false
             ));
     }
     

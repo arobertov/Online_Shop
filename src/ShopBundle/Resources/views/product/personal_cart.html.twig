@@ -11,14 +11,16 @@
                 </p>
                 <p>Price: {{ product.price }}</p>
                 <p>Quantity: {{ product.quantity }}</p>
-                <p>Discount : <strong>{{ product.discount }} %</strong>
-                    Product total :<strong> {{ product.subtotal }}</strong>
+                {% if product.promotion is not null %}
+                    <p>Discount : <strong>{{ product.promotion.discount }} %</strong>
+                {% endif %}
+                    Product total :<strong> {{ product.subtotal|number_format(2,'.',' ') }}</strong>
                 </p>
             {% endif %}
             <p>======================================================================</p>
         {% endfor %}
          <p>======================</p>
-         <p>Total: <strong>{{ app.session.get('total') }}</strong> </p>
+         <p>Total: <strong>{{ app.session.get('total')|number_format(2,'.',' ') }}</strong> </p>
          <p>======================</p>
          <p> <a href="{{ path('product_list') }}">&#60;&#60; Continue shopping</a> || <a href="#">Buy now &#62;&#62;</a></p>
     {% else %}

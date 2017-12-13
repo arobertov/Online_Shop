@@ -16,45 +16,51 @@ class CartSession {
 	/**
 	 * @param Product $product
 	 */
-	public function setCartSession(Product $product){
+	public function setCartSession( Product $product ) {
 		$session = new Session();
-		if($session->has('cart')) {
+		if ( $session->has( 'cart' ) ) {
 			$products = $session->get( 'cart' );
 
-			if(array_key_exists($product->getId(),$products)){
+			if ( array_key_exists( $product->getId(), $products ) ) {
 
 				/** @var Product $oldValue */
-				$oldValue = $products[$product->getId()];
+				$oldValue = $products[ $product->getId() ];
 
-				$newValue =  $oldValue->getQuantity() + $product->getQuantity();
-				$product->setQuantity($newValue);
-				$products[$product->getId()] = $product;
+				$newValue = $oldValue->getQuantity() + $product->getQuantity();
+				$product->setQuantity( $newValue );
+				$products[ $product->getId() ] = $product;
 
 			} else {
 				$products[ $product->getId() ] = $product;
 			}
-		} else{
-			$products[$product->getId()]=$product;
+		} else {
+			$products[ $product->getId() ] = $product;
 		}
-		$session->set('cart',$products);
+		$session->set( 'cart', $products );
 	}
 
-	public function  setProductTotal() {
+	public function setProductTotal() {
 		$session = new Session();
-		if(count($session->get('cart'))>0) {
+		if ( count( $session->get( 'cart' ) ) > 0 ) {
 			$products      = $session->get( 'cart' );
 			$productsTotal = null;
 			foreach ( $products as $key => $value ) {
 				/** @var Product $product */
 				$product = $value;
 				// set subtotal
-				$productDiscount = ( $product->getPrice() - ( $product->getPrice() * ( $product->getDiscount() / 100 ) ) );
-				$subtotal        = number_format( $product->getQuantity() * $productDiscount, 2 );
+				if ( $product->getPromotion() !== null ) {
+					$productDiscount =
+						( $product->getPrice() - ( $product->getPrice() * ( $product->getPromotion()->getDiscount() / 100 ) ) );
+					$subtotal = (floatval($product->getQuantity()) * $productDiscount);
+				} else {
+					$subtotal = (floatval($product->getQuantity()) * $product->getPrice());
+				}
+				
 				$product->setSubtotal( $subtotal );
 				$products[ $key ] = $product;
 				$productsTotal    += $subtotal;
 			}
-			$session->set( 'total',number_format($productsTotal,2) );
+			$session->set( 'total', $productsTotal );
 		}
 	}
 }

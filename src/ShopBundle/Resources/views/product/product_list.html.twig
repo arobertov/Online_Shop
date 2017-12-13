@@ -3,7 +3,8 @@
 {% block body %}
 
     {% for product in products %}
-       <p> <a href="{{ path('view_product',{'id':product.id}) }}">{{ product.title }}</a> </p>
+       <p> <a href="{{ path('view_product',{'id':product.id}) }}">{{ product.title }}</a>
+           {{ dump(product.category) }} </p>
     {% endfor %}
 
 {% endblock %}

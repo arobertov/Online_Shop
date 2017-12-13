@@ -2,6 +2,7 @@
 
 namespace ShopBundle\Form;
 
+use ShopBundle\Entity\ProductCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -37,11 +38,16 @@ class ProductType extends AbstractType
 				    ->add('price',MoneyType::class)
 				    ->add('category',EntityType::class,array(
 					    'class'=>'ShopBundle\Entity\ProductCategory',
-					    'choice_label'=>'name'
+					    'choice_label'=> function (ProductCategory $category){
+						    return $category->getParent() ?
+							    "-- ".$category->getName():strtoupper($category->getName());
+					    },
 				    ))
                     ->add('promotion',EntityType::class,array(
                         'class'=>'ShopBundle\Entity\Promotion',
-                        'choice_label'=>'title'
+                        'choice_label'=>'title',
+	                    'placeholder'=>'Without promotion !',
+	                    'required'=>false
                     ))
                 ;
 		    }
