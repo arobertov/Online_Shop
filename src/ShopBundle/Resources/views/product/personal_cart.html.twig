@@ -22,7 +22,8 @@
          <p>======================</p>
          <p>Total: <strong>{{ app.session.get('total')|number_format(2,'.',' ') }}</strong> </p>
          <p>======================</p>
-         <p> <a href="{{ path('product_list') }}">&#60;&#60; Continue shopping</a> || <a href="#">Buy now &#62;&#62;</a></p>
+         <p> <a href="{{ path('product_list') }}">&#60;&#60; Continue shopping</a>
+             || <a href="{{ path('add_order') }}">Buy now &#62;&#62;</a></p>
     {% else %}
        <h2>No products in your cart ! </h2>
     {% endif %}

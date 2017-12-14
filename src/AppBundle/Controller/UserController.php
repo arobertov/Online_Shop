@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Role;
 use AppBundle\Entity\UserEdit;
 use AppBundle\Entity\User;
+use AppBundle\Form\RoleType;
 use AppBundle\Form\UserEditType;
 use AppBundle\Form\UserType;
 use AppBundle\Services\UserService;
@@ -42,6 +44,30 @@ class UserController extends Controller
         return $this->render("@basic/security/register.html.twig", [
             'form' => $form->createView()
         ]);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     *
+     * @Route("/add_role",name="create_role")
+     * @Security("has_role('ROLE_SUPER_ADMIN')")
+     */
+    public function addUserRoleAction(Request $request){
+        $role = new Role();
+        $em = $this->getDoctrine()->getManager();
+        $allRoles = $em->getRepository('AppBundle:Role')->findAll();
+        $form = $this->createForm(RoleType::class,$role);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $em->persist($role);
+            $em->flush();
+        }
+        return $this->render('@App/security/add_role.html.twig',array(
+            'roles'=>$allRoles ,
+            'form'=>$form->createView()
+        ));
     }
 
     /**

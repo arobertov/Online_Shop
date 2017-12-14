@@ -1,10 +1,18 @@
 {% extends '@App/base.html.twig' %}
 
 {% block body %}
+    <h1> Product list </h1>
 
     {% for product in products %}
        <p> <a href="{{ path('view_product',{'id':product.id}) }}">{{ product.title }}</a>
-           {{ dump(product.category) }} </p>
+          | Price:
+           {% for productUser in product.productToUser %}
+                {{ productUser.price }} &euro; | Quantity:
+                {{ productUser.quantity }}
+            {% endfor %}
+         </p>
     {% endfor %}
+
+    <p><a href="{{ path('create_product') }}">Add more product</a></p>
 
 {% endblock %}

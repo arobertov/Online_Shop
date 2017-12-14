@@ -10,7 +10,9 @@
         <h3>Create Product</h3>
         <div class="well">
             {% form_theme form with 'forms/customize_form.html.twig' %}
-            {{ form(form) }}
+            {{ form_start(form) }}
+
+            {{ form_end(form) }}
         </div>
     </div>
 

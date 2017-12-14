@@ -2,7 +2,9 @@
 
 namespace ShopBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use ShopBundle\Entity\ProductUsers;
 use ShopBundle\Entity\Promotion;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -51,14 +53,6 @@ class Product
      */
     private $information;
 
-    /**
-     * @var int
-     * @Assert\Range(
-     *     min="1"
-     * )
-     * @ORM\Column(name="quantity", type="integer")
-     */
-    private $quantity;
 
     /**
      * @var int
@@ -67,12 +61,6 @@ class Product
      */
     private $rating;
 
-
-    /**
-     * @var float
-     * @ORM\Column(name="price",type="decimal",precision=7,scale=2)
-     */
-    private $price;
 
     /**
      * @var \DateTime
@@ -99,6 +87,13 @@ class Product
      * @ORM\JoinColumn(name="promotion_id",referencedColumnName="id",nullable=true)
      */
     private $promotion;
+
+    /**
+     * @var ProductUsers $productToUser
+     *
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\ProductUsers",mappedBy="product")
+     */
+    private $productToUser;
 
 
     /**
@@ -225,30 +220,6 @@ class Product
     }
 
     /**
-     * Set quantity
-     *
-     * @param integer $quantity
-     *
-     * @return Product
-     */
-    public function setQuantity($quantity)
-    {
-        $this->quantity = $quantity;
-
-        return $this;
-    }
-
-    /**
-     * Get quantity
-     *
-     * @return int
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
-    }
-
-    /**
      * Set rating
      *
      * @param integer $rating
@@ -272,22 +243,6 @@ class Product
         return $this->rating;
     }
 
-
-    /**
-     * @return float
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    /**
-     * @param float $price
-     */
-    public function setPrice($price)
-    {
-        $this->price = $price;
-    }
 
     /**
      * @return \DateTime
@@ -347,5 +302,60 @@ class Product
     public function getPromotion()
     {
         return $this->promotion;
+    }
+
+    /**
+     * Set productToUser
+     *
+     * @param ProductUsers $productToUser
+     *
+     * @return Product
+     */
+    public function setProductToUser(ProductUsers $productToUser = null)
+    {
+        $this->productToUser = $productToUser;
+
+        return $this;
+    }
+
+    /**
+     * Get productToUser
+     *
+     * @return ArrayCollection
+     */
+    public function getProductToUser()
+    {
+        return $this->productToUser;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->productToUser = new ArrayCollection();
+    }
+
+    /**
+     * Add productToUser
+     *
+     * @param ProductUsers $productToUser
+     *
+     * @return Product
+     */
+    public function addProductToUser(ProductUsers $productToUser)
+    {
+        $this->productToUser[] = $productToUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove productToUser
+     *
+     * @param \ShopBundle\Entity\ProductUsers $productToUser
+     */
+    public function removeProductToUser(\ShopBundle\Entity\ProductUsers $productToUser)
+    {
+        $this->productToUser->removeElement($productToUser);
     }
 }

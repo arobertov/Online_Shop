@@ -1,0 +1,12 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+        {{ form_row(form.product) }}
+        {{ form_row(form.quantity) }}
+        {{ form_row(form.price) }}
+        <input type="submit" name="Save">
+    {{ form_end(form) }}
+
+{% endblock %}

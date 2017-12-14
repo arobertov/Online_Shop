@@ -2,8 +2,10 @@
 
 namespace AppBundle\Entity;
 
+use BlogBundle\Entity\Article;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use ShopBundle\Entity\Orders;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -118,11 +120,23 @@ class User implements AdvancedUserInterface, \Serializable
      */
     private $roles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Orders",mappedBy="user")
+     */
+    private $orders;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="ShopBundle\Entity\ProductUsers",inversedBy="users")
+     * @ORM\JoinTable(name="products_users")
+     */
+    private $productToUsers;
+
 
     public function __construct()
     {
         $this->isActive = false;
         $this->articles = new ArrayCollection();
+        $this->orders = new ArrayCollection();
     }
 
 
@@ -343,5 +357,96 @@ class User implements AdvancedUserInterface, \Serializable
     {
         return $this->getIsActive();
     }
-}
 
+    /**
+     * Add article
+     *
+     * @param Article $article
+     *
+     * @return User
+     */
+    public function addArticle(Article $article)
+    {
+        $this->articles[] = $article;
+
+        return $this;
+    }
+
+    /**
+     * Remove article
+     *
+     * @param Article $article
+     */
+    public function removeArticle(Article $article)
+    {
+        $this->articles->removeElement($article);
+    }
+
+    /**
+     * Add order
+     *
+     * @param Orders $order
+     *
+     * @return User
+     */
+    public function addOrder(Orders $order)
+    {
+        $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param Orders $order
+     */
+    public function removeOrder(Orders $order)
+    {
+        $this->orders->removeElement($order);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * Add productToUser
+     *
+     * @param \ShopBundle\Entity\ProductUsers $productToUser
+     *
+     * @return User
+     */
+    public function addProductToUser(\ShopBundle\Entity\ProductUsers $productToUser)
+    {
+        $this->productToUsers[] = $productToUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove productToUser
+     *
+     * @param \ShopBundle\Entity\ProductUsers $productToUser
+     */
+    public function removeProductToUser(\ShopBundle\Entity\ProductUsers $productToUser)
+    {
+        $this->productToUsers->removeElement($productToUser);
+    }
+
+    /**
+     * Get productToUsers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProductToUsers()
+    {
+        return $this->productToUsers;
+    }
+}

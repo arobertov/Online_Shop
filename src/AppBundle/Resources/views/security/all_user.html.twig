@@ -33,8 +33,8 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% for user in user.roles %}
-                                {{ user }}
+                            {% for userRole in user.roles %}
+                                {{ userRole }}
                             {% endfor %}
                         </td>
                         <td>
@@ -45,6 +45,7 @@
                 {% endfor %}
                 </tbody>
             </table>
+            <p><a href="{{ path('create_role') }}">Add new role</a></p>
         </div>
     </div>
 
