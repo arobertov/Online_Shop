@@ -61,7 +61,7 @@ class Promotion
     /**
      * @var Product $products
      *
-     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Product",mappedBy="promotion")
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\ProductUsers",mappedBy="promotion")
      */
     private $products;
 
@@ -69,7 +69,7 @@ class Promotion
     /**
      * Get id
      *
-     * @return int
+     * @return int|null
      */
     public function getId()
     {
@@ -208,11 +208,11 @@ class Promotion
     /**
      * Add product
      *
-     * @param Product $product
+     * @param ProductUsers $product
      *
      * @return Promotion
      */
-    public function addProduct(Product $product)
+    public function addProduct(ProductUsers $product)
     {
         $this->products[] = $product;
 
@@ -222,9 +222,9 @@ class Promotion
     /**
      * Remove product
      *
-     * @param Product $product
+     * @param ProductUsers $product
      */
-    public function removeProduct(Product $product)
+    public function removeProduct(ProductUsers $product)
     {
         $this->products->removeElement($product);
     }

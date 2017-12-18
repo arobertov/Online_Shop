@@ -37,6 +37,7 @@ class UserService {
 	 *
 	 * @param SendEmailService $sendEmailService
 	 * @param EntityManagerInterface $em
+	 * @param UserPasswordEncoderInterface $encoder
 	 */
 	public function __construct( SendEmailService $sendEmailService, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder ) {
 		$this->sendEmailService = $sendEmailService;

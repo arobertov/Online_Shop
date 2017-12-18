@@ -6,13 +6,14 @@ use AppBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use ShopBundle\Entity\Product;
+use ShopBundle\Entity\Order;
+use ShopBundle\Entity\Promotion;
 
 /**
  * productUsers
  *
  * @ORM\Table(name="product_users")
- * @ORM\Entity(repositoryClass="ShopBundle\Repository\productUsersRepository")
+ * @ORM\Entity(repositoryClass="ShopBundle\Repository\ProductUsersRepository")
  */
 class ProductUsers
 {
@@ -48,9 +49,25 @@ class ProductUsers
     private $product;
 
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\User",mappedBy="productToUsers")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="productToUsers",cascade={"persist"}))
+     * @ORM\JoinColumn(name="user_id",referencedColumnName="id")
      */
-    private $users;
+    private $user;
+
+	/**
+	 * @var
+	 *
+	 * @ORM\ManyToMany(targetEntity="ShopBundle\Entity\Order",mappedBy="productUsers")
+	 */
+    private $orders;
+
+	/**
+	 * @var Promotion $promotion
+	 *
+	 * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\Promotion",inversedBy="products",cascade={"persist"})
+	 * @ORM\JoinColumn(name="promotion_id",referencedColumnName="id",nullable=true)
+	 */
+	private $promotion;
 
     /**
      * Get id
@@ -173,5 +190,87 @@ class ProductUsers
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Set user
+     *
+     * @param User $user
+     *
+     * @return ProductUsers
+     */
+    public function setUser(User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set promotion
+     *
+     * @param Promotion $promotion
+     *
+     * @return ProductUsers
+     */
+    public function setPromotion( Promotion $promotion = null)
+    {
+        $this->promotion = $promotion;
+
+        return $this;
+    }
+
+    /**
+     * Get promotion
+     *
+     * @return Promotion
+     */
+    public function getPromotion()
+    {
+        return $this->promotion;
+    }
+
+    /**
+     * Add order
+     *
+     * @param \ShopBundle\Entity\Order $order
+     *
+     * @return ProductUsers
+     */
+    public function addOrder(\ShopBundle\Entity\Order $order)
+    {
+        $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param \ShopBundle\Entity\Order $order
+     */
+    public function removeOrder(\ShopBundle\Entity\Order $order)
+    {
+        $this->orders->removeElement($order);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
     }
 }

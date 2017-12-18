@@ -4,8 +4,10 @@ namespace AppBundle\Entity;
 
 use BlogBundle\Entity\Article;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use ShopBundle\Entity\Orders;
+use ShopBundle\Entity\Order;
+use ShopBundle\Entity\ProductUsers;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -121,13 +123,12 @@ class User implements AdvancedUserInterface, \Serializable
     private $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Orders",mappedBy="user")
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Order",mappedBy="user")
      */
     private $orders;
 
     /**
-     * @ORM\ManyToMany(targetEntity="ShopBundle\Entity\ProductUsers",inversedBy="users")
-     * @ORM\JoinTable(name="products_users")
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\ProductUsers",mappedBy="user")
      */
     private $productToUsers;
 
@@ -137,6 +138,7 @@ class User implements AdvancedUserInterface, \Serializable
         $this->isActive = false;
         $this->articles = new ArrayCollection();
         $this->orders = new ArrayCollection();
+	    $this->productToUsers = new ArrayCollection();
     }
 
 
@@ -385,11 +387,11 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Add order
      *
-     * @param Orders $order
+     * @param Order $order
      *
      * @return User
      */
-    public function addOrder(Orders $order)
+    public function addOrder(Order $order)
     {
         $this->orders[] = $order;
 
@@ -399,9 +401,9 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Remove order
      *
-     * @param Orders $order
+     * @param Order $order
      */
-    public function removeOrder(Orders $order)
+    public function removeOrder(Order $order)
     {
         $this->orders->removeElement($order);
     }
@@ -409,7 +411,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get orders
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getOrders()
     {
@@ -419,11 +421,11 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Add productToUser
      *
-     * @param \ShopBundle\Entity\ProductUsers $productToUser
+     * @param ProductUsers $productToUser
      *
      * @return User
      */
-    public function addProductToUser(\ShopBundle\Entity\ProductUsers $productToUser)
+    public function addProductToUser( ProductUsers $productToUser)
     {
         $this->productToUsers[] = $productToUser;
 
@@ -433,9 +435,9 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Remove productToUser
      *
-     * @param \ShopBundle\Entity\ProductUsers $productToUser
+     * @param ProductUsers $productToUser
      */
-    public function removeProductToUser(\ShopBundle\Entity\ProductUsers $productToUser)
+    public function removeProductToUser( ProductUsers $productToUser)
     {
         $this->productToUsers->removeElement($productToUser);
     }
@@ -443,7 +445,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
      * Get productToUsers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getProductToUsers()
     {

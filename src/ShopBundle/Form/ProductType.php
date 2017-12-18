@@ -35,12 +35,6 @@ class ProductType extends AbstractType
                         "-- " . $category->getName() : strtoupper($category->getName());
                 },
             ))
-            ->add('promotion', EntityType::class, array(
-                'class' => 'ShopBundle\Entity\Promotion',
-                'choice_label' => 'title',
-                'placeholder' => 'Without promotion !',
-                'required' => false
-            ))
         ;
     }
 

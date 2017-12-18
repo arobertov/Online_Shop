@@ -1,0 +1,10 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+    <h2>Edit Product</h2>
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+    <input type="submit" name="Save">
+    {{ form_end(form) }}
+
+{% endblock %}

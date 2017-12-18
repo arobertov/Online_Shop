@@ -75,18 +75,12 @@ class Product
 
 
     /**
-     * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\ProductCategory",inversedBy="products",)
+     * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\ProductCategory",inversedBy="products",cascade={"persist"})
      * @ORM\JoinColumn(name="categoryId",referencedColumnName="id")
      */
     private $category;
 
-    /**
-     * @var Promotion $promotion
-     *
-     * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\Promotion",inversedBy="products")
-     * @ORM\JoinColumn(name="promotion_id",referencedColumnName="id",nullable=true)
-     */
-    private $promotion;
+
 
     /**
      * @var ProductUsers $productToUser
@@ -279,31 +273,6 @@ class Product
 	}
 
 
-
-    /**
-     * Set promotion
-     *
-     * @param Promotion $promotion
-     *
-     * @return Product
-     */
-    public function setPromotion(Promotion $promotion = null)
-    {
-        $this->promotion = $promotion;
-
-        return $this;
-    }
-
-    /**
-     * Get promotion
-     *
-     * @return Promotion
-     */
-    public function getPromotion()
-    {
-        return $this->promotion;
-    }
-
     /**
      * Set productToUser
      *
@@ -357,5 +326,9 @@ class Product
     public function removeProductToUser(\ShopBundle\Entity\ProductUsers $productToUser)
     {
         $this->productToUser->removeElement($productToUser);
+    }
+
+    public function __toString() {
+	    return $this->getTitle();
     }
 }

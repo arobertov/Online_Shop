@@ -73,12 +73,16 @@ class ProductCategoryController extends Controller
         ));
     }
 
-    /**
-     * Displays a form to edit an existing productCategory entity.
-     *
-     * @Route("/{id}/edit", name="category_edit")
-     * @Method({"GET", "POST"})
-     */
+	/**
+	 * Displays a form to edit an existing productCategory entity.
+	 *
+	 * @Route("/{id}/edit", name="category_edit")
+	 * @Method({"GET", "POST"})
+	 * @param Request $request
+	 * @param ProductCategory $productCategory
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+	 */
     public function editAction(Request $request, ProductCategory $productCategory)
     {
         $deleteForm = $this->createDeleteForm($productCategory);
@@ -98,12 +102,16 @@ class ProductCategoryController extends Controller
         ));
     }
 
-    /**
-     * Deletes a productCategory entity.
-     *
-     * @Route("/{id}", name="category_delete")
-     * @Method("DELETE")
-     */
+	/**
+	 * Deletes a productCategory entity.
+	 *
+	 * @Route("/{id}", name="category_delete")
+	 * @Method("DELETE")
+	 * @param Request $request
+	 * @param ProductCategory $productCategory
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
+	 */
     public function deleteAction(Request $request, ProductCategory $productCategory)
     {
         $form = $this->createDeleteForm($productCategory);
@@ -123,7 +131,7 @@ class ProductCategoryController extends Controller
      *
      * @param ProductCategory $productCategory The productCategory entity
      *
-     * @return \Symfony\Component\Form\Form The form
+     * @return \Symfony\Component\Form\FormInterface The form
      */
     private function createDeleteForm(ProductCategory $productCategory)
     {

@@ -73,12 +73,16 @@ class PromotionController extends Controller
         ));
     }
 
-    /**
-     * Displays a form to edit an existing promotion entity.
-     *
-     * @Route("/{id}/edit", name="promotion_edit")
-     * @Method({"GET", "POST"})
-     */
+	/**
+	 * Displays a form to edit an existing promotion entity.
+	 *
+	 * @Route("/{id}/edit", name="promotion_edit")
+	 * @Method({"GET", "POST"})
+	 * @param Request $request
+	 * @param Promotion $promotion
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+	 */
     public function editAction(Request $request, Promotion $promotion)
     {
         $deleteForm = $this->createDeleteForm($promotion);

@@ -1,0 +1,20 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+    <h1>Show product</h1>
+        <h2>{{ product.product.title }}</h2>
+        <div>
+                <p>{{ product.quantity }} items in stock.</p>
+                <p>{{ product.price }}</p>
+                <p>{{ product.promotion.discount }} %</p>
+            <form method="post" name="shop_bundle_product_users_type" >
+                 <input type="number" id="shop_bundle_product_users_type_quantity"
+                        name="shop_bundle_product_users_type[quantity]" required="required"
+                        value="1" min="1" max="{{ product.quantity }}"/>
+                {{ form_row(form.price) }}
+                {{ form_row(form._token) }}
+                <input type="submit" value="Buy now !"/>
+            </form>
+
+        </div>
+{% endblock %}

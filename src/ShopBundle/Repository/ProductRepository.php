@@ -10,28 +10,5 @@ namespace ShopBundle\Repository;
  */
 class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findAllWithJoin(){
-        $query = $this->getEntityManager()
-            ->createQuery('SELECT p , pr, c FROM ShopBundle:Product p
-                          JOIN p.promotion pr 
-                          JOIN p.category c
-                           ')
-            ->getResult();
-        return $query;
-    }
-
-    public function findOneWithJoin($id){
-        $query = $this->getEntityManager()
-            ->createQuery('SELECT p , pr, c FROM ShopBundle:Product p
-                          JOIN p.promotion pr 
-                          JOIN p.category c
-                          WHERE p.id = :id
-                           ')
-            ->setParameter(':id',$id);
-        try {
-            return $query->getSingleResult();
-        } catch (\Doctrine\ORM\NoResultException $e) {
-            return null;
-        }
-    }
+    
 }

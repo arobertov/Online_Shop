@@ -1,6 +1,9 @@
 <?php
 
 namespace ShopBundle\Repository;
+use AppBundle\Entity\User;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * productUsersRepository
@@ -10,5 +13,71 @@ namespace ShopBundle\Repository;
  */
 class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 {
+	/**
+	 * @var User $superAdmin
+	 */
+	private $superAdmin;
+
+	/**
+	 * @return User
+	 */
+	public function getSuperAdmin() {
+		return $this->superAdmin;
+	}
+
+
+	public function __construct(EntityManager $em,ClassMetadata $class) {
+
+		parent::__construct($em, $class);
+		$superAdmin = $em->getRepository(User::class)->findSuperAdminUser();
+		$this->superAdmin = $superAdmin;
+	}
+
+	public function findAllCompanyProducts(){
+		$em = $this->getEntityManager();
+		$query = $em->createQuery('SELECT pu , p , pr, pct ,u
+										FROM ShopBundle:ProductUsers pu
+										JOIN pu.product p
+										JOIN pu.promotion pr
+										JOIN p.category pct 
+										JOIN pu.user u 
+										WHERE u.id = :id '
+		);
+		$query ->setParameter('id', $this->getSuperAdmin()->getId());
+		return $query->getResult();
+	}
+
+	public function findAllUserProducts(){
+		$em = $this->getEntityManager();
+		$query = $em->createQuery('SELECT pu , p , pct ,u
+										FROM ShopBundle:ProductUsers pu
+										JOIN pu.product p
+										JOIN p.category pct  
+										JOIN pu.user u 
+										WHERE u.id != :id'
+		);
+		$query ->setParameter('id',$this->getSuperAdmin()->getId());
+		return $query->getResult();
+	}
+
+	public function findOneProduct($id){
+		$em = $this->getEntityManager();
+		$query = $em->createQuery('SELECT pu , p , pr, pct ,u
+										FROM ShopBundle:ProductUsers pu
+										JOIN pu.product p
+										JOIN pu.promotion pr
+										JOIN p.category pct 
+										JOIN pu.user u 
+										WHERE pu.id = :id '
+		);
+		$query ->setParameter('id', $id);
+		
+		try{
+			return $query->getSingleResult();
+		}   catch (\Doctrine\ORM\NoResultException $e) {
+			return null;
+		}
+	}
+
 }
 

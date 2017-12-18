@@ -4,17 +4,17 @@
      {% if app.session.get('cart')|length >0 %}
          <p>Products:</p>
          <p>======================================================================</p>
-        {% for product in app.session.get('cart') %}
+        {% for key, product in app.session.get('cart') %}
             {% if product.id|length %}
-                <p>Product name :{{ product.title }}
-                    <span><a href="{{ path('session_clear',{'id':product.id}) }}">   Remove X</a></span>
+                <p>Product name :{{ product.product.title }}
+                    <span><a href="{{ path('session_clear',{'id':key}) }}">   Remove X</a></span>
                 </p>
                 <p>Price: {{ product.price }}</p>
                 <p>Quantity: {{ product.quantity }}</p>
                 {% if product.promotion is not null %}
                     <p>Discount : <strong>{{ product.promotion.discount }} %</strong>
                 {% endif %}
-                    Product total :<strong> {{ product.subtotal|number_format(2,'.',' ') }}</strong>
+                    Product total :<strong> {{ product.product.subtotal|number_format(2,'.',' ') }}</strong>
                 </p>
             {% endif %}
             <p>======================================================================</p>
@@ -22,7 +22,7 @@
          <p>======================</p>
          <p>Total: <strong>{{ app.session.get('total')|number_format(2,'.',' ') }}</strong> </p>
          <p>======================</p>
-         <p> <a href="{{ path('product_list') }}">&#60;&#60; Continue shopping</a>
+         <p> <a href="{{ path('home_page') }}">&#60;&#60; Continue shopping</a>
              || <a href="{{ path('add_order') }}">Buy now &#62;&#62;</a></p>
     {% else %}
        <h2>No products in your cart ! </h2>

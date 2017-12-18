@@ -10,20 +10,21 @@ namespace ShopBundle\Services;
 
 
 use ShopBundle\Entity\Product;
+use ShopBundle\Entity\ProductUsers;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 class CartSession {
 	/**
-	 * @param Product $product
+	 * @param ProductUsers $product
 	 */
-	public function setCartSession( Product $product ) {
+	public function setCartSession( ProductUsers $product ) {
 		$session = new Session();
 		if ( $session->has( 'cart' ) ) {
 			$products = $session->get( 'cart' );
 
 			if ( array_key_exists( $product->getId(), $products ) ) {
 
-				/** @var Product $oldValue */
+				/** @var ProductUsers $oldValue */
 				$oldValue = $products[ $product->getId() ];
 
 				$newValue = $oldValue->getQuantity() + $product->getQuantity();
@@ -45,7 +46,7 @@ class CartSession {
 			$products      = $session->get( 'cart' );
 			$productsTotal = null;
 			foreach ( $products as $key => $value ) {
-				/** @var Product $product */
+				/** @var ProductUsers $product */
 				$product = $value;
 				// set subtotal
 				if ( $product->getPromotion() !== null ) {
@@ -56,7 +57,7 @@ class CartSession {
 					$subtotal = (floatval($product->getQuantity()) * $product->getPrice());
 				}
 				
-				$product->setSubtotal( $subtotal );
+				$product->getProduct()->setSubtotal( $subtotal );
 				$products[ $key ] = $product;
 				$productsTotal    += $subtotal;
 			}

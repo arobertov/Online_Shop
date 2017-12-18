@@ -1,0 +1,33 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+    <h2>All products our company</h2>
+    <table border="1">
+    {% for product in companyProducts %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td><a href="{{ path('show_product',{'id':product.id}) }}">{{ product.product.title }}</a></td>
+            <td>{{ product.quantity }}</td>
+            <td>{{ product.price }} &euro;</td>
+            <td>{{ product.promotion.discount }} %</td>
+            <td>{{ product.product.category.name }}</td>
+            <td><a href="{{ path('edit_product',{'id':product.id}) }}">Edit !</a> <a href="#">Delete !</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+    <h2>All products for sale in our users</h2>
+    <table border="1">
+    {% for product in userProducts %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td><a href="{{ path('show_product',{'id':product.id}) }}">{{ product.product.title }}</a></td>
+            <td>{{ product.quantity }}</td>
+            <td>{{ product.price }} &euro;</td>
+            <td>{{ product.promotion.title}}</td>
+            <td>{{ product.product.category.name }}</td>
+            <td>{{ product.user.username }}</td>
+            <td><a href="{{ path('edit_product',{'id':product.id}) }}">Edit !</a> <a href="#">Delete !</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

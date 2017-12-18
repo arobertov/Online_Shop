@@ -3,15 +3,16 @@
 namespace ShopBundle\Entity;
 
 use AppBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Orders
  *
  * @ORM\Table(name="orders")
- * @ORM\Entity(repositoryClass="ShopBundle\Repository\OrdersRepository")
+ * @ORM\Entity(repositoryClass="ShopBundle\Repository\OrderRepository")
  */
-class Orders
+class Order
 {
     /**
      * @var int
@@ -67,10 +68,24 @@ class Orders
     /**
      * @var User $user
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="orders")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="orders",cascade={"persist"})
      * @ORM\JoinColumn(name="user_id",referencedColumnName="id")
      */
     private $user;
+
+	/**
+	 * @ORM\ManyToMany(targetEntity="ShopBundle\Entity\ProductUsers",inversedBy="orders",cascade={"persist"})
+	 * @ORM\JoinTable("orders_products")
+	 */
+    private $productUsers;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->productUsers = new ArrayCollection();
+	}
 
 
     /**
@@ -88,7 +103,7 @@ class Orders
      *
      * @param integer $totalAmount
      *
-     * @return Orders
+     * @return Order
      */
     public function setTotalAmount($totalAmount)
     {
@@ -112,7 +127,7 @@ class Orders
      *
      * @param string $shipCity
      *
-     * @return Orders
+     * @return Order
      */
     public function setShipCity($shipCity)
     {
@@ -136,7 +151,7 @@ class Orders
      *
      * @param string $shipAddress
      *
-     * @return Orders
+     * @return Order
      */
     public function setShipAddress($shipAddress)
     {
@@ -160,7 +175,7 @@ class Orders
      *
      * @param string $orderPhone
      *
-     * @return Orders
+     * @return Order
      */
     public function setOrderPhone($orderPhone)
     {
@@ -184,7 +199,7 @@ class Orders
      *
      * @param string $orderEmail
      *
-     * @return Orders
+     * @return Order
      */
     public function setOrderEmail($orderEmail)
     {
@@ -208,7 +223,7 @@ class Orders
      *
      * @param \DateTime $orderDate
      *
-     * @return Orders
+     * @return Order
      */
     public function setOrderDate($orderDate)
     {
@@ -232,9 +247,9 @@ class Orders
      *
      * @param \AppBundle\Entity\User $user
      *
-     * @return Orders
+     * @return Order
      */
-    public function setUser(\AppBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -249,5 +264,47 @@ class Orders
     public function getUser()
     {
         return $this->user;
+    }
+
+
+	/**
+	 * @param  $productUsers 
+	 */
+	public function setProductUsers( $productUsers ) {
+		$this->productUsers = $productUsers;
+	}
+
+    /**
+     * Add productUser
+     *
+     * @param ProductUsers $productUser
+     *
+     * @return Order
+     */
+    public function addProductUser( ProductUsers $productUser)
+    {
+        $this->productUsers[] = $productUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove productUser
+     *
+     * @param ProductUsers $productUser
+     */
+    public function removeProductUser( ProductUsers $productUser)
+    {
+        $this->productUsers->removeElement($productUser);
+    }
+
+    /**
+     * Get productUsers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProductUsers()
+    {
+        return $this->productUsers;
     }
 }
