@@ -2,6 +2,8 @@
 
 namespace ShopBundle\Repository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NoResultException;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
  * OrdersRepository
@@ -25,26 +27,35 @@ class OrderRepository extends \Doctrine\ORM\EntityRepository
 		$this->em = $em;
 	}
 
-	public function findAllOrdersJoinProducts(){
-		$query = $this->em->createQuery('SELECT o , pu , u 
-											  FROM ShopBundle:Order o 
-											  JOIN o.productUsers pu
-											  JOIN o.user u'
-		);
-		return $query->getResult();
-	}
-
-	public function findOneOrderJoinProduct($id){
-		$query = $this->em->createQuery('SELECT o , pu , u 
+	public function findOneOrderJoinProducts($id){
+		$query = $this->em->createQuery('SELECT o , pu , u , p 
 											  FROM ShopBundle:Order o 
 											  JOIN o.productUsers pu
 											  JOIN o.user u
-											  WHERE o.id = :id'
+											  JOIN pu.product p
+											  WHERE  o.id = :id '
 		);
 		$query->setParameter('id',$id);
-		try{
+
+		try {
 			return $query->getSingleResult();
-		}   catch (\Doctrine\ORM\NoResultException $e) {
+		} catch (NoResultException $e){
+			return null;
+		}
+	}
+
+	public function findOneOrderUserIsNullJoinProducts($id){
+		$query = $this->em->createQuery('SELECT o , pu  , p 
+											  FROM ShopBundle:Order o 
+											  JOIN o.productUsers pu
+											  JOIN pu.product p
+											  WHERE (o.id = :id and o.user is null) or o.id = :id '
+		);
+		$query->setParameter('id',$id);
+
+		try {
+			return $query->getSingleResult();
+		} catch (NoResultException $e){
 			return null;
 		}
 	}

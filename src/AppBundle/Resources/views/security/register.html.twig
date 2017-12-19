@@ -13,10 +13,11 @@
 
             <h4>Your personal information</h4>
             {% form_theme form with 'forms/customize_form.html.twig' %}
-
+               <div class="form">
                 {{ form_start(form) }}
                     {{ form_row(form.username,{'help':' Username must be 3 or more symbols !'}) }}
-                    {{ form_row(form.fullName) }}
+                    {{ form_row(form.firstName) }}
+                    {{ form_row(form.lastName) }}
                     {{ form_row(form.email) }}
                     {{ form_row(form.plainPassword) }}
                     
@@ -24,7 +25,11 @@
 
                     {{ form_row(form.submit, { 'label': 'Register !' }) }}
                 {{ form_end(form) }}
+               </div>
 
+                <div>
+
+                </div>
 
 
 

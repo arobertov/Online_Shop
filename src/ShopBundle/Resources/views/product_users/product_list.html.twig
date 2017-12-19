@@ -9,7 +9,11 @@
             <td><a href="{{ path('show_product',{'id':product.id}) }}">{{ product.product.title }}</a></td>
             <td>{{ product.quantity }}</td>
             <td>{{ product.price }} &euro;</td>
-            <td>{{ product.promotion.discount }} %</td>
+            <td>
+            {% if product.promotion %}
+                {{ product.promotion.discount }} %
+            {% endif %}
+            </td>
             <td>{{ product.product.category.name }}</td>
             <td><a href="{{ path('edit_product',{'id':product.id}) }}">Edit !</a> <a href="#">Delete !</a></td>
         </tr>
@@ -23,7 +27,9 @@
             <td><a href="{{ path('show_product',{'id':product.id}) }}">{{ product.product.title }}</a></td>
             <td>{{ product.quantity }}</td>
             <td>{{ product.price }} &euro;</td>
-            <td>{{ product.promotion.title}}</td>
+            {% if  product.promotion %}
+                <td>{{ product.promotion.title}}</td>
+                {% endif %}
             <td>{{ product.product.category.name }}</td>
             <td>{{ product.user.username }}</td>
             <td><a href="{{ path('edit_product',{'id':product.id}) }}">Edit !</a> <a href="#">Delete !</a></td>

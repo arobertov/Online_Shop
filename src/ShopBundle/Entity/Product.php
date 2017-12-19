@@ -57,7 +57,7 @@ class Product
     /**
      * @var int
      *
-     * @ORM\Column(name="rating", type="integer")
+     * @ORM\Column(name="rating", type="integer", nullable=true)
      */
     private $rating;
 

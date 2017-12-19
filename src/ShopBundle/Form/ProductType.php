@@ -27,7 +27,9 @@ class ProductType extends AbstractType
             ->add('information', TextareaType::class, array(
                 'required' => false
             ))
-            ->add('rating', IntegerType::class)
+            ->add('rating', IntegerType::class,array(
+            	'required' => false
+            ))
             ->add('category', EntityType::class, array(
                 'class' => 'ShopBundle\Entity\ProductCategory',
                 'choice_label' => function (ProductCategory $category) {

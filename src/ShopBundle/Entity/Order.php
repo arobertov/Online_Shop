@@ -26,14 +26,28 @@ class Order
     /**
      * @var int
      *
-     * @ORM\Column(name="totalAmount", type="decimal",precision=10,scale=2)
+     * @ORM\Column(name="totalAmount", type="decimal", precision=10, scale=2 , nullable=true)
      */
     private $totalAmount;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="first_name", type="string" ,length=100)
+	 */
+    private $firstName;
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="last_name", type="string", length=100)
+	 */
+    private $lastName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="shipCity", type="string", length=255)
+     * @ORM\Column(name="shipCity", type="string", length=100)
      */
     private $shipCity;
 
@@ -47,14 +61,14 @@ class Order
     /**
      * @var string
      *
-     * @ORM\Column(name="orderPhone", type="string", length=255)
+     * @ORM\Column(name="orderPhone", type="string", length=50)
      */
     private $orderPhone;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="orderEmail", type="string", length=255)
+     * @ORM\Column(name="orderEmail", type="string", length=100)
      */
     private $orderEmail;
 
@@ -65,11 +79,26 @@ class Order
      */
     private $orderDate;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="status", type="string", length=50)
+	 */
+    private $status;
+
+
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="client_ip_address", type="string", nullable=true)
+	 */
+    private $clientIpAddress;
+
     /**
      * @var User $user
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="orders",cascade={"persist"})
-     * @ORM\JoinColumn(name="user_id",referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_id",referencedColumnName="id", nullable= true)
      */
     private $user;
 
@@ -121,6 +150,36 @@ class Order
     {
         return $this->totalAmount;
     }
+
+	/**
+	 * @return string
+	 */
+	public function getFirstName() {
+		return $this->firstName;
+	}
+
+	/**
+	 * @param string $firstName
+	 */
+	public function setFirstName( $firstName ) {
+		$this->firstName = $firstName;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLastName() {
+		return $this->lastName;
+	}
+
+	/**
+	 * @param string $lastName
+	 */
+	public function setLastName( $lastName ) {
+		$this->lastName = $lastName;
+	}
+
+
 
     /**
      * Set shipCity
@@ -241,6 +300,37 @@ class Order
     {
         return $this->orderDate;
     }
+
+	/**
+	 * @return string
+	 */
+	public function getStatus() {
+		return $this->status;
+	}
+
+	/**
+	 * @param string $status
+	 */
+	public function setStatus( $status ) {
+		$this->status = $status;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getClientIpAddress() {
+		return $this->clientIpAddress;
+	}
+
+	/**
+	 * @param string $clientIpAddress
+	 */
+	public function setClientIpAddress( $clientIpAddress ) {
+		$this->clientIpAddress = $clientIpAddress;
+	}
+
+    
 
     /**
      * Set user

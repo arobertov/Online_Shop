@@ -4,6 +4,7 @@ namespace ShopBundle\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -14,7 +15,10 @@ class OrderType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder ->add('shipCity',TextType::class)
+        $builder
+	        ->add('firstName',TextType::class)
+	        ->add('lastName',TextType::class)
+	        ->add('shipCity',TextType::class)
             ->add('shipAddress',TextType::class)
             ->add('orderEmail',EmailType::class)
             ->add('orderPhone',TextType::class)

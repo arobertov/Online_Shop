@@ -30,11 +30,13 @@ class SendEmailService
      */
     private $template;
 
-    /**
-     * SendEmailService constructor.
-     * @param \Swift_Mailer $mailer
-     * @param $adminEmail
-     */
+	/**
+	 * SendEmailService constructor.
+	 *
+	 * @param \Swift_Mailer $mailer
+	 * @param $adminEmail
+	 * @param EngineInterface $template
+	 */
     public function __construct(\Swift_Mailer $mailer,$adminEmail,EngineInterface $template)
     {
         $this->mailer = $mailer;

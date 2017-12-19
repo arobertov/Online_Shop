@@ -40,6 +40,13 @@ class ProductUsers
      */
     private $price;
 
+	/**
+	 * @var bool
+	 *
+	 * @ORM\Column(name="has_sell", type="boolean")
+	 */
+	private $hasSell;
+
     /**
      * @var Product $product
      *
@@ -68,6 +75,14 @@ class ProductUsers
 	 * @ORM\JoinColumn(name="promotion_id",referencedColumnName="id",nullable=true)
 	 */
 	private $promotion;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->hasSell = false;
+	}
 
     /**
      * Get id
@@ -150,47 +165,21 @@ class ProductUsers
     {
         return $this->product;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->users = new ArrayCollection();
-    }
 
-    /**
-     * Add user
-     *
-     * @param User $user
-     *
-     * @return ProductUsers
-     */
-    public function addUser(User $user)
-    {
-        $this->users[] = $user;
+	/**
+	 * @return bool
+	 */
+	public function isHasSell() {
+		return $this->hasSell;
+	}
 
-        return $this;
-    }
+	/**
+	 * @param bool $hasSell
+	 */
+	public function setHasSell( $hasSell ) {
+		$this->hasSell = $hasSell;
+	}
 
-    /**
-     * Remove user
-     *
-     * @param User $user
-     */
-    public function removeUser(User $user)
-    {
-        $this->users->removeElement($user);
-    }
-
-    /**
-     * Get users
-     *
-     * @return Collection
-     */
-    public function getUsers()
-    {
-        return $this->users;
-    }
 
     /**
      * Set user

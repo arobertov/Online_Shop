@@ -51,11 +51,6 @@ class ProductUserController extends Controller {
 		$em              = $this->getDoctrine()->getManager();
 		$companyProducts = $em->getRepository( 'ShopBundle:ProductUsers' )->findAllCompanyProducts();
 		$userProducts    = $em->getRepository( 'ShopBundle:ProductUsers' )->findAllUserProducts();
-		if( $user = $this->getUser() ){
-			print_r($user->getUsername());
-		} else {
-			print_r('Anonimous');
-		}
 
 		return $this->render( '@Shop/product_users/product_list.html.twig', array(
 			'companyProducts' => $companyProducts,

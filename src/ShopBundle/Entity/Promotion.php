@@ -58,12 +58,29 @@ class Promotion
      */
     private $endDate;
 
+	/**
+	 * @var bool
+	 *
+	 * @ORM\Column(name="is_active", type="boolean")
+	 */
+    private $isActive;
+
     /**
      * @var Product $products
      *
      * @ORM\OneToMany(targetEntity="ShopBundle\Entity\ProductUsers",mappedBy="promotion")
      */
     private $products;
+
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->products = new ArrayCollection();
+		$this->isActive = false;
+	}
 
 
     /**
@@ -197,13 +214,22 @@ class Promotion
     {
         return $this->endDate;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->products = new ArrayCollection();
-    }
+
+	/**
+	 * @return bool
+	 */
+	public function isActive() {
+		return $this->isActive;
+	}
+
+	/**
+	 * @param bool $isActive
+	 */
+	public function setIsActive( $isActive ) {
+		$this->isActive = $isActive;
+	}
+
+
 
     /**
      * Add product

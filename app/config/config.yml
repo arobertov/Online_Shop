@@ -42,6 +42,8 @@ twig:
     paths:
           '%kernel.project_dir%/src/AppBundle/Resources/views': basic
           '%kernel.project_dir%/src/BlogBundle/Resources/views': article
+    form_theme:
+          'forms/customize_form.html.twig'
 
 # Doctrine Configuration
 doctrine:

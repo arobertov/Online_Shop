@@ -4,6 +4,7 @@ namespace ShopBundle\Form;
 
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -28,7 +29,18 @@ class ProductUsersType extends AbstractType
 	    }elseif (self::$addQuantity){
     		 $builder
 			     ->add('quantity',IntegerType::class)
-			     ->add('price',HiddenType::class);
+			     ->add('price',HiddenType::class)
+			     ->add('hasSell',ChoiceType::class,array(
+				     'label'=>'Please choice to do your product ',
+				     'data'=>false,
+				     'choices'  => array(
+					     'I want to put up for sale' => true,
+					     'Shipping order to my address' => false,
+				     ),
+				     'expanded'=>true,
+				     'multiple'=>false
+			     ))
+		     ;
 	    } else {
 		    $builder
 			    ->add( 'quantity', IntegerType::class )

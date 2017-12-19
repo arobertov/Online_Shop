@@ -19,4 +19,19 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
 			return null;
 		}
 	}
+
+	public function findUserJoinAddress($id){
+		$em = $this->getEntityManager();
+		$query = $em->createQuery("SELECT u, adr 
+									  	FROM AppBundle:User u 
+									  	JOIN u.address adr 
+									  	WHERE u.id = :id")
+		;
+		$query->setParameter('id',$id);
+		try{
+			return $query->getSingleResult();
+		}   catch (\Doctrine\ORM\NoResultException $e) {
+			return null;
+		}
+	}
 }

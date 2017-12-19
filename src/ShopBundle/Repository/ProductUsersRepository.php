@@ -2,6 +2,7 @@
 
 namespace ShopBundle\Repository;
 use AppBundle\Entity\User;
+use AppBundle\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
@@ -14,36 +15,37 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 {
 	/**
-	 * @var User $superAdmin
+	 * @var int
 	 */
-	private $superAdmin;
+	private $superAdminId = null;
 
 	/**
-	 * @return User
+	 * @return integer
 	 */
-	public function getSuperAdmin() {
-		return $this->superAdmin;
+	public function getSuperAdminId() {
+		return $this->superAdminId;
 	}
 
 
 	public function __construct(EntityManager $em,ClassMetadata $class) {
 
 		parent::__construct($em, $class);
-		$superAdmin = $em->getRepository(User::class)->findSuperAdminUser();
-		$this->superAdmin = $superAdmin;
+		if(null !== $superAdmin = $em->getRepository(User::class)->findSuperAdminUser()){
+			$this->superAdminId = $superAdmin->getId();
+		}
+
 	}
 
 	public function findAllCompanyProducts(){
 		$em = $this->getEntityManager();
-		$query = $em->createQuery('SELECT pu , p , pr, pct ,u
+		$query = $em->createQuery('SELECT pu , p, pct ,u
 										FROM ShopBundle:ProductUsers pu
 										JOIN pu.product p
-										JOIN pu.promotion pr
-										JOIN p.category pct 
+					                    JOIN p.category pct 
 										JOIN pu.user u 
-										WHERE u.id = :id '
+										WHERE (pu.promotion IS NULL AND u.id = :id ) OR u.id = :id '
 		);
-		$query ->setParameter('id', $this->getSuperAdmin()->getId());
+		$query ->setParameter('id', $this->getSuperAdminId());
 		return $query->getResult();
 	}
 
@@ -54,21 +56,20 @@ class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 										JOIN pu.product p
 										JOIN p.category pct  
 										JOIN pu.user u 
-										WHERE u.id != :id'
+										WHERE (u.id != :id) AND (pu.hasSell != 0)'
 		);
-		$query ->setParameter('id',$this->getSuperAdmin()->getId());
+		$query ->setParameter('id',$this->getSuperAdminId());
 		return $query->getResult();
 	}
 
 	public function findOneProduct($id){
 		$em = $this->getEntityManager();
-		$query = $em->createQuery('SELECT pu , p , pr, pct ,u
+		$query = $em->createQuery('SELECT pu , p , pct ,u
 										FROM ShopBundle:ProductUsers pu
 										JOIN pu.product p
-										JOIN pu.promotion pr
 										JOIN p.category pct 
 										JOIN pu.user u 
-										WHERE pu.id = :id '
+										WHERE ( pu.promotion IS NULL AND pu.id = :id ) OR pu.id = :id '
 		);
 		$query ->setParameter('id', $id);
 		

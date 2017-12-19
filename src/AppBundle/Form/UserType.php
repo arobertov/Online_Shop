@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Entity\UserAddress;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -41,10 +42,15 @@ class UserType extends AbstractType
     {
         $builder
             ->add('username', TextType::class)
-            ->add('fullName', TextType::class,array(
+            ->add('firstName', TextType::class,array(
             	'required'=>false
             ))
-            ->add('email', EmailType::class);
+	        ->add('lastName',TextType::class,array(
+	        	'required'=>false
+	        ))
+            ->add('email', EmailType::class)
+	        ->add('address',UserAddressType::class)
+	        ;
         /*------- Render password fields when render register template -------- */
         if (self::$register) {
             $builder
@@ -72,7 +78,9 @@ class UserType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault('role','role');
+        $resolver->setDefault('role','role')
+                 ->setDefault('data_class','AppBundle\Entity\User')
+        ;
 
     }
 

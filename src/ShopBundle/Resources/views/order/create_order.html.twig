@@ -9,6 +9,7 @@
             If you do not wish to choose continue without registration.
         </p>
     {% endif %}
+    {{ dump(order) }}
     <div class="order">
         <h2>Order details</h2>
         <p>===========================================================</p>
@@ -33,7 +34,14 @@
     </div>
     <div class="order">
         <h2>Order information</h2>
-        {{ form(form) }}
+        {{ form_start(form) }}
+
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            {{ form_widget(form.firstName,{'attr':{'hidden':'hidden'}}) }}
+            {{ form_widget(form.lastName,{'attr':{'hidden':'hidden'}}) }}
+        {% endif %}
+
+        {{ form_end(form) }}
     </div>
 
     <style>
