@@ -3,5 +3,22 @@
 {% block body %}
 
     {{ dump(order) }}
+       <h1>Congratulations !</h1>
+    <p>
+        Your order has been processed successfully.
+        Our employee will contact you on your phone number to confirm. <br>
+        You will receive an email with the details of your order.
+    </p>
+
+    <h2>Product details</h2>
+        {% for product in order.productUsers %}
+           {{ dump(product) }}
+            <p>Product name : <strong>{{ product.product.title }}</strong></p>
+            <p>Product price : {{ product.price }} &euro;</p>
+            <p>Product quantity : {{ product.quantity }}</p>
+        {% endfor %}
+    
+    <h2>Order details</h2>
+    <p>{{ order.totalAmount  }}</p>
 
 {% endblock %}

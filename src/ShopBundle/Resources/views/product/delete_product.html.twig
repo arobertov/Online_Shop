@@ -1,0 +1,12 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+    <h1>Delete product template !</h1>
+
+    {{ form_start(delete_form) }}
+    {{ form_widget(delete_form) }}
+        <input type="submit" value="Delete !">
+    {{ form_end(delete_form) }}
+
+{% endblock %}
+

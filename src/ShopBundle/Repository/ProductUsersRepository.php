@@ -4,7 +4,9 @@ namespace ShopBundle\Repository;
 use AppBundle\Entity\User;
 use AppBundle\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use ShopBundle\Entity\ProductUsers;
 
 /**
  * productUsersRepository
@@ -14,26 +16,32 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 {
-	/**
-	 * @var int
-	 */
-	private $superAdminId = null;
 
 	/**
-	 * @return integer
+	 * @var EntityManagerInterface $em
 	 */
-	public function getSuperAdminId() {
-		return $this->superAdminId;
+	private $em;
+
+
+
+	/**
+	 * ProductUsersRepository constructor.
+	 *
+	 * @param EntityManagerInterface $em
+	 */
+	public function __construct(EntityManagerInterface $em ) {
+		parent::__construct( $em , new ClassMetadata(ProductUsers::class) );
+		$this->em = $em;
 	}
 
-
-	public function __construct(EntityManager $em,ClassMetadata $class) {
-
-		parent::__construct($em, $class);
-		if(null !== $superAdmin = $em->getRepository(User::class)->findSuperAdminUser()){
-			$this->superAdminId = $superAdmin->getId();
+	/**
+	 * @return integer|null
+	 */
+	private function getSuperAdminId() {
+		if(null !== $superAdmin = $this->em->getRepository(User::class)->findSuperAdminUser()){
+			return  $superAdmin->getId();
 		}
-
+		return null;
 	}
 
 	public function findAllCompanyProducts(){
@@ -80,5 +88,33 @@ class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 		}
 	}
 
+	public function updateProductInactivePromotion($ids){
+		$query = $this->em->createQuery('UPDATE ShopBundle\Entity\ProductUsers pu
+											  SET pu.promotion = NULL 
+											  WHERE pu.promotion IN (:ids) '
+		);
+		$query ->setParameter('ids',$ids);
+		return $query->getResult();
+	}
+
+	public function checkProductUsersIdsByCategoryAndBiggestPromotions($productIds = null,$overwritePromotionIds){
+		 $query = $this->em->createQuery('SELECT pu.id 
+											  FROM ShopBundle\Entity\ProductUsers pu
+											  WHERE pu.product IN(:prIds) AND (pu.promotion IN(:overwPrIds) OR pu.promotion IS NULL)
+											   '
+		 )->setParameter('prIds',$productIds)
+		 ->setParameter('overwPrIds',$overwritePromotionIds)
+		 ;
+		 return $query->getResult();
+	}
+
+	public function updateProductsSetPromotionCategory($productUserIds){
+		$query = $this->em->createQuery('UPDATE ShopBundle\Entity\ProductUsers pu
+											 SET pu.promotion = 2
+											 WHERE pu.id IN (:ids)'
+		);
+		$query->setParameter('ids',$productUserIds);
+		return $query->getResult();
+	}
 }
 

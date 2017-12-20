@@ -5,6 +5,7 @@ namespace ShopBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use ShopBundle\Entity\Product;
+use ShopBundle\Entity\Promotion;
 
 /**
  * ProductCategory
@@ -49,6 +50,12 @@ class ProductCategory
      */
     private $products;
 
+	/**
+	 * @var ArrayCollection
+	 * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Promotion",mappedBy="productCategory")
+	 */
+    private $promotions;
+
     /**
      * @return ArrayCollection
      */
@@ -65,6 +72,7 @@ class ProductCategory
     {
         $this->products = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->promotions = new ArrayCollection();
     }
 
 
@@ -182,5 +190,39 @@ class ProductCategory
     public function removeProduct(Product $product)
     {
         $this->products->removeElement($product);
+    }
+
+    /**
+     * Add promotion
+     *
+     * @param Promotion $promotion
+     *
+     * @return ProductCategory
+     */
+    public function addPromotion( Promotion $promotion)
+    {
+        $this->promotions[] = $promotion;
+
+        return $this;
+    }
+
+    /**
+     * Remove promotion
+     *
+     * @param Promotion $promotion
+     */
+    public function removePromotion( Promotion $promotion)
+    {
+        $this->promotions->removeElement($promotion);
+    }
+
+    /**
+     * Get promotions
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPromotions()
+    {
+        return $this->promotions;
     }
 }

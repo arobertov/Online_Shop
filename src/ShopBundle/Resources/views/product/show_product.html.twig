@@ -1,0 +1,14 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+    <p>{{ product.title }}</p>
+    <p>{{ product.description }}</p>
+    <p> {{ product.features }}</p>
+    <div>
+        <p><a href="{{ path('edit_product_template',{'id':product.id}) }}"> Edit </a> ||
+            <a href="{{path('delete_product_template',{'id':product.id})  }}"> Delete </a></p>
+    </div>
+
+
+{% endblock %}
+

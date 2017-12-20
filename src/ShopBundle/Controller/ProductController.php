@@ -10,7 +10,7 @@ use ShopBundle\Entity\ProductUsers;
 use ShopBundle\Form\CartType;
 use ShopBundle\Form\ProductType;
 use ShopBundle\Repository\ProductRepository;
-use ShopBundle\Services\CartSession;
+use ShopBundle\Services\CartSessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -22,34 +22,69 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class ProductController extends Controller
 {
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @Route("/all_products",name="all_products")
+	 */
+	public function indexAction(){
+		$em = $this->getDoctrine()->getManager();
+		$products = $em->getRepository(Product::class)->findAll();
+		return $this->render('@Shop/product/list_all_products.html.twig',array(
+			'products'=> $products
+		));
+	}
 
+	/**
+	 * @param Product $product
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @Route("/{id}/preview_product",name="show_product_template")
+	 */
+	public function showAction(Product $product){
+		return $this->render('@Shop/product/show_product.html.twig',array(
+			'product'=>$product
+		));
+	}
 
-    /**
-     *
-     * @Route("/personal_cart",name="personal_cart")
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function addProductsToCartAction()
-    {
-        $setProductTotal = $this->get(CartSession::class);
-        $setProductTotal->setProductTotal();
-        return $this->render('@Shop/product/personal_cart.html.twig');
-    }
+	/**
+	 * @param Product $product
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+	 * @Route("/{id}/edit_product",name="edit_product_template")
+	 */
+	public function editAction(Product $product,Request $request){
+	   $form = $this->createForm(ProductType::class,$product);
+	   $form->handleRequest($request);
 
-    /**
-     * @param $id
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @Route("/{id}/session_clear",name="session_clear")
-     */
-    public function clearCart($id)
-    {
-        $session = new Session();
-        if (count($session->get('cart')) > 0) {
-	        $arr = $session->get('cart');
-	        unset($arr[$id]);
-	        $session->set('cart', $arr);
-            }
-        return $this->redirectToRoute('personal_cart');
-    }
+	   if($form->isSubmitted() && $form->isValid()){
+	   	    $this->getDoctrine()->getManager()->flush();
+
+	   	    return $this->redirectToRoute('all_products');
+	   }
+	   return $this->render('@Shop/product/edit_product.html.twig',array(
+	   	    'edit_form'=>$form->createView()
+	   ));
+	}
+
+	/**
+	 * @param Product $product
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @Route("/{id}/delete_product",name="delete_product_template")
+	 */
+	public function deleteAction(Product $product,Request $request){
+		$form = $this->createForm(ProductType::class,$product);
+		$form->handleRequest($request);
+		$em = $this->getDoctrine()->getManager();
+		if($form->isSubmitted() && $form->isValid()){
+		 	$em->remove($product);
+		 	$em->flush();
+		}
+		return $this->render('@Shop/product/delete_product.html.twig',array(
+			'delete_form'=>$form->createView()
+		));
+	}
+
 }

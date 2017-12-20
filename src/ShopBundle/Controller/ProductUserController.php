@@ -4,14 +4,35 @@ namespace ShopBundle\Controller;
 
 use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use ShopBundle\Entity\Product;
+use ShopBundle\Entity\ProductCategory;
 use ShopBundle\Entity\ProductUsers;
+use ShopBundle\Entity\Promotion;
 use ShopBundle\Form\ProductUsersType;
-use ShopBundle\Services\CartSession;
+use ShopBundle\Services\CartSessionService;
+use ShopBundle\Services\ProductUsersInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductUserController extends Controller {
+
+	/**
+	 * @var ProductUsersInterface $productUserService
+	 */
+	private $productUserService;
+
+	/**
+	 * ProductUserController constructor.
+	 *
+	 * @param ProductUsersInterface $productUserService
+	 */
+	public function __construct( ProductUsersInterface $productUserService ) {
+		$this->productUserService = $productUserService;
+	}
+
+
 	/**
 	 * @param Request $request
 	 *
@@ -73,7 +94,7 @@ class ProductUserController extends Controller {
 		$form                          = $this->createForm( ProductUsersType::class, $productUser );
 		$form->handleRequest( $request );
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			$cartSession = $this->get(CartSession::class);
+			$cartSession = $this->get(CartSessionService::class);
 			$cartSession->setCartSession($productUser);
 			return $this->redirectToRoute( 'home_page');
 		}
@@ -89,7 +110,7 @@ class ProductUserController extends Controller {
 	 * @param $id
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
-	 *
+	 * 
 	 * @Route("/{id}/edit_product",name="edit_product")
 	 */
 	public function editAction( Request $request, $id ) {
@@ -114,4 +135,38 @@ class ProductUserController extends Controller {
 		) );
 	}
 
+	/**
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+	 * @param $id
+	 * @param Request $request
+	 *
+	 * @Route("/{id}/delete_product",name="delete_product")
+	 */
+	public function deleteAction($id,Request $request){
+		$em      = $this->getDoctrine()->getManager();
+		$product = $em->getRepository( 'ShopBundle:ProductUsers' )->findOneProduct( $id );
+		$form = $this->createForm( ProductUsersType::class, $product );
+		$form->handleRequest( $request );
+
+		if ( $form->isSubmitted() && $form->isValid() ) {
+			$em->remove($product);
+			$em->flush();
+			return $this->redirectToRoute('home_page');
+		}
+		return $this->render('@Shop/product_users/delete_product.html.twig',array(
+			'form'=>$form->createView()
+		));
+	}
+
+	/**
+	 * @Route("/set_promotion",name="set_promotion")
+	 * @return Response
+	 */
+	public function setProductPromotion(){
+
+		$result = $this->productUserService->addPromotionByCategory(2);
+		return  $this->render('@Shop/product_users/set_promotion.html.twig',array(
+			 'result'=> $result
+		)) ;
+	}
 }

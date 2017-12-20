@@ -12,6 +12,7 @@
                 <th>Discount</th>
                 <th>Duedate</th>
                 <th>Enddate</th>
+                <th>Is Active</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -24,6 +25,7 @@
                 <td>{{ promotion.discount }}</td>
                 <td>{% if promotion.dueDate %}{{ promotion.dueDate|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{% if promotion.endDate %}{{ promotion.endDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if promotion.active %}Active{% else %}Inactive{% endif %}</td>
                 <td>
                     <ul>
                         <li>

@@ -94,12 +94,13 @@ class OrderProductService {
 					         ->findOneBy( [ 'id' => $product->getProduct()->getId() ] )
 				);
 				$product->setUser( $user );
-				
-				if( null === $productUser = $this->checkProductToExistInUser( $product, $user )){
+				 $productUsers = $this->checkProductToExistInUser( $product, $user );
+				if( (null !== $productUsers && $product->isHasSell() == false) || null === $productUsers ){
 					$this->em->persist( $product );
 					$products[] = $product;
-				} else {
-					$products[]= $productUser;
+				} else  {
+					$product->setQuantity( $productUsers->getQuantity() + $product->getQuantity() );
+					$products[]= $productUsers;
 				}
 				$this->em->flush();
 			}
@@ -118,9 +119,8 @@ class OrderProductService {
 	 */
 	private function checkProductToExistInUser( ProductUsers $productUsers, User $user = null ) {
 		$product = $this->em->getRepository( 'ShopBundle:ProductUsers' )
-		                    ->findOneBy( [ 'product' => $productUsers->getProduct(), 'user' => $user ] );
+		                    ->findOneBy( [ 'product' => $productUsers->getProduct(), 'user' => $user] );
 		if(null !== $product){
-			$product->setQuantity( $productUsers->getQuantity() + $product->getQuantity() );
 			return $product;
 		}
 		return null;

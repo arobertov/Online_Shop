@@ -1,0 +1,15 @@
+{% extends '@App/base.html.twig' %}
+
+{% block body %}
+     <h1>List All Products Template</h1>
+
+    {% for product in products %}
+
+        <p><a href="{{ path('show_product_template',{'id':product.id}) }}">{{ product.title }}</a></p>
+        <p>{{ product.description }}</p>
+        <p>{{ product.features }}</p>
+        <p>{{ product.information }}</p>
+        <p>======================</p>
+    {% endfor %}
+{% endblock %}
+

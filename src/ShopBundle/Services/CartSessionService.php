@@ -13,7 +13,7 @@ use ShopBundle\Entity\Product;
 use ShopBundle\Entity\ProductUsers;
 use Symfony\Component\HttpFoundation\Session\Session;
 
-class CartSession {
+class CartSessionService {
 	/**
 	 * @param ProductUsers $product
 	 */

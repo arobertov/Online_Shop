@@ -72,6 +72,14 @@ class Promotion
      */
     private $products;
 
+	/**
+	 * @var ProductCategory
+	 *
+	 * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\ProductCategory",inversedBy="promotions",cascade={"persist"})
+	 * @ORM\JoinColumn(name="category_id",referencedColumnName="id", nullable=true)
+	 */
+    private $productCategory;
+
 
 	/**
 	 * Constructor
@@ -79,7 +87,7 @@ class Promotion
 	public function __construct()
 	{
 		$this->products = new ArrayCollection();
-		$this->isActive = false;
+		$this->isActive = true;
 	}
 
 
@@ -263,5 +271,39 @@ class Promotion
     public function getProducts()
     {
         return $this->products;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * Set productCategory
+     *
+     * @param \ShopBundle\Entity\ProductCategory $productCategory
+     *
+     * @return Promotion
+     */
+    public function setProductCategory(\ShopBundle\Entity\ProductCategory $productCategory = null)
+    {
+        $this->productCategory = $productCategory;
+
+        return $this;
+    }
+
+    /**
+     * Get productCategory
+     *
+     * @return \ShopBundle\Entity\ProductCategory
+     */
+    public function getProductCategory()
+    {
+        return $this->productCategory;
     }
 }

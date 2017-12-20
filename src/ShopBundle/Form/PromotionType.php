@@ -2,7 +2,10 @@
 
 namespace ShopBundle\Form;
 
+use ShopBundle\Entity\ProductCategory;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\PercentType;
@@ -23,7 +26,23 @@ class PromotionType extends AbstractType
                 ))
                 ->add('discount',PercentType::class)
                 ->add('dueDate',DateType::class)
-                ->add('endDate',DateType::class);
+                ->add('endDate',DateType::class)
+	            ->add('isActive',ChoiceType::class,array(
+	            	'choices'=>array(
+	            		'Activate Promotion'=>true,
+			            'Deactivate Promotion'=>false
+		            )
+	            ))
+	            ->add('productCategory',EntityType::class,array(
+		            'class' => 'ShopBundle\Entity\ProductCategory',
+		            'placeholder'=>'All Categories !' ,
+		            'choice_label' => function (ProductCategory $category) {
+			            return $category->getParent() ?
+				            "-- " . $category->getName() : strtoupper($category->getName());
+		            },
+		            'required'=>false
+	            ))
+        ;
     }
     
     /**

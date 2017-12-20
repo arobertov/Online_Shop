@@ -1,6 +1,9 @@
 <?php
 
 namespace ShopBundle\Repository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use ShopBundle\Entity\ProductCategory;
 
 /**
  * ProductCategoryRepository
@@ -10,4 +13,29 @@ namespace ShopBundle\Repository;
  */
 class ProductCategoryRepository extends \Doctrine\ORM\EntityRepository
 {
+	/**
+	 * @var EntityManagerInterface $em
+	 */
+	private $em;
+
+	/**
+	 * PromotionRepository constructor.
+	 *
+	 * @param EntityManagerInterface $em
+	 * @param ClassMetadata $class
+	 */
+	public function __construct( EntityManagerInterface $em ,ClassMetadata $class = null) {
+		parent::__construct( $em,new ClassMetadata(ProductCategory::class));
+		$this->em = $em;
+	}
+
+	public function getSubcategoryIds($id){
+		$query = $this->em->createQuery('SELECT c.id
+											  FROM ShopBundle\Entity\ProductCategory c
+											  WHERE c.parent = :id	'
+		)->setParameter('id',$id)
+		;
+		return $query->getResult();
+	}
+
 }
