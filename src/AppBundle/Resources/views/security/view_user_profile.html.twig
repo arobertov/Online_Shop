@@ -1,9 +1,20 @@
 {% extends '@basic/base.html.twig' %}
 
 {% block body %}
+    <div class="span9">
 
-    <li>Your username : {{ user.username }}</li>
-    <li>Your name : {{ user.fullName }}</li>
-    <li>Your email : {{ user.email }}</li>
-    <p><a href="{{ path('change_password',{'id':user.id}) }}">Change password</a></p>
+    <h2>Forgot password</h2>
+        <div class="well">
+            <ul>
+                <li>Your username : {{ user.username }}</li>
+                <li>First Name : {{ user.firstName }}</li>
+                <li>Last Name : {{ user.lastName }}</li>
+                <li>Your email : {{ user.email }}</li>
+            </ul>
+        <p>
+            <a class="btn btn-default" href="{{ path('change_password',{'id':user.id}) }}">Change password !</a>
+            <a class="btn btn-default" href="{{ path('user_edit',{'id':user.id}) }}">Edit my profile !</a>
+        </p>
+     </div>
+    </div>
 {% endblock %}

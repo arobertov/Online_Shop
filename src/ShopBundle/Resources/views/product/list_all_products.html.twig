@@ -1,15 +1,30 @@
 {% extends '@App/base.html.twig' %}
 
+   {% block sidebar %}
+
+   {% endblock %}
+
 {% block body %}
-     <h1>List All Products Template</h1>
+<div class="span11">
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Promotion List</li>
+    </ul>
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
+     <h2>List All Products Template</h2>
+        <div class="container">
+        {% for product in products %}
 
-    {% for product in products %}
-
-        <p><a href="{{ path('show_product_template',{'id':product.id}) }}">{{ product.title }}</a></p>
-        <p>{{ product.description }}</p>
-        <p>{{ product.features }}</p>
-        <p>{{ product.information }}</p>
-        <p>======================</p>
-    {% endfor %}
+            <p><a href="{{ path('show_product_template',{'id':product.id}) }}">{{ product.title }}</a>&nbsp;&nbsp;&nbsp;
+                <a class="btn btn-small btn-warning" href="{{ path('edit_product_template',{'id':product.id}) }}"> Edit </a>
+                <a class="btn btn-small btn-danger" href="{{ path('delete_product_template',{'id':product.id}) }}">Delete</a>
+            </p>
+            <p>{{ product.description }}</p>
+            <p>{{ product.features }}</p>
+            <p>{{ product.information }}</p>
+            <hr class="soft"/>
+        {% endfor %}
+        </div>
+</div>
 {% endblock %}
 

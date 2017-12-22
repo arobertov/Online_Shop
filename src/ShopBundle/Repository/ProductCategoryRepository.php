@@ -29,6 +29,13 @@ class ProductCategoryRepository extends \Doctrine\ORM\EntityRepository
 		$this->em = $em;
 	}
 
+	public function findAllCategoriesTree(){
+		$query = $this->em->createQuery('SELECT c 
+											  FROM ShopBundle\Entity\ProductCategory c
+											  WHERE c.parent IS NULL');
+		return $query->getResult();
+	}
+
 	public function getSubcategoryIds($id){
 		$query = $this->em->createQuery('SELECT c.id
 											  FROM ShopBundle\Entity\ProductCategory c

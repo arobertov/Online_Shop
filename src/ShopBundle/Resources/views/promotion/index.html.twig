@@ -1,49 +1,58 @@
 {% extends '@App/base.html.twig' %}
 
+{% block sidebar %}
+
+{% endblock %}
+
 {% block body %}
+<div class="span11">
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Promotion List</li>
+    </ul>
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
     <h1>Promotions list</h1>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Discount</th>
-                <th>Duedate</th>
-                <th>Enddate</th>
-                <th>Is Active</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for promotion in promotions %}
-            <tr>
-                <td><a href="{{ path('promotion_show', { 'id': promotion.id }) }}">{{ promotion.id }}</a></td>
-                <td>{{ promotion.title }}</td>
-                <td>{{ promotion.description }}</td>
-                <td>{{ promotion.discount }}</td>
-                <td>{% if promotion.dueDate %}{{ promotion.dueDate|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if promotion.endDate %}{{ promotion.endDate|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if promotion.active %}Active{% else %}Inactive{% endif %}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('promotion_show', { 'id': promotion.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('promotion_edit', { 'id': promotion.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="container">
+        <table class="table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Discount</th>
+                    <th>Duedate</th>
+                    <th>Enddate</th>
+                    <th>Is Active</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for promotion in promotions %}
+                <tr>
+                    <td><a href="{{ path('promotion_show', { 'id': promotion.id }) }}">{{ promotion.id }}</a></td>
+                    <td>{{ promotion.title }}</td>
+                    <td>{{ promotion.description }}</td>
+                    <td>{{ promotion.discount }}</td>
+                    <td>{% if promotion.dueDate %}{{ promotion.dueDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{% if promotion.endDate %}{{ promotion.endDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{% if promotion.active %}Active{% else %}Inactive{% endif %}</td>
+                    <td>
+                        <ul>
+                            <li>
+                                <a href="{{ path('promotion_show', { 'id': promotion.id }) }}">show</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('promotion_edit', { 'id': promotion.id }) }}">edit</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('promotion_new') }}">Create a new promotion</a>
-        </li>
-    </ul>
+    <a class="btn btn-warning" href="{{ path('promotion_new') }}">Create a new promotion</a>
+</div>
 {% endblock %}

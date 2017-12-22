@@ -1,0 +1,27 @@
+{# macro #}
+
+{% macro tree(items) %}
+    {% import _self as m %}
+    {% if items %}
+        <ul id="sideManu" class="nav nav-tabs nav-stacked">
+            {% for i in items %}
+
+                 {% if i.parent %}
+                     <li>
+                     <a class="active" href="{{ path('products_by_category',{'id':i.id}) }}">
+                         <i class="icon-chevron-right"></i>
+                         {{ i.name }} ({{ i.products|length }})
+                     </a>
+                     </li>
+                   
+                 {% else %}
+                     <li class="subMenu open">
+                         <a>{{ i.name }} </a>
+
+                 {% endif %}
+                   {{ m.tree(i.children) }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}

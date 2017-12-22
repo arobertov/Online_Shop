@@ -1,6 +1,9 @@
 <?php
 
 namespace ShopBundle\Repository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use ShopBundle\Entity\Product;
 
 /**
  * ProductRepository
@@ -10,5 +13,4 @@ namespace ShopBundle\Repository;
  */
 class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
-
 }

@@ -14,4 +14,6 @@ interface ProductUsersInterface {
 	public  function removeInactivePromotion($ids);
 
 	public function addPromotionByCategory($promotionId = null);
+
+	public function findProductsByProductCategory($id);
 }

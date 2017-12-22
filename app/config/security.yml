@@ -38,7 +38,7 @@ security:
                           secret:  '%secret%'
                           lifetime: 604800 # 1 week in seconds
                           path: /
-
-
-
     access_control:
+        - { path: ^/product, roles: ROLE_EDITOR }
+        - { path: ^/category, roles: ROLE_EDITOR }
+

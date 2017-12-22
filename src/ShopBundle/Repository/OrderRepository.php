@@ -27,6 +27,14 @@ class OrderRepository extends \Doctrine\ORM\EntityRepository
 		$this->em = $em;
 	}
 
+	public function findAllOrders(){
+		$query = $this->em->createQuery('SELECT o 
+											  FROM ShopBundle:Order o 
+											  '
+		);
+		return $query->getResult();
+	}
+
 	public function findOneOrderJoinProducts($id){
 		$query = $this->em->createQuery('SELECT o , pu , u , p 
 											  FROM ShopBundle:Order o 

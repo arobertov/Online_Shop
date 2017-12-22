@@ -1,32 +1,69 @@
 {% extends '@App/base.html.twig' %}
 
 {% block body %}
-     {% if app.session.get('cart')|length >0 %}
-         <p>Products:</p>
-         <p>======================================================================</p>
-        {% for key, product in app.session.get('cart') %}
-            {% if product.id|length %}
-                <p>Product name :{{ product.product.title }}
-                    <span><a href="{{ path('session_clear',{'id':key}) }}">   Remove X</a></span>
-                </p>
-                <p>Price: {{ product.price }}</p>
-                <p>Quantity: {{ product.quantity }}</p>
-                {% if product.promotion is not null %}
-                    <p>Discount : <strong>{{ product.promotion.discount }} %</strong>
-                {% endif %}
-                    Product total :<strong> {{ product.product.subtotal|number_format(2,'.',' ') }}</strong>
-                </p>
-            {% endif %}
-            <p>======================================================================</p>
-        {% endfor %}
-         <p>======================</p>
-         <p>Total: <strong>{{ app.session.get('total')|number_format(2,'.',' ') }}</strong> </p>
-         <p>======================</p>
-         <p> <a href="{{ path('home_page') }}">&#60;&#60; Continue shopping</a>
-             || <a href="{{ path('add_order') }}">Buy now &#62;&#62;</a></p>
-    {% else %}
-       <h2>No products in your cart ! </h2>
-    {% endif %}
+<div class="span9">
+    <ul class="breadcrumb">
+        <li><a href="index.html">Home</a> <span class="divider">/</span></li>
+        <li class="active"> SHOPPING CART</li>
+    </ul>
+    <h3>  SHOPPING CART [ <small>{{ app.session.get('cart')|length }} Item(s) </small>]<a href="{{ path('home_page') }}" class="btn btn-large pull-right">
+            <i class="icon-arrow-left"></i> Continue Shopping </a></h3>
+    <hr class="soft"/>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Product</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Tax</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if app.session.get('cart')|length >0 %}
+            {% for key, product in app.session.get('cart') %}
+                {% if product.id|length %}
+                    <tr>
+                        <td> <img width="60" src="{{ asset('themes/my_images/'~product.product.image) }}" alt=""/></td>
+                        <td>{{ product.product.title }}<br/></td>
+                        <td>
+                            <div class="input-append">
+                                <input class="span1" style="max-width:34px" placeholder="{{ product.quantity }}" id="appendedInputButtons" size="16" type="text">
 
-{% endblock %}
+                                <a href="{{ path('session_clear',{'id':key}) }}">
+                                    <button class="btn btn-danger" type="button">
+                                        <i class="icon-remove icon-white"></i></button>
+                                </a>
+                            </div>
+                        </td>
+                        <td>{{ product.price }} &euro;</td>
+                        <td>
+                                {{ product.promotion.discount* product.price|number_format(2,'.',' ') }} &euro;
+                            
+                        </td>
+                        <td>-</td>
+                        <td>{{ product.product.subtotal|number_format(2,'.',' ') }}</td>
+                    </tr>
+                 {% endif %}
+            {% endfor %}
+        {% endif %}
+
+       
+        <tr>
+            <td colspan="6" style="text-align:right"><strong>TOTAL </strong></td>
+            <td class="label label-important" style="display:block"> <strong>
+                </strong><strong>  {{ app.session.get('total')|number_format(2,'.',' ') }} </strong>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="{{ path('home_page') }}" class="btn btn-large"><i class="icon-arrow-left"></i> Continue Shopping </a>
+    <a href="{{ path('add_order') }}" class="btn btn-large pull-right">Buy Now ! <i class="icon-arrow-right"></i></a>
+
+    {% endblock %}
+    
+
+
 

@@ -50,9 +50,10 @@ class PromotionRepository extends \Doctrine\ORM\EntityRepository
 	}
 
 	public function checkBiggerPromotionDiscount($discount){
-		$query = $this->em->createQuery('SELECT p.id 
-												FROM ShopBundle\Entity\Promotion p
-												WHERE p.discount <= :discount'
+		$query = $this->em->createQuery('SELECT p.id
+											  FROM ShopBundle\Entity\Promotion p
+											  INDEX BY p.id 
+											  WHERE p.discount <= :discount'
 		)->setParameter('discount',$discount)
 		;
 		return $query->getResult();

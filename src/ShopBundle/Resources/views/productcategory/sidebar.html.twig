@@ -1,0 +1,26 @@
+<div id="sidebar" class="span3">
+    <div class="well well-small"><a id="myCart" href="{{ path('personal_cart') }}">
+            <img src="{{ asset('themes/images/ico-cart.png') }}" alt="cart">
+            {% if app.session.get('cart')|length >1 %}
+                [ {{ app.session.get('cart')|length}} ] Items in your cart
+            {% else %}
+                [ {{ app.session.get('cart')|length}} ]  Item in your cart
+            {% endif %}
+
+            
+    </div>
+
+
+{% import '@Shop/productcategory/sidebar_macros.twig'  as m %}
+    {{ m.tree(productCategories) }}
+
+    <br/>
+   <div class="well well-small">
+       <ul>
+           <li><a href="{{ path('users_products') }}"><i class="icon-chevron-right"></i>Products own users</a></li>
+       </ul>
+   </div>
+
+</div>
+
+

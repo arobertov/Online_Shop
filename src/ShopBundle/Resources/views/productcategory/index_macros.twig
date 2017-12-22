@@ -1,0 +1,43 @@
+{# macro #}
+
+{% macro tree(items) %}
+    {% import _self as m %}
+    {% if items %}
+        <table id="sideManu" >
+            {% for i in items %}
+
+                {% if i.parent %}
+                    <tr>
+                        <td>
+                            <a class="active" href="{{ path('category_show',{'id':i.id}) }}">
+                            <i class="icon-chevron-right"></i>
+                            {{ i.name }} ({{ i.products|length }}) ----
+                            </a>
+                        </td>
+                        <td>
+                            <a class="btn btn-mini btn-default" href="{{ path('category_edit',{'id':i.id}) }}">Edit !</a>
+                        </td>
+                        <td>
+                            <a class="btn btn-mini btn-danger" href="{{ path('category_delete',{'id':i.id}) }}">Delete !</a>
+                        </td>
+
+
+                {% else %}
+                    <td>
+                        <a class="active" href="{{ path('category_show',{'id':i.id}) }}">{{ i.name }} ---- </a>
+                    </td>
+                    <td>
+                        <a class="btn btn-mini btn-default" href="{{ path('category_edit',{'id':i.id}) }}">Edit !</a>
+                    </td>
+                    <td>
+                    <a class="btn btn-mini btn-danger" href="{{ path('category_delete',{'id':i.id}) }}">Delete !</a>
+                    </td>
+
+                {% endif %}
+                {{ m.tree(i.children) }}
+                </tr>
+
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endmacro %}

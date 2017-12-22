@@ -1,25 +1,40 @@
 {% extends '@basic/base.html.twig' %}
 {% block body %}
-    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
+    <div class="span9">
+    <ul class="breadcrumb">
+        <li><a href="index.html">Home</a> <span class="divider">/</span></li>
+        <li class="active">Login</li>
+    </ul>
+    <h3> Login</h3>
+    <hr class="soft"/>
 
-    <form action="{{ path('login') }}" method="post" name="form_login">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" /><br/>
+    <div class="row">
+        <div class="span8">
+            <div class="well">
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password" /><br/>
+                {% if error %}
+                    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
 
-        <input type="checkbox" id="remember_me" name="_remember_me" checked />
-        <label for="remember_me">Remember me !</label><br/>
+                <form action="{{ path('login') }}" method="post" name="form_login">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="_username" value="{{ last_username }}" /><br/>
 
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}"
-        >
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="_password" /><br/>
 
-        <button type="submit">Login !</button>
-    </form>
+                    <input type="checkbox" id="remember_me" name="_remember_me" checked />
+                    <label for="remember_me">Remember me !</label><br/>
 
-    <p><a href="{{ path('forgot_password') }}">Forgot your password !</a></p>
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+
+                    <button class="btn btn-success" type="submit">Login !</button>
+                </form>
+
+                <p><a href="{{ path('forgot_password') }}">Forgot your password !</a></p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

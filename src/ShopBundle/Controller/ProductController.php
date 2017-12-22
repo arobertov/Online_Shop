@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 /**
  * Class ProductController
  * @package ShopBundle\Controller
+ *
  * @Route("/product")
  */
 class ProductController extends Controller
@@ -81,6 +82,7 @@ class ProductController extends Controller
 		if($form->isSubmitted() && $form->isValid()){
 		 	$em->remove($product);
 		 	$em->flush();
+		 	$this->redirectToRoute('all_products') ;
 		}
 		return $this->render('@Shop/product/delete_product.html.twig',array(
 			'delete_form'=>$form->createView()

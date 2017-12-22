@@ -1,41 +1,70 @@
 {% extends '@App/base.html.twig' %}
 
 {% block body %}
-    <h2>All products our company</h2>
-    <table border="1">
-    {% for product in companyProducts %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td><a href="{{ path('show_product',{'id':product.id}) }}">{{ product.product.title }}</a></td>
-            <td>{{ product.quantity }}</td>
-            <td>{{ product.price }} &euro;</td>
-            <td>
-            {% if product.promotion %}
-                {{ product.promotion.discount }} %
-            {% endif %}
-            </td>
-            <td>{{ product.product.category.name }}</td>
-            <td><a href="{{ path('edit_product',{'id':product.id}) }}">Edit !</a>
-                <a href="{{ path('delete_product',{'id':product.id}) }}">Delete !</a></td>
-        </tr>
-    {% endfor %}
-    </table>
-    <h2>All products for sale in our users</h2>
-    <table border="1">
-    {% for product in userProducts %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td><a href="{{ path('show_product',{'id':product.id}) }}">{{ product.product.title }}</a></td>
-            <td>{{ product.quantity }}</td>
-            <td>{{ product.price }} &euro;</td>
-            {% if  product.promotion %}
-                <td>{{ product.promotion.title}}</td>
-                {% endif %}
-            <td>{{ product.product.category.name }}</td>
-            <td>{{ product.user.username }}</td>
-            <td><a href="{{ path('edit_product',{'id':product.id}) }}">Edit !</a>
-                <a href="{{ path('delete_product',{'id':product.id}) }}">Delete !</a></td>
-        </tr>
-    {% endfor %}
-    </table>
+    <div class="span9">
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Products List</li>
+    </ul>
+    <h3> Products Name <small class="pull-right">  products are available </small></h3>
+    <hr class="soft"/>
+
+
+    {{ form_start(form) }}
+        {{ form_widget(form.choise,{'attr':{'onchange':'this.form.submit()'}}) }}
+    {{ form_end(form) }}
+
+    <div id="myTab" class="pull-right">
+    </div>
+    <br class="clr"/>
+
+
+        <div class="tab-pane" id="listView">
+            {% for product in products %}
+            <div class="row">
+                <div class="span2">
+                    <img src="{{ asset('themes/my_images/'~product.product.image) }}" alt=""/>
+                </div>
+                <div class="span4">
+                    <h3>{{ product.product.title }}</h3>
+                    <hr class="soft"/>
+                    <h5> </h5>
+                    <p>
+                        Nowadays the lingerie industry is one of the most successful business spheres.
+                        We always stay in touch with the latest fashion tendencies -
+                        that is why our goods are so popular..
+                    </p>
+                    <a class="btn btn-small pull-right" href="{{ path('show_product',{'id':product.id}) }}">View Details</a>
+                    {% if app.user == product.user   or is_granted('ROLE_EDITOR') %}
+                    <a class="btn btn-small btn-warning" href="{{ path('edit_product',{'id':product.id}) }}">Edit !</a>
+                    <a class="btn btn-small btn-danger" href="{{ path('delete_product',{'id':product.id}) }}">Delete !</a>
+                     {% endif %}
+                    <br class="clr"/>
+                </div>
+                <div class="span3 alignR">
+                    <form class="form-horizontal qtyFrm">
+                        {% if product.promotion.discount >0 %}
+                            <h3> New price :{{  (product.price - product.promotion.discount*100)|number_format(2,'.') }} &euro;</h3>
+                            <h3><strike> {{ product.price }}</strike> &euro;</h3>
+                        {% else %}
+                            <h3>{{ product.price }}</h3>
+                        {% endif %}
+
+                        <a href="{{ path('show_product',{'id':product.id}) }}" class="btn btn-large btn-primary">
+                            Add to <i class=" icon-shopping-cart"></i></a>
+                        <a href="{{ path('show_product',{'id':product.id}) }}" class="btn btn-large">
+                            <i class="icon-zoom-in"></i></a>
+
+                    </form>
+                </div>
+            </div>
+                <hr class="soft"/>
+            {% endfor %}
+        </div>
+    
+
+
+
+
+    
 {% endblock %}

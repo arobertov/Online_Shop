@@ -40,6 +40,10 @@ class ProductUsersService implements ProductUsersInterface {
 		$this->productUsersRepository = $repository;
 	}
 
+	public function findProductsByProductCategory($id){
+		return $this->productUsersRepository->findAllProductByCategory($id);
+	}
+
 
 	public function removeInactivePromotion($ids){
 		 $this->productUsersRepository->updateProductInactivePromotion($ids);
@@ -49,10 +53,14 @@ class ProductUsersService implements ProductUsersInterface {
 		$em = $this->em;
 		$productUsersRepository = $this->productUsersRepository;
 		$promotion = $em->getRepository(Promotion::class)->findOneBy(['id'=>$promotionId,'isActive'=>1]);
+		if(null ===$promotion){
+			return 'No find promotion';
+		}
 
 		$overwritePromotionIds = $em->getRepository( Promotion::class )
 		                            ->checkBiggerPromotionDiscount( ( $promotion->getDiscount() * 0.01 ) );
-		if(null !== $promotion) {
+
+		if(null !== $promotion->getProductCategory()) {
 			$catId[] = $promotion->getProductCategory()->getId();
 			$categoriesIds = $em->getRepository(ProductCategory::class)->getSubcategoryIds($catId);
 			foreach ($categoriesIds as $id){
@@ -62,12 +70,13 @@ class ProductUsersService implements ProductUsersInterface {
 			$productIds      = $em->getRepository(Product::class)->findBy( [ 'category' => $catId ] );
 
 			/*----- get product users in product and promotion smallest and equal in current promotion ------- */
-			$productUserIds  = $em->getRepository( ProductUsers::class )
+			$productUserIds  = $productUsersRepository
 			                      ->checkProductUsersIdsByCategoryAndBiggestPromotions( $productIds, $overwritePromotionIds );
 
-			$result = $productUsersRepository->updateProductsSetPromotionCategory( $productUserIds );
+			$result = $productUsersRepository->updateProductsSetPromotionCategory( $promotionId,$productUserIds );
 		} else  {
-			$result = $productUsersRepository->checkProductUsersIdsByCategoryAndBiggestPromotions($overwritePromotionIds);
+			$productUserIds  = $productUsersRepository->checkProductUsersIdsAllCategoryAndBiggestPromotions($overwritePromotionIds);
+			$result = $productUsersRepository->updateProductsSetPromotionCategory( $promotionId,$productUserIds );
 		}
 		return $result;
 	}

@@ -525,6 +525,4 @@ class User implements AdvancedUserInterface, \Serializable {
 		$this->address = $address;
 	}
 
-	
-
 }

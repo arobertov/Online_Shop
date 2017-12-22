@@ -8,32 +8,22 @@
             <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
             <li class="active">Registration</li>
         </ul>
-        <h3> Registration</h3>
+        <h2> Registration</h2>
         <div class="well">
 
-            <h4>Your personal information</h4>
-            {% form_theme form with 'forms/customize_form.html.twig' %}
-               <div class="form">
                 {{ form_start(form) }}
+                   <p>Required field &nbsp;<sup style="color: red">*</sup> </p>
                     {{ form_row(form.username,{'help':' Username must be 3 or more symbols !'}) }}
                     {{ form_row(form.firstName) }}
                     {{ form_row(form.lastName) }}
                     {{ form_row(form.email) }}
                     {{ form_row(form.plainPassword) }}
-                    
-                    <p><sup>*</sup> Required field</p>
+                    {{ form_row(form.address.city) }}
+                    {{ form_row(form.address.shipAddress) }}
+                    {{ form_row(form.address.phoneNumber) }}
 
-                    {{ form_row(form.submit, { 'label': 'Register !' }) }}
+                   <input class="btn btn-large btn-success" type="submit" value="Register !">
                 {{ form_end(form) }}
-               </div>
-
-                <div>
-
-                </div>
-
-
-
-
 
         </div>
     </div>

@@ -25,7 +25,8 @@ class ProductUsersType extends AbstractType
     	if(self::$userRestrict === true) {
 		    $builder
 			    ->add( 'quantity', HiddenType::class )
-			    ->add( 'price', MoneyType::class );
+			    ->add( 'price', MoneyType::class )
+		    ;
 	    }elseif (self::$addQuantity){
     		 $builder
 			     ->add('quantity',IntegerType::class)

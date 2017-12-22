@@ -1,11 +1,24 @@
 {% extends '@App/base.html.twig' %}
 
-{% block body %}
-   <h1>Edit product template</h1>
+ {% block sidebar %}
 
-    {{ form_start(edit_form) }}
-    {{ form_widget(edit_form) }}
-    <input type="submit" value="Edit !">
-    {{ form_end(edit_form) }}
+ {% endblock %}
+
+{% block body %}
+<div class="span11">
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Promotion List</li>
+    </ul>
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
+   <h1>Edit product template</h1>
+   <div class="well">
+        {{ form_start(edit_form) }}
+        {{ form_widget(edit_form) }}
+        <a class="btn btn-large btn-default" href="{{ path('all_products') }}">Cancel</a>
+        <input class="btn btn-large btn-warning" type="submit" value="Edit !">
+        {{ form_end(edit_form) }}
+   </div>
+</div>
 {% endblock %}
 

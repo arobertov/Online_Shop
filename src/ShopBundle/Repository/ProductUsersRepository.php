@@ -44,16 +44,18 @@ class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 		return null;
 	}
 
-	public function findAllCompanyProducts(){
+	public function findAllCompanyProducts($colon = 'p.dateCreated' ,$method = 'DESC' ){
 		$em = $this->getEntityManager();
 		$query = $em->createQuery('SELECT pu , p, pct ,u
 										FROM ShopBundle:ProductUsers pu
 										JOIN pu.product p
 					                    JOIN p.category pct 
 										JOIN pu.user u 
-										WHERE (pu.promotion IS NULL AND u.id = :id ) OR u.id = :id '
+										WHERE (pu.promotion IS NULL AND u.id = :id ) OR u.id = :id 
+										ORDER BY '.$colon.' '.$method
 		);
 		$query ->setParameter('id', $this->getSuperAdminId());
+
 		return $query->getResult();
 	}
 
@@ -72,8 +74,9 @@ class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 
 	public function findOneProduct($id){
 		$em = $this->getEntityManager();
-		$query = $em->createQuery('SELECT pu , p , pct ,u
+		$query = $em->createQuery('SELECT pu ,pr , p , pct ,u
 										FROM ShopBundle:ProductUsers pu
+										JOIN pu.promotion pr
 										JOIN pu.product p
 										JOIN p.category pct 
 										JOIN pu.user u 
@@ -100,7 +103,8 @@ class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 	public function checkProductUsersIdsByCategoryAndBiggestPromotions($productIds = null,$overwritePromotionIds){
 		 $query = $this->em->createQuery('SELECT pu.id 
 											  FROM ShopBundle\Entity\ProductUsers pu
-											  WHERE pu.product IN(:prIds) AND (pu.promotion IN(:overwPrIds) OR pu.promotion IS NULL)
+											  WHERE pu.product IN(:prIds) AND 
+											  (pu.promotion IN(:overwPrIds) OR pu.promotion IS NULL)
 											   '
 		 )->setParameter('prIds',$productIds)
 		 ->setParameter('overwPrIds',$overwritePromotionIds)
@@ -108,12 +112,37 @@ class ProductUsersRepository extends \Doctrine\ORM\EntityRepository
 		 return $query->getResult();
 	}
 
-	public function updateProductsSetPromotionCategory($productUserIds){
+	public function checkProductUsersIdsAllCategoryAndBiggestPromotions($overwritePromotionIds){
+		$query = $this->em->createQuery('SELECT pu.id 
+											  FROM ShopBundle\Entity\ProductUsers pu
+											  WHERE (pu.promotion IN(:overwPrIds) OR pu.promotion IS NULL)
+											   '
+		)->setParameter('overwPrIds',$overwritePromotionIds)
+		;
+		return $query->getResult();
+	}
+
+	public function updateProductsSetPromotionCategory($pId,$productUserIds=null){
 		$query = $this->em->createQuery('UPDATE ShopBundle\Entity\ProductUsers pu
-											 SET pu.promotion = 2
+											 SET pu.promotion = :pid
 											 WHERE pu.id IN (:ids)'
 		);
-		$query->setParameter('ids',$productUserIds);
+		$query ->setParameter('pid',$pId)
+			->setParameter('ids',$productUserIds);
+		return $query->getResult();
+	}
+
+	/**
+	 * @param $catId
+	 *
+	 * @return array
+	 */
+	public function findAllProductByCategory($catId){
+		$query = $this->em->createQuery('SELECT p , pu 
+											  FROM ShopBundle\Entity\ProductUsers pu 
+											  JOIN pu.product p
+											  WHERE p.category = :catId AND pu.user = 1 '
+		)->setParameter('catId',$catId);
 		return $query->getResult();
 	}
 }

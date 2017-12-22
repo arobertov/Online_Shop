@@ -262,4 +262,8 @@ class ProductUsers
     {
         return $this->orders;
     }
+
+    public function isOwner(User $user = null){
+    	return $user == $this->user;
+    }
 }

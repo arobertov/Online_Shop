@@ -1,0 +1,13 @@
+{% if is_granted('ROLE_EDITOR') %}
+<h2>Admin menu</h2>
+<div class="well">
+    <div class="btn-group">
+        <a class="btn btn-large btn-default" href="{{ path('user_manager') }}"> Users </a>
+        <a class="btn btn-large btn-default" href="{{ path('category_index') }}"> Categories </a>
+        <a class="btn btn-large btn-default" href="{{ path('promotion_index') }}"> Promotions </a>
+        <a class="btn btn-large btn-default" href="{{ path('new_products_users') }}"> Products </a>
+        <a class="btn btn-large btn-default" href="{{ path('all_products') }}"> Product Templates </a>
+        <a class="btn btn-large btn-default" href="{{ path('order_index') }}"> Orders </a>
+    </div>
+</div>
+{% endif %}

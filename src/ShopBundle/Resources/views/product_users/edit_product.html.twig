@@ -1,13 +1,28 @@
 {% extends '@App/base.html.twig' %}
 
+{% block sidebar %}
+
+{% endblock %}
+
 {% block body %}
-    <h2>Edit Product</h2>
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
+    
+    <div class="span11">
+        {{ include('@Shop/Default/admin_menu.html.twig') }}
+        <ul class="breadcrumb">
+            <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+            <li class="active">Edit product</li>
+        </ul>
 
-        {{ form_row(form.product.category,{'label':'ddfffd'}) }}
-        
-    <input type="submit" value="Edit :)">
-    {{ form_end(form) }}
-
+        <h2>Edit Product</h2>
+        <div class="well">
+            <h3>{{ product.product.title }}</h3>
+            <p>{{ product.product.description }}</p>
+            <hr class="soft"/>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+                <a class="btn btn-large btn-default" href="{{ path('home_page') }}">Cancel</a>
+                <input class="btn btn-large btn-success" type="submit" value="Edit !">
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}

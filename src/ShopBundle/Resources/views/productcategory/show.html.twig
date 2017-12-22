@@ -1,9 +1,19 @@
 {% extends '@App/base.html.twig' %}
 
-{% block body %}
-    <h1>Productcategory</h1>
+ {% block sidebar %}
 
-    <table>
+ {% endblock %}
+
+{% block body %}
+<div class="span11">
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Category show</li>
+    </ul>
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
+    <h2>Show Category</h2>
+
+    <table class="table-hover">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -11,22 +21,19 @@
             </tr>
             <tr>
                 <th>Name</th>
-                <td>{{ productCategory.name }}</td>
+                <td><strong>{{ productCategory.name }}</strong> </td>
             </tr>
         </tbody>
     </table>
 
-    <ul>
-        <li>
-            <a href="{{ path('category_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('category_edit', { 'id': productCategory.id }) }}">Edit</a>
-        </li>
-        <li>
+            
+            <a class="btn  btn-warning" href="{{ path('category_edit', { 'id': productCategory.id }) }}">Edit !</a>
+            <a class="btn btn-default" href="#">Cancel </a>
+
             {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
+                <input class="btn  btn-danger" type="submit" value="Delete !">
             {{ form_end(delete_form) }}
-        </li>
-    </ul>
+
+    <a href="{{ path('category_index') }}">Back to the list</a>
+</div>
 {% endblock %}

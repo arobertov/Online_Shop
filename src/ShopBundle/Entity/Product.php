@@ -73,6 +73,13 @@ class Product
 	 */
     private $subtotal;
 
+	/**
+	 * @var string
+	 *
+	 * @ORM\Column(name="image", type="string", length=255, nullable=true)
+	 */
+    private $image;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\ProductCategory",inversedBy="products",cascade={"persist"})
@@ -272,7 +279,22 @@ class Product
 		$this->subtotal = $subtotal;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getImage() {
+		return $this->image;
+	}
 
+	/**
+	 * @param string $image
+	 */
+	public function setImage( $image ) {
+		$this->image = $image;
+	}
+
+
+	
     /**
      * Set productToUser
      *

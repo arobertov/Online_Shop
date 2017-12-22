@@ -168,11 +168,9 @@ class Promotion
      *
      * @return string
      */
-    public function getDiscount()
-    {
-    	if($this->discount !== null) {
-		    return $this->discount*100;
-	    } return null;
+    public function getDiscount() {
+
+	    return $this->discount;
     }
 
     /**

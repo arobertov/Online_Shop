@@ -51,7 +51,7 @@ class CartSessionService {
 				// set subtotal
 				if ( $product->getPromotion() !== null ) {
 					$productDiscount =
-						( $product->getPrice() - ( $product->getPrice() * ( $product->getPromotion()->getDiscount() / 100 ) ) );
+						( $product->getPrice() - ( $product->getPrice() * ( $product->getPromotion()->getDiscount() ) ) );
 					$subtotal = (floatval($product->getQuantity()) * $productDiscount);
 				} else {
 					$subtotal = (floatval($product->getQuantity()) * $product->getPrice());

@@ -92,7 +92,7 @@ class PromotionController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('promotion_edit', array('id' => $promotion->getId()));
+            return $this->redirectToRoute('set_promotion', array('id' => $promotion->getId()));
         }
 
         return $this->render('@Shop/promotion/edit.html.twig', array(

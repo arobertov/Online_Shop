@@ -9,34 +9,44 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component
 
 /**
  * Productcategory controller.
- *
- * @Route("category")
+ * @Route("/category")
  */
 class ProductCategoryController extends Controller
 {
-    /**
-     * Lists all productCategory entities.
-     *
-     * @Route("/", name="category_index")
-     * @Method("GET")
-     */
+	/**
+	 * Lists all productCategory entities.
+	 *
+	 * @Route("/", name="category_index")
+	 * @Method("GET")
+	 */
+	public function listAllCategories(){
+		$categories = $this->getDoctrine()->getRepository('ShopBundle:ProductCategory')->findAllCategoriesTree();
+		return $this->render('@Shop/productcategory/index.htm.twig',array(
+			'categories'=>$categories
+		)) ;
+	}
+
+
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
 
-        $productCategories = $em->getRepository('ShopBundle:ProductCategory')->findAll();
+        $productCategories = $em->getRepository('ShopBundle:ProductCategory')->findAllCategoriesTree();
 
-        return $this->render('@Shop/productcategory/index.html.twig', array(
+        return $this->render( '@Shop/productcategory/sidebar.html.twig', array(
             'productCategories' => $productCategories,
         ));
     }
 
-    /**
-     * Creates a new productCategory entity.
-     *
-     * @Route("/new", name="category_new")
-     * @Method({"GET", "POST"})
-     */
+	/**
+	 * Creates a new productCategory entity.
+	 *
+	 * @Route("/new", name="category_new")
+	 * @Method({"GET", "POST"})
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+	 */
     public function newAction(Request $request)
     {
         $productCategory = new Productcategory();
@@ -57,12 +67,15 @@ class ProductCategoryController extends Controller
         ));
     }
 
-    /**
-     * Finds and displays a productCategory entity.
-     *
-     * @Route("/{id}", name="category_show")
-     * @Method("GET")
-     */
+	/**
+	 * Finds and displays a productCategory entity.
+	 *
+	 * @Route("/{id}", name="category_show")
+	 * @Method("GET")
+	 * @param ProductCategory $productCategory
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
     public function showAction(ProductCategory $productCategory)
     {
         $deleteForm = $this->createDeleteForm($productCategory);

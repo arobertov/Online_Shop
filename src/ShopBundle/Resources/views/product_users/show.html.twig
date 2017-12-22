@@ -1,29 +1,95 @@
 {% extends '@App/base.html.twig' %}
 
 {% block body %}
-    <h1>Show product</h1>
-        <h2>{{ product.product.title }}</h2>
-        <div>
-                <p>{{ product.quantity }} items in stock.</p>
-                <p>{{ product.price }}</p>
-                {% if product.promotion %}
-                    <p>{{ product.promotion.discount }} %</p>
-                {% endif %}
-            <form method="post" name="shop_bundle_product_users_type" >
+    <div class="span9">
+    <ul class="breadcrumb">
+        <li><a href="index.html">Home</a> <span class="divider">/</span></li>
+        <li><a href="products.html">Products</a> <span class="divider">/</span></li>
+        <li class="active">product Details</li>
+    </ul>
+    <div class="row">
+    <div id="gallery" class="span3">
+        <a href="#" title="{{ product.product.title }}">
+            <img src="{{ asset('themes/my_images/'~product.product.image) }}" style="width:100%"
+                 alt="{{ product.product.title }}"/>
+        </a>
+        <div id="differentview" class="moreOptopm carousel slide">
+            <div class="carousel-inner">
+                <div class="item active">
+                    <a href="themes/images/products/large/f1.jpg"> <img style="width:29%"
+                                                                        src="themes/images/products/large/f1.jpg"
+                                                                        alt=""/></a>
+                    <a href="themes/images/products/large/f2.jpg"> <img style="width:29%"
+                                                                        src="themes/images/products/large/f2.jpg"
+                                                                        alt=""/></a>
+                    <a href="themes/images/products/large/f3.jpg"> <img style="width:29%"
+                                                                        src="themes/images/products/large/f3.jpg"
+                                                                        alt=""/></a>
+                </div>
+                <div class="item">
+                    <a href="themes/images/products/large/f3.jpg"> <img style="width:29%"
+                                                                        src="themes/images/products/large/f3.jpg"
+                                                                        alt=""/></a>
+                    <a href="themes/images/products/large/f1.jpg"> <img style="width:29%"
+                                                                        src="themes/images/products/large/f1.jpg"
+                                                                        alt=""/></a>
+                    <a href="themes/images/products/large/f2.jpg"> <img style="width:29%"
+                                                                        src="themes/images/products/large/f2.jpg"
+                                                                        alt=""/></a>
+                </div>
+            </div>
+            <!--
+            <a class="left carousel-control" href="#myCarousel" data-slide="prev">‹</a>
+            <a class="right carousel-control" href="#myCarousel" data-slide="next">›</a>
+            -->
+        </div>
+
+        <div class="btn-toolbar">
+            
+        </div>
+    </div>
+    <div class="span6">
+        <h3>{{ product.product.title }} </h3>
+        <small>- {{ product.product.description }}</small>
+        <hr class="soft"/>
+        <form method="post" class="form-horizontal qtyFrm" name="shop_bundle_product_users_type">
+            <div class="control-group">
                 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     {{ form_row(form.hasSell) }}
                 {% else %}
                     {{ form_widget(form.hasSell,{'attr':{'hidden':'hidden'}}) }}
                 {% endif %}
-                 <input type="number" id="shop_bundle_product_users_type_quantity"
-                        name="shop_bundle_product_users_type[quantity]" required="required"
-                        value="1" min="1" max="{{ product.quantity }}"/>
+            <hr class="soft"/>
 
-                {{ form_row(form.price) }}
+                <label class="control-label"><span>{{ product.price }} &euro;</span></label>
+                <div class="controls">
 
-                {{ form_row(form._token) }}
-                <input type="submit" value="Buy now !"/>
-            </form>
+                    <input type="number" class="span1" placeholder="Qty."
+                           id="shop_bundle_product_users_type_quantity"
+                           name="shop_bundle_product_users_type[quantity]" required="required"
+                           value="1" min="1" max="{{ product.quantity }}"
+                    />
+                    {{ form_row(form.price) }}
 
-        </div>
+                    {{ form_row(form._token) }}
+                    <button type="submit" class="btn btn-large btn-primary pull-right"> Add to cart <i
+                                class=" icon-shopping-cart"></i></button>
+                </div>
+            </div>
+        </form>
+
+        <hr class="soft"/>
+        <h4>{{ product.quantity }} items in stock</h4>
+
+        <hr class="soft clr"/>
+        <p>
+            {{ product.product.features }}
+        </p>
+        <a class="btn btn-small pull-right" href="#detail">More Details</a>
+        <br class="clr"/>
+        <a href="#" name="detail"></a>
+
+        <hr class="soft"/>
+    </div>
+    
 {% endblock %}

@@ -1,0 +1,29 @@
+{% extends '@App/base.html.twig' %}
+
+{% block sidebar %}
+
+{% endblock %}
+
+{% block body %}
+<div class="span11">
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">List All Category</li>
+    </ul>
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
+    <h2>List All Category</h2>
+        <div class="well" >
+        {% import '@Shop/productcategory/index_macros.twig'  as m %}
+        {{ m.tree(categories) }}
+    </div>
+    <a class="btn btn-warning" href="{{ path('category_new') }}">Add New Category :)</a>
+</div>
+    <style>
+        td{
+            padding: 10px 0px;
+        }
+    </style>
+{% endblock %}
+
+
+

@@ -70,10 +70,15 @@ class UserType extends AbstractType
                     )
                 ))
                 ->add('is_active', CheckboxType::class, array(
-                    'label' => 'Activate User:', 'required' => false
-                ));
+                    'label' => 'Activate User:',
+                    'required' => false
+                ))
+	            ->add('isNotLocked',CheckboxType::class,array(
+	            	'label' =>'Not Locked User' ,
+		            'required'=> false
+	            ))
+            ;
         }
-        $builder->add('submit', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

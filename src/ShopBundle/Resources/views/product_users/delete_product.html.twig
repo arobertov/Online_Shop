@@ -1,12 +1,23 @@
 {% extends '@App/base.html.twig' %}
 
+{% block sidebar %}
+
+{% endblock %}
+
 {% block body %}
+<div class="span11">
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Delete product</li>
+    </ul>
 
 <h1>Delete product</h1>
 
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <input type="submit" value="Delete product !">
+    <a class="btn btn-large btn-default" href="{{ path('home_page') }}">Cancel</a>
+    <input class="btn btn-large btn-danger" type="submit" value="Delete product !">
 {{ form_end(form) }}
 
 {% endblock %}

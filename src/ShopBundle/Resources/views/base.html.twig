@@ -88,8 +88,9 @@
                     {% if is_granted('ROLE_ADMIN') %}
                         <li><a href="{{ path('user_manager') }}">Users</a></li>
                     {% endif %}
-                    <li><a href="{{ path('article_index') }}">Blog</a></li>
-                    <li class=""><a href="contact.html">Contact</a></li>
+                    {% if is_granted('ROLE_EDITOR') %}
+                        <li><a href="{{ path('admin_panel') }}">Admin panel</a></li>
+                    {% endif %}
                     <li class="">
                         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                             <a href="{{ path('logout') }}" ><span class="btn btn-large btn-success">Logout</span></a>

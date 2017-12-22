@@ -7,6 +7,7 @@ use ShopBundle\Entity\ProductUsers;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -27,6 +28,9 @@ class ProductType extends AbstractType
             ->add('information', TextareaType::class, array(
                 'required' => false
             ))
+	        ->add('image',FileType::class,array(
+	        	'required'=>false
+	        ))
             ->add('rating', IntegerType::class,array(
             	'required' => false
             ))
@@ -42,7 +46,7 @@ class ProductType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-
+	      $resolver->setDefault('data_class','ShopBundle\Entity\Product');
     }
 
     public function getBlockPrefix()

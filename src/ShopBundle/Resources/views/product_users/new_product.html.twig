@@ -1,13 +1,27 @@
 {% extends '@App/base.html.twig' %}
 
-{% block body %}
+{% block sidebar %}
 
+{% endblock %}
+
+{% block body %}
+    <div class="span11">
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Add new product</li>
+    </ul>
+
+    <h1>Add new product </h1>
+    <div class="well">
     {{ form_start(form) }}
+
         {{ form_row(form.product) }}
         {{ form_row(form.quantity) }}
         {{ form_row(form.price) }}
         {{ form_row(form.promotion) }}
-        <input type="submit" name="Save">
+        <input class="btn btn-large btn-success" type="submit" value="Add product !" />
     {{ form_end(form) }}
+    </div>
 
 {% endblock %}

@@ -1,6 +1,19 @@
 {% extends '@App/base.html.twig' %}
+{% block sidebar %}
+
+{% endblock %}
 
 {% block body %}
-<h1>Result</h1>
-{{dump(result) }}
+<div class="span11">
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Category edit</li>
+    </ul>
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
+    <div class="well">
+        <p> {{ result }} products be updated</p>
+    </div>
+    <a href=""></a>
+</div>
+
 {% endblock %}

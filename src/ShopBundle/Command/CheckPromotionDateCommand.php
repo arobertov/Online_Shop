@@ -51,7 +51,7 @@ class CheckPromotionDateCommand extends ContainerAwareCommand {
 
 		$this->promotionService->checkPromotionDate();
 		$inactivePromotionIds = $this->promotionService->findInactivePromotion();
-		$this->productUsersService->removeInactivePromotion($inactivePromotionIda);
+		$this->productUsersService->removeInactivePromotion($inactivePromotionIds);
 
 	    $output->write('OK');
 	}

@@ -1,21 +1,26 @@
 {% extends '@basic/base.html.twig' %}
-{% block carousel %}
+
+{% block sidebar %}
+
 {% endblock %}
+
 {% block body %}
-    <div class="span9">
+    <div class="span11">
+        {{ include('@Shop/Default/admin_menu.html.twig') }}
         <ul class="breadcrumb">
             <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
             <li class="active">All_user</li>
         </ul>
-        <div class="well">
-
-            <h3> Preview all users</h3>
-            <table border="1">
+        <h2> Preview all users</h2>
+        <div class="container">
+                <h3>Users</h3>
+            <table class="table table-hover">
                 <thead>
                 <tr>
                     <th>Username</th>
                     <th>Email</th>
                     <th>User is active</th>
+                    <th>Banned user</th>
                     <th>User Role</th>
                     <th>Action</th>
                 </tr>
@@ -33,19 +38,26 @@
                             {% endif %}
                         </td>
                         <td>
+                            {% if user.isNotLocked %}
+                                No
+                            {% else %}
+                                Yes
+                            {% endif %}
+                        </td>
+                        <td>
                             {% for userRole in user.roles %}
                                 {{ userRole }}
                             {% endfor %}
                         </td>
                         <td>
-                            <a href="{{ path('user_edit',{'id':user.id}) }}">Edit!</a>
-                            <a href="{{ path('user_delete',{'id':user.id}) }}">Delete!</a>
+                            <a class="btn btn-warning" href="{{ path('user_edit',{'id':user.id}) }}">Edit!</a>
+                            <a class="btn btn-danger" href="{{ path('user_delete',{'id':user.id}) }}">Delete!</a>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
-            <p><a href="{{ path('create_role') }}">Add new role</a></p>
+            <p><a class="btn  btn-warning" href="{{ path('create_role') }}">Add new role</a></p>
         </div>
     </div>
 

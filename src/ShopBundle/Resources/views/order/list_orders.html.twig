@@ -1,0 +1,61 @@
+{% extends '@App/base.html.twig' %}
+
+{% block sidebar %}
+
+{% endblock %}
+
+{% block body %}
+    <div class="span11">
+        <ul class="breadcrumb">
+            <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+            <li class="active">Orders List</li>
+        </ul>
+        {{ include('@Shop/Default/admin_menu.html.twig') }}
+        <table class="table-hover">
+            <thead>
+            <tr>
+                <th>Order Id</th>
+                <th>Username</th>
+                <th>Firs Name</th>
+                <th>Last Name</th>
+                <th>Ship City</th>
+                <th>Ship Address</th>
+                <th>Order Phone</th>
+                <th>Order Email</th>
+                <th>Order Date</th>
+                <th>Customer IP Address</th>
+                <th>Order Status</th>
+                <th>Order Total</th>
+            </tr>
+            </thead>
+            <tbody>
+        {% for order in orders  %}
+             <tr>
+                 <td><a href="{{ path('order_show',{'id':order.id}) }}">{{ order.id }}</a></td>
+                 <td>{% if order.user %}
+                         {{ order.user.username }}
+                     {% else %}
+                         Unregistred 
+                     {% endif %}
+                 </td>
+                 <td>{{ order.firstName }}</td>
+                 <td>{{ order.lastName }}</td>
+                 <td>{{ order.shipCity }}</td>
+                 <td>{{ order.shipAddress }}</td>
+                 <td>{{ order.orderPhone }}</td>
+                 <td>{{ order.orderEmail }}</td>
+                 <td>{{ order.orderDate|date('Y-m-d H:i:s') }}</td>
+                 <td>{{ order.clientIpAddress }}</td>
+                 <td>{{ order.status }}</td>
+                 <td>{{ order.totalAmount }}</td>
+             </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <style>
+        td{
+            padding: 3px 15px;
+        }
+    </style>
+{% endblock %}

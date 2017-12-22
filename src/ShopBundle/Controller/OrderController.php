@@ -17,6 +17,21 @@ use Symfony\Component\HttpFoundation\Session\Session;
  * @Route("/order")
  */
 class OrderController extends Controller {
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 *
+	 * @Route("/",name="order_index")
+	 */
+	public function indexOrderAction(){
+		$em = $this->getDoctrine()->getManager();
+		$orders = $em->getRepository(Order::class)->findAllOrders();
+		return $this->render('@Shop/order/list_orders.html.twig',array(
+			'orders'=>$orders
+		));
+
+	}
+
 	/**
 	 * @param Request $request
 	 *
@@ -35,14 +50,10 @@ class OrderController extends Controller {
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-
 			$id = $orderService->createOrder( $order, $user, $request );
-			if (null !== $order->getUser()->getId()) {
-				$uId = $order->getUser()->getId();
-			}
 		  return $this->redirectToRoute('order_show',array(
 		  	 'id'=>$id ,
-			 'uid'=>$uId
+			 'uid'=> null === $order->getUser() ? null: $order->getUser()->getId()
 		  ));
 		}
 
@@ -98,6 +109,9 @@ class OrderController extends Controller {
 	{
 		$session = new Session();
 		if (count($session->get('cart')) > 0) {
+			if(count($session->get('cart')) == 1){
+				$session->remove('total');
+			}
 			$arr = $session->get('cart');
 			unset($arr[$id]);
 			$session->set('cart', $arr);

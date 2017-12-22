@@ -1,21 +1,29 @@
 {% extends '@App/base.html.twig' %}
 
+{% block sidebar %}
+
+{% endblock %}
+
 {% block body %}
-    <h1>Promotion edit</h1>
-
-    {{ form_start(edit_form) }}
-        {{ form_widget(edit_form) }}
-        <input type="submit" value="Edit" />
-    {{ form_end(edit_form) }}
-
-    <ul>
-        <li>
-            <a href="{{ path('promotion_index') }}">Back to the list</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
+<div class="span11">
+    <ul class="breadcrumb">
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li class="active">Promotion edit</li>
     </ul>
+    {{ include('@Shop/Default/admin_menu.html.twig') }}
+
+    <h1>Promotion edit</h1>
+    <div class="well">
+        {{ form_start(edit_form) }}
+            {{ form_widget(edit_form) }}
+            <input class="btn btn-success" type="submit" value="Edit" />
+        {{ form_end(edit_form) }}
+        {{ form_start(delete_form) }}
+        <input class="btn btn-danger" type="submit" value="Delete">
+        {{ form_end(delete_form) }}
+    </div>
+
+    <a class="arrow" href="{{ path('promotion_index') }}">Back to the list</a>
+
+</div>
 {% endblock %}
