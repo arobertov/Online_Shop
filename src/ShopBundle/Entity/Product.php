@@ -4,9 +4,8 @@ namespace ShopBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use ShopBundle\Entity\ProductUsers;
-use ShopBundle\Entity\Promotion;
 use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Product
@@ -27,13 +26,36 @@ class Product
 
     /**
      * @var string
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 255,
+     *      minMessage = "Product title must be at least {{ limit }} characters long",
+     *      maxMessage = "Product title cannot be longer than {{ limit }} characters"
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
      *
+     * )
      * @ORM\Column(name="title", type="string", length=255)
      */
     private $title;
 
     /**
      * @var string
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 255,
+     *      minMessage = "Product description must be at least {{ limit }} characters long",
+     *      maxMessage = "Product description be longer than {{ limit }} characters"
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
      *
      * @ORM\Column(name="description", type="string", length=255)
      */
@@ -287,7 +309,7 @@ class Product
 	}
 
 	/**
-	 * @param string $image
+	 * @param $image
 	 */
 	public function setImage( $image ) {
 		$this->image = $image;

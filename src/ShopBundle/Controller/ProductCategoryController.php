@@ -3,38 +3,55 @@
 namespace ShopBundle\Controller;
 
 use ShopBundle\Entity\ProductCategory;
+use ShopBundle\Services\ProductCategoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Productcategory controller.
+ * ProductCategory controller.
  * @Route("/category")
  */
 class ProductCategoryController extends Controller
 {
+	/**
+	 * @var ProductCategoryInterface $productCategoryService
+	 */
+	private $productCategoryService;
+
+	/**
+	 * ProductCategoryController constructor.
+	 *
+	 * @param ProductCategoryInterface $productCategoryService
+	 */
+	public function __construct( ProductCategoryInterface $productCategoryService ) {
+		$this->productCategoryService = $productCategoryService;
+	}
+
+
 	/**
 	 * Lists all productCategory entities.
 	 *
 	 * @Route("/", name="category_index")
 	 * @Method("GET")
 	 */
-	public function listAllCategories(){
+	public function listAllCategories()
+	{
 		$categories = $this->getDoctrine()->getRepository('ShopBundle:ProductCategory')->findAllCategoriesTree();
 		return $this->render('@Shop/productcategory/index.htm.twig',array(
 			'categories'=>$categories
 		)) ;
 	}
 
-
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $productCategories = $em->getRepository('ShopBundle:ProductCategory')->findAllCategoriesTree();
+	    $tree = $this->productCategoryService->getCategoryTreeJoinProduct();
 
         return $this->render( '@Shop/productcategory/sidebar.html.twig', array(
-            'productCategories' => $productCategories,
+            'tree' => $tree,
         ));
     }
 
@@ -58,7 +75,7 @@ class ProductCategoryController extends Controller
             $em->persist($productCategory);
             $em->flush();
 
-            return $this->redirectToRoute('category_show', array('id' => $productCategory->getId()));
+            return $this->redirectToRoute('category_index', array('id' => $productCategory->getId()));
         }
 
         return $this->render('@Shop/productcategory/new.html.twig', array(

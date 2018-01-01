@@ -5,6 +5,7 @@ namespace ShopBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use ShopBundle\Entity\Product;
+use ShopBundle\Entity\ProductCategory;
 
 /**
  * Promotion
@@ -166,9 +167,9 @@ class Promotion
     /**
      * Get discount
      *
-     * @return string
+     * @return string|null
      */
-    public function getDiscount() {
+    public function getDiscount(): ?string {
 
 	    return $this->discount;
     }
@@ -284,11 +285,11 @@ class Promotion
     /**
      * Set productCategory
      *
-     * @param \ShopBundle\Entity\ProductCategory $productCategory
+     * @param ProductCategory $productCategory
      *
      * @return Promotion
      */
-    public function setProductCategory(\ShopBundle\Entity\ProductCategory $productCategory = null)
+    public function setProductCategory( ProductCategory $productCategory = null)
     {
         $this->productCategory = $productCategory;
 
@@ -298,7 +299,7 @@ class Promotion
     /**
      * Get productCategory
      *
-     * @return \ShopBundle\Entity\ProductCategory
+     * @return ProductCategory
      */
     public function getProductCategory()
     {

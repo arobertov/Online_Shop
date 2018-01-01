@@ -2,7 +2,6 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\UserAddress;
 use BlogBundle\Entity\Article;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -54,19 +53,8 @@ class User implements AdvancedUserInterface, \Serializable {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="first_name",type="string",length=255)
+	 * @ORM\Column(name="first_name",type="string",length=255 ,nullable=true)
 	 *
-	 * @Assert\NotBlank()
-	 * @Assert\Length(
-	 *      min = 3,
-	 *      max = 30,
-	 *      minMessage = "Your first name must be at least {{ limit }} characters long",
-	 *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
-	 * )
-	 * @Assert\Type(
-	 *     type="string",
-	 *     message="The value {{ value }} is not a valid {{ type }}."
-	 * )
 	 */
 	private $firstName;
 
@@ -74,19 +62,8 @@ class User implements AdvancedUserInterface, \Serializable {
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="last_name",type="string",length=255)
+	 * @ORM\Column(name="last_name",type="string",length=255 ,nullable=true)
 	 *
-	 * @Assert\NotBlank()
-	 * @Assert\Length(
-	 *      min = 3,
-	 *      max = 30,
-	 *      minMessage = "Your last name must be at least {{ limit }} characters long",
-	 *      maxMessage = "Your last name cannot be longer than {{ limit }} characters"
-	 * )
-	 * @Assert\Type(
-	 *     type="string",
-	 *     message="The value {{ value }} is not a valid {{ type }}."
-	 * )
 	 */
 	private $lastName;
 

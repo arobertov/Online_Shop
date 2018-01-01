@@ -5,19 +5,17 @@
                 [ {{ app.session.get('cart')|length}} ] Items in your cart
             {% else %}
                 [ {{ app.session.get('cart')|length}} ]  Item in your cart
-            {% endif %}
-
-            
+            {% endif %} </a>
     </div>
 
-
-{% import '@Shop/productcategory/sidebar_macros.twig'  as m %}
-    {{ m.tree(productCategories) }}
+    <ul id="sideManu" class="nav nav-tabs nav-stacked">
+       {{ tree|raw }}
+    </ul>
 
     <br/>
    <div class="well well-small">
        <ul>
-           <li><a href="{{ path('users_products') }}"><i class="icon-chevron-right"></i>Products own users</a></li>
+           <li><a href="{{ path('users_products') }}"><i class="icon-chevron-right"></i>Products our users</a></li>
        </ul>
    </div>
 

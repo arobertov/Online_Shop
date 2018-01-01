@@ -9,8 +9,17 @@
 namespace ShopBundle\Services;
 
 
+use ShopBundle\Entity\ProductUsers;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 interface ProductServiceInterface {
-	  public function fileUploader(UploadedFile $file);
+
+	/**
+	 * @param ProductUsers $productUsers
+	 *
+	 * @return mixed
+	 */
+	public function uploadedFile(ProductUsers $productUsers);
+
+
 }

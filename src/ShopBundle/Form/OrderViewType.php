@@ -10,10 +10,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class OrderViewType extends AbstractType {
 	public function buildForm( FormBuilderInterface $builder, array $options ) {
-		$builder ->add('choise',ChoiceType::class,array(
+		$builder ->add('choice',ChoiceType::class,array(
 			 'choices'=>array(
-			 	'Priduct name A - Z'=>'p.title-ASC',
-				 'Priduct name Z - A'=>'p.title-DESC',
+			 	'Product name A - Z'=>'p.title-ASC',
+				 'Product name Z - A'=>'p.title-DESC',
 				 'Price Lowest first'=>'pu.price-ASC',
 				 'Price Biggest first'=>'pu.price-DESC'
 			 )))

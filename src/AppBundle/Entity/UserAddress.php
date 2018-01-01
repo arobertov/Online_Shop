@@ -2,9 +2,8 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\User;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * UserAddress
@@ -28,6 +27,17 @@ class UserAddress
     /**
      * @var string
      *
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 40,
+     *      minMessage = "Your city must be at least {{ limit }} characters long",
+     *      maxMessage = "Your city cannot be longer than {{ limit }} characters"
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
      * @ORM\Column(name="City", type="string", length=100)
      */
     private $city;
@@ -35,14 +45,34 @@ class UserAddress
     /**
      * @var string
      *
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 150,
+     *      minMessage = "Your address must be at least {{ limit }} characters long",
+     *      maxMessage = "Your address cannot be longer than {{ limit }} characters"
+     * )
+     * @Assert\Type(
+     *     type="string",
+     *     message="The value {{ value }} is not a valid {{ type }}."
+     * )
+     *
      * @ORM\Column(name="shipAddress", type="string", length=255)
      */
     private $shipAddress;
 
     /**
      * @var string
+     * 
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *      min = 4,
+     *      max = 20,
+     *      minMessage = "Your phone number must be at least {{ limit }} characters long",
+     *      maxMessage = "Your phone number cannot be longer than {{ limit }} characters"
+     * )
      *
-     * @ORM\Column(name="phoneNumber", type="string", length=255)
+     * @ORM\Column(name="phoneNumber", type="string", length=100)
      */
     private $phoneNumber;
 

@@ -1,40 +1,44 @@
 {% extends '@App/base.html.twig' %}
 
+{% block title %}
+    <title>{{ product.product.title }}</title>
+{% endblock %}
+
 {% block body %}
     <div class="span9">
     <ul class="breadcrumb">
-        <li><a href="index.html">Home</a> <span class="divider">/</span></li>
-        <li><a href="products.html">Products</a> <span class="divider">/</span></li>
+        <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
+        <li><a href="{{ path('home_page') }}">Products</a> <span class="divider">/</span></li>
         <li class="active">product Details</li>
     </ul>
     <div class="row">
     <div id="gallery" class="span3">
-        <a href="#" title="{{ product.product.title }}">
+        <a href="{{ asset('themes/my_images/'~product.product.image) }}" title="{{ product.product.title }}">
             <img src="{{ asset('themes/my_images/'~product.product.image) }}" style="width:100%"
                  alt="{{ product.product.title }}"/>
         </a>
         <div id="differentview" class="moreOptopm carousel slide">
             <div class="carousel-inner">
                 <div class="item active">
-                    <a href="themes/images/products/large/f1.jpg"> <img style="width:29%"
-                                                                        src="themes/images/products/large/f1.jpg"
+                    <a href="{{ asset('themes/my_images/'~product.product.image) }}"> <img style="width:29%"
+                                                                        src="{{ asset('themes/my_images/'~product.product.image) }}"
                                                                         alt=""/></a>
-                    <a href="themes/images/products/large/f2.jpg"> <img style="width:29%"
-                                                                        src="themes/images/products/large/f2.jpg"
+                    <a href="{{ asset('themes/my_images/2cd4a172932160f64fa370052727133c.jpeg') }}"> <img style="width:29%"
+                                                                        src="{{ asset('themes/my_images/2cd4a172932160f64fa370052727133c.jpeg') }}"
                                                                         alt=""/></a>
-                    <a href="themes/images/products/large/f3.jpg"> <img style="width:29%"
-                                                                        src="themes/images/products/large/f3.jpg"
+                    <a href="{{ asset('themes/my_images/3e071f35e49dcffaae97f2a8faf9c24c.jpeg') }}"> <img style="width:29%"
+                                                                        src="{{ asset('themes/my_images/3e071f35e49dcffaae97f2a8faf9c24c.jpeg') }}"
                                                                         alt=""/></a>
                 </div>
                 <div class="item">
-                    <a href="themes/images/products/large/f3.jpg"> <img style="width:29%"
-                                                                        src="themes/images/products/large/f3.jpg"
+                    <a href="{{ asset('themes/my_images/'~product.product.image) }}"> <img style="width:29%"
+                                                                        src="{{ asset('themes/my_images/'~product.product.image) }}"
                                                                         alt=""/></a>
-                    <a href="themes/images/products/large/f1.jpg"> <img style="width:29%"
-                                                                        src="themes/images/products/large/f1.jpg"
+                    <a href="{{ asset('themes/my_images/2cd4a172932160f64fa370052727133c.jpeg') }}"> <img style="width:29%"
+                                                                        src="{{ asset('themes/my_images/2cd4a172932160f64fa370052727133c.jpeg') }}"
                                                                         alt=""/></a>
-                    <a href="themes/images/products/large/f2.jpg"> <img style="width:29%"
-                                                                        src="themes/images/products/large/f2.jpg"
+                    <a href="{{ asset('themes/my_images/3e071f35e49dcffaae97f2a8faf9c24c.jpeg') }}"> <img style="width:29%"
+                                                                        src="{{ asset('themes/my_images/3e071f35e49dcffaae97f2a8faf9c24c.jpeg') }}"
                                                                         alt=""/></a>
                 </div>
             </div>

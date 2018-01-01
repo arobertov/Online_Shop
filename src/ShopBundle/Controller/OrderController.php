@@ -2,10 +2,12 @@
 
 namespace ShopBundle\Controller;
 
+use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use ShopBundle\Entity\Order;
+use ShopBundle\Repository\OrderRepository;
 use ShopBundle\Services\CartSessionService;
-use ShopBundle\Services\OrderProductService;
+use ShopBundle\Services\OrderServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -19,13 +21,34 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class OrderController extends Controller {
 
 	/**
+	 * @var OrderRepository $orderRepository
+	 */
+	private $orderRepository;
+
+	/**
+	 * @var OrderServiceInterface $orderService
+	 */
+	private $orderService;
+
+	/**
+	 * OrderController constructor.
+	 *
+	 * @param OrderRepository $orderRepository
+	 */
+	public function __construct( OrderRepository $orderRepository ,OrderServiceInterface $orderService) {
+		$this->orderRepository = $orderRepository;
+		$this->orderService = $orderService;
+	}
+
+
+	/**
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 *
 	 * @Route("/",name="order_index")
 	 */
 	public function indexOrderAction(){
-		$em = $this->getDoctrine()->getManager();
-		$orders = $em->getRepository(Order::class)->findAllOrders();
+
+		$orders = $this->orderRepository->findAllOrders();
 		return $this->render('@Shop/order/list_orders.html.twig',array(
 			'orders'=>$orders
 		));
@@ -37,20 +60,22 @@ class OrderController extends Controller {
 	 *
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
 	 * @Route("/create_order",name="add_order")
+	 *
 	 */
 	public function createOrderAction( Request $request ) {
 		$order = new Order();
-		$orderService = $this->get( OrderProductService::class );
-		//************** //
 		$user = $this->getUser();
 		if(isset($user)){
-			$order = $orderService->setOrderItemWithUserRegister($order,$user);
+			try {
+				$order = $this->orderService->setOrderItemWithUserRegister( $order, $user );
+			} catch ( NonUniqueResultException $e ) {
+			}
 		}
 		$form   = $this->createForm( 'ShopBundle\Form\OrderType', $order );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			$id = $orderService->createOrder( $order, $user, $request );
+			$id = $this->orderService->createOrder( $order, $user, $request );
 		  return $this->redirectToRoute('order_show',array(
 		  	 'id'=>$id ,
 			 'uid'=> null === $order->getUser() ? null: $order->getUser()->getId()
@@ -75,12 +100,11 @@ class OrderController extends Controller {
 	 */
 	public function showMyOrder($id, Request $request){
 		$uId = $request->get('uid');
-		$orderService = $this->get( OrderProductService::class );
 		$em = $this->getDoctrine()->getManager();
 		if(isset($uId)){
-			$order = $em->getRepository(Order::class)->findOneOrderJoinProducts($id);
+			$order = $this->orderRepository->findOneOrderJoinProducts($id);
 		} else
-			$order = $em->getRepository(Order::class)->findOneOrderUserIsNullJoinProducts($id);
+			$order = $this->orderRepository->findOneOrderUserIsNullJoinProducts($id);
 		return $this->render('@Shop/order/order_details.html.twig',array(
 			'order'=>$order
 		));

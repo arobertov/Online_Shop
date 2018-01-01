@@ -3,11 +3,10 @@
 namespace ShopBundle\Entity;
 
 use AppBundle\Entity\User;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ShopBundle\Entity\Order;
-use ShopBundle\Entity\Promotion;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * productUsers
@@ -28,7 +27,7 @@ class ProductUsers
 
     /**
      * @var int
-     *
+     * @Assert\NotBlank()
      * @ORM\Column(name="quantity", type="integer")
      */
     private $quantity;
@@ -39,6 +38,11 @@ class ProductUsers
      * @ORM\Column(name="price", type="decimal", precision=8, scale=2)
      */
     private $price;
+
+	/**
+	 * @var float
+	 */
+    private $priceDiscount;
 
 	/**
 	 * @var bool
@@ -79,7 +83,7 @@ class ProductUsers
 	/**
 	 * Constructor
 	 */
-	public function __construct()
+	public function __construct( )
 	{
 		$this->hasSell = false;
 	}
@@ -89,7 +93,7 @@ class ProductUsers
      *
      * @return int
      */
-    public function getId()
+    public function getId():?int
     {
         return $this->id;
     }
@@ -101,7 +105,7 @@ class ProductUsers
      *
      * @return ProductUsers
      */
-    public function setQuantity($quantity)
+    public function setQuantity($quantity):?ProductUsers
     {
         $this->quantity = $quantity;
 
@@ -113,7 +117,7 @@ class ProductUsers
      *
      * @return int
      */
-    public function getQuantity()
+    public function getQuantity():?int
     {
         return $this->quantity;
     }
@@ -125,7 +129,7 @@ class ProductUsers
      *
      * @return ProductUsers
      */
-    public function setPrice($price)
+    public function setPrice($price):?ProductUsers
     {
         $this->price = $price;
 
@@ -137,7 +141,7 @@ class ProductUsers
      *
      * @return string
      */
-    public function getPrice()
+    public function getPrice():?string
     {
         return $this->price;
     }
@@ -149,7 +153,7 @@ class ProductUsers
      *
      * @return ProductUsers
      */
-    public function setProduct(Product $product = null)
+    public function setProduct(Product $product = null):?ProductUsers
     {
         $this->product = $product;
 
@@ -161,15 +165,26 @@ class ProductUsers
      *
      * @return Product
      */
-    public function getProduct()
+    public function getProduct():?Product
     {
         return $this->product;
     }
 
 	/**
+	 * @return float
+	 */
+	public function getPriceDiscount():?float
+	{
+		$price = $this->getPrice();
+		$discount = $this->getPromotion()->getDiscount();
+		return ($price - ($price * $discount));
+	}
+
+	
+	/**
 	 * @return bool
 	 */
-	public function isHasSell() {
+	public function isHasSell():?bool {
 		return $this->hasSell;
 	}
 
@@ -210,13 +225,12 @@ class ProductUsers
      *
      * @param Promotion $promotion
      *
-     * @return ProductUsers
+     *
      */
-    public function setPromotion( Promotion $promotion = null)
+    public function setPromotion( Promotion $promotion = null): void
     {
         $this->promotion = $promotion;
 
-        return $this;
     }
 
     /**
@@ -224,7 +238,7 @@ class ProductUsers
      *
      * @return Promotion
      */
-    public function getPromotion()
+    public function getPromotion():?Promotion
     {
         return $this->promotion;
     }
@@ -232,11 +246,11 @@ class ProductUsers
     /**
      * Add order
      *
-     * @param \ShopBundle\Entity\Order $order
+     * @param Order $order
      *
      * @return ProductUsers
      */
-    public function addOrder(\ShopBundle\Entity\Order $order)
+    public function addOrder( Order $order):?ProductUsers
     {
         $this->orders[] = $order;
 
@@ -246,9 +260,9 @@ class ProductUsers
     /**
      * Remove order
      *
-     * @param \ShopBundle\Entity\Order $order
+     * @param Order $order
      */
-    public function removeOrder(\ShopBundle\Entity\Order $order)
+    public function removeOrder( Order $order):void
     {
         $this->orders->removeElement($order);
     }
@@ -256,14 +270,20 @@ class ProductUsers
     /**
      * Get orders
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
-    public function getOrders()
+    public function getOrders():?Collection
     {
         return $this->orders;
     }
 
-    public function isOwner(User $user = null){
+	/**
+	 * @param User|null $user
+	 *
+	 * @return bool
+	 */
+    public function isOwner(User $user = null):bool
+    {
     	return $user == $this->user;
     }
 }

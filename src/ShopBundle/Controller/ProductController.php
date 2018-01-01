@@ -2,18 +2,13 @@
 
 namespace ShopBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use ShopBundle\Entity\Cart;
 use ShopBundle\Entity\Product;
-use ShopBundle\Entity\ProductUsers;
-use ShopBundle\Form\CartType;
 use ShopBundle\Form\ProductType;
-use ShopBundle\Repository\ProductRepository;
-use ShopBundle\Services\CartSessionService;
+use ShopBundle\Services\ProductServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Class ProductController
@@ -24,12 +19,32 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class ProductController extends Controller
 {
 	/**
+	 * @var EntityManagerInterface $em
+	 */
+	private $em;
+
+	/**
+	 * @var ProductServiceInterface $productService
+	 */
+	private $productService;
+
+	/**
+	 * ProductController constructor.
+	 *
+	 * @param EntityManagerInterface $em
+	 */
+	public function __construct( EntityManagerInterface $em ,ProductServiceInterface $product_service ) {
+		$this->em = $em;
+		$this->productService = $product_service;
+	}
+
+
+	/**
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @Route("/all_products",name="all_products")
 	 */
 	public function indexAction(){
-		$em = $this->getDoctrine()->getManager();
-		$products = $em->getRepository(Product::class)->findAll();
+		$products = $this->em->getRepository(Product::class)->findAll();
 		return $this->render('@Shop/product/list_all_products.html.twig',array(
 			'products'=> $products
 		));
@@ -78,10 +93,9 @@ class ProductController extends Controller
 	public function deleteAction(Product $product,Request $request){
 		$form = $this->createForm(ProductType::class,$product);
 		$form->handleRequest($request);
-		$em = $this->getDoctrine()->getManager();
 		if($form->isSubmitted() && $form->isValid()){
-		 	$em->remove($product);
-		 	$em->flush();
+		 	$this->em->remove($product);
+		 	$this->em->flush();
 		 	$this->redirectToRoute('all_products') ;
 		}
 		return $this->render('@Shop/product/delete_product.html.twig',array(

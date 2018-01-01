@@ -3,20 +3,16 @@
 namespace ShopBundle\Controller;
 
 use AppBundle\Entity\User;
+use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use ShopBundle\Entity\Product;
-use ShopBundle\Entity\ProductCategory;
 use ShopBundle\Entity\ProductUsers;
-use ShopBundle\Entity\Promotion;
 use ShopBundle\Form\OrderViewType;
 use ShopBundle\Form\ProductUsersType;
 use ShopBundle\Services\CartSessionService;
 use ShopBundle\Services\ProductServiceInterface;
 use ShopBundle\Services\ProductUsersInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -36,6 +32,7 @@ class ProductUserController extends Controller {
 	 * ProductUserController constructor.
 	 *
 	 * @param ProductUsersInterface $productUserService
+	 * @param ProductServiceInterface $productService
 	 */
 	public function __construct( ProductUsersInterface $productUserService,ProductServiceInterface $productService ) {
 		$this->productUserService = $productUserService;
@@ -49,6 +46,7 @@ class ProductUserController extends Controller {
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @Security("has_role('ROLE_EDITOR')")
 	 * @Route("new_products",name="new_products_users")
+	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
 	public function createNewProductAction( Request $request ) {
 		$productUsers = new ProductUsers();
@@ -62,12 +60,7 @@ class ProductUserController extends Controller {
 			//-- find super admin user and set product ownership
 			$superAdminUser = $em->getRepository( User::class )->findSuperAdminUser();
 			$productUsers->setUser( $superAdminUser );
-			//--- img upload ------------  //
-			/** @var UploadedFile $file */
-			$file = $productUsers->getProduct()->getImage();
-			$fileName = $this->productService->fileUploader($file);
-			$productUsers->getProduct()->setImage($fileName);
-
+			$productUsers = $this->productService->uploadedFile($productUsers);
 			$em->persist( $productUsers );
 			$em->flush();
 
@@ -87,15 +80,12 @@ class ProductUserController extends Controller {
 	 * @Route("/",name="home_page")
 	 */
 	public function indexAction(Request $request) {
-		$em              = $this->getDoctrine()->getManager();
-		$companyProducts = $em->getRepository( 'ShopBundle:ProductUsers' )->findAllCompanyProducts();
+		$companyProducts = $this->productUserService->listAllCompanyProducts();
 		$form = $this->createForm(OrderViewType::class);
 		$form->handleRequest($request);
 		if($form->isSubmitted()){
-			$criteria = $form->getData();
-			$cri = explode('-',$criteria['choise']);
-
-			$companyProducts = $em->getRepository( 'ShopBundle:ProductUsers' )->findAllCompanyProducts($cri[0],$cri[1]);
+			$criteria = $this->productUserService->addCriteria($form->getData());
+			$companyProducts = $this->productUserService->listAllCompanyProducts($criteria);
 		}
 		return $this->render( '@Shop/product_users/product_list.html.twig', array(
 			'products' => $companyProducts,
@@ -112,18 +102,38 @@ class ProductUserController extends Controller {
 	 * @Route("/users_products",name="users_products")
 	 */
 	public function listAllUsersProducts(Request $request){
-		$em = $this->getDoctrine()->getManager();
-		$userProducts    = $em->getRepository( 'ShopBundle:ProductUsers' )->findAllUserProducts();
+		$userProducts = $this->productUserService->listAllCompanyProducts();
 		$form = $this->createForm(OrderViewType::class);
 		$form->handleRequest($request);
 		if($form->isSubmitted()){
-			$criteria = $form->getData();
-			$cri = explode('-',$criteria['choise']);
 
-			$userProducts = $em->getRepository( 'ShopBundle:ProductUsers' )->findAllCompanyProducts($cri[0],$cri[1]);
+			$criteria = $this->productUserService->addCriteria($form->getData());
+			$userProducts = $this->productUserService->listAllCompanyProducts($criteria);
 		}
 		return $this->render('@Shop/product_users/product_list.html.twig',array(
 			'products'=>$userProducts,
+			'form'=>$form->createView()
+		));
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @Route("/{id}/category",name="product_category")
+	 */
+	public function listByCategory($id,Request $request){
+		$products = $this->productUserService->listProductByCategory($id);
+		$form = $this->createForm(OrderViewType::class);
+		$form->handleRequest($request);
+		if($form->isSubmitted()){
+			$criteria = $this->productUserService->addCriteria($form->getData());
+			$products = $this->productUserService->listProductByCategory($id , $criteria);
+		}
+		return $this->render('@Shop/product_users/product_list.html.twig',array(
+			'products'=>$products,
 			'form'=>$form->createView()
 		));
 	}
@@ -134,6 +144,7 @@ class ProductUserController extends Controller {
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @Route("/{id}/show_product",name="show_product")
+	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
 	public function showAction( Request $request, $id ) {
 		$em                            = $this->getDoctrine()->getManager();
@@ -157,37 +168,29 @@ class ProductUserController extends Controller {
 	 * @param Request $request
 	 * @param $id
 	 *
-	 * @param ProductUsers $product_users
-	 *
 	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @Security("product_users.isOwner(user) or has_role('ROLE_EDITOR')")
 	 * @Route("/{id}/edit_product",name="edit_product")
+	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
-	public function editAction( Request $request, $id,ProductUsers $product_users ) {
+	public function editAction( Request $request, $id ) {
 		$em      = $this->getDoctrine()->getManager();
 		/** @var ProductUsers $product */
-		$product = $em->getRepository( 'ShopBundle:ProductUsers' )->findOneProduct( $id );
+		$product = $em->getRepository( 'ShopBundle:ProductUsers' )->findOneProduct($id);
 		if ( $this->getUser()->getRoles() === [ 'ROLE_USER' ] ) {
 			//-- This static property deny render product form,render product user form change price
 			ProductUsersType::$userRestrict = true;
 		}
 		$oldPath = $product->getProduct()->getImage();
-		$product->getProduct()->setImage(new File($this->getParameter('product_image_upload').'/'.$oldPath));
-		$form = $this->createForm( ProductUsersType::class, $product );
-		$form->handleRequest( $request );
+		$product->getProduct()->setImage( null);
 
+		$form = $this->createForm( ProductUsersType::class, $product );
+		$form->handleRequest($request);
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			 if(null === $product->getProduct()->getImage()){
-			 	$product->getProduct()->setImage($oldPath);
-			 } else {
-			 	/** @var UploadedFile $newPath */
-			 	$newPath = $product->getProduct()->getImage();
-			    	$fileName = $this->productService->fileUploader($newPath);
-			    	$product->getProduct()->setImage($fileName);
-			 }
+			if($product->getProduct()->getImage() === null){
+				$product->getProduct()->setImage($oldPath);
+			} else $product = $this->productService->uploadedFile($product);
 
 			$em->flush();
-
 			return $this->redirectToRoute( 'home_page' );
 		}
 
@@ -195,18 +198,23 @@ class ProductUserController extends Controller {
 			'product' => $product,
 			'form'    => $form->createView()
 		) );
+
 	}
 
 	/**
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+	 *
 	 * @param $id
 	 * @param Request $request
-	 * @Security("product_users.isOwner(user) or has_role('ROLE_EDITOR')")
+	 * @Security("has_role('ROLE_EDITOR')")
 	 * @Route("/{id}/delete_product",name="delete_product")
 	 */
 	public function deleteAction($id,Request $request){
 		$em      = $this->getDoctrine()->getManager();
-		$product = $em->getRepository( 'ShopBundle:ProductUsers' )->findOneProduct( $id );
+		try {
+			$product = $em->getRepository( 'ShopBundle:ProductUsers' )->findOneProduct( $id );
+		} catch ( NonUniqueResultException $e ) {
+		}
 		$form = $this->createForm( ProductUsersType::class, $product );
 		$form->handleRequest( $request );
 
@@ -227,26 +235,13 @@ class ProductUserController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function setProductPromotion($id){
+	public function setProductPromotion($id) {
 
-		$result = $this->productUserService->addPromotionByCategory($id);
-		return  $this->render('@Shop/product_users/set_promotion.html.twig',array(
-			 'result'=> $result
-		)) ;
-	}
+		$result = $this->productUserService->addPromotionByCategory( $id );
 
-	/**
-	 * @param $id
-	 *
-	 * @return Response
-	 * @Route("/{id}/products_by_category",name="products_by_category")
-	 */
-	public function allProductByCategory($id){
-		$products = $this->productUserService ->findProductsByProductCategory($id);
-
-		return $this->render('@Shop/product_users/product_list.html.twig',array(
-			'companyProducts'=>$products
-		));
+		return $this->render( '@Shop/product_users/set_promotion.html.twig', array(
+			'result' => $result
+		) );
 	}
 
 }

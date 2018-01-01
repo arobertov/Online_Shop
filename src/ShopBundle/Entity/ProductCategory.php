@@ -4,13 +4,14 @@ namespace ShopBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use ShopBundle\Entity\Product;
 use ShopBundle\Entity\Promotion;
 
 /**
  * ProductCategory
- *
- * @ORM\Table(name="product_category")
+ * @Gedmo\Tree(type="nested")
+ * @ORM\Table(name="product_categories")
  * @ORM\Entity(repositoryClass="ShopBundle\Repository\ProductCategoryRepository")
  */
 class ProductCategory
@@ -31,18 +32,47 @@ class ProductCategory
      */
     private $name;
 
-    /**
-     * One ProductCategory has Many ProductCategories.
-     * @ORM\OneToMany(targetEntity="ProductCategory", mappedBy="parent")
-     */
-    private $children;
+	/**
+	 * @var int
+	 * @Gedmo\TreeLeft
+	 * @ORM\Column(name="lft", type="integer")
+	 */
+	private $lft;
 
-    /**
-     * Many ProductCategories have One ProductCategory.
-     * @ORM\ManyToOne(targetEntity="ProductCategory", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true)
-     */
-    private $parent;
+	/**
+	 * @var int
+	 * @Gedmo\TreeLevel
+	 * @ORM\Column(name="lvl", type="integer")
+	 */
+	private $lvl;
+
+	/**
+	 * @var int
+	 * @Gedmo\TreeRight
+	 * @ORM\Column(name="rgt", type="integer")
+	 */
+	private $rgt;
+
+
+	/**
+	 * @Gedmo\TreeRoot
+	 * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\ProductCategory")
+	 * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+	 */
+	private $root;
+
+	/**
+	 * @Gedmo\TreeParent
+	 * @ORM\ManyToOne(targetEntity="ShopBundle\Entity\ProductCategory", inversedBy="children")
+	 * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+	 */
+	private $parent;
+
+	/**
+	 * @ORM\OneToMany(targetEntity="ShopBundle\Entity\ProductCategory", mappedBy="parent")
+	 * @ORM\OrderBy({"lft" = "ASC"})
+	 */
+	private $children;
 
     /**
      * @var ArrayCollection
@@ -75,8 +105,11 @@ class ProductCategory
         $this->promotions = new ArrayCollection();
     }
 
+    public function __toString() {
+	    return $this->name;
+    }
 
-    /**
+	/**
      * Get id
      *
      * @return int
@@ -109,6 +142,62 @@ class ProductCategory
     {
         return $this->name;
     }
+
+	/**
+	 * @return int
+	 */
+	public function getLft(): int {
+		return $this->lft;
+	}
+
+	/**
+	 * @param int $lft
+	 */
+	public function setLft( int $lft ): void {
+		$this->lft = $lft;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLvl(): int {
+		return $this->lvl;
+	}
+
+	/**
+	 * @param int $lvl
+	 */
+	public function setLvl( int $lvl ): void {
+		$this->lvl = $lvl;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getRgt(): int {
+		return $this->rgt;
+	}
+
+	/**
+	 * @param int $rgt
+	 */
+	public function setRgt( int $rgt ): void {
+		$this->rgt = $rgt;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getRoot() {
+		return $this->root;
+	}
+
+	/**
+	 * @param mixed $root
+	 */
+	public function setRoot( $root ): void {
+		$this->root = $root;
+	}
 
     /**
      * Add child

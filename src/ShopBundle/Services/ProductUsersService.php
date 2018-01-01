@@ -11,6 +11,7 @@ namespace ShopBundle\Services;
 
 use AppBundle\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use ShopBundle\Entity\Product;
 use ShopBundle\Entity\ProductCategory;
 use ShopBundle\Entity\ProductUsers;
@@ -39,11 +40,7 @@ class ProductUsersService implements ProductUsersInterface {
 		$this->em = $em;
 		$this->productUsersRepository = $repository;
 	}
-
-	public function findProductsByProductCategory($id){
-		return $this->productUsersRepository->findAllProductByCategory($id);
-	}
-
+	
 
 	public function removeInactivePromotion($ids){
 		 $this->productUsersRepository->updateProductInactivePromotion($ids);
@@ -81,4 +78,36 @@ class ProductUsersService implements ProductUsersInterface {
 		return $result;
 	}
 
+	/**
+	 * @param $id
+	 *
+	 * @param null $criteria
+	 *
+	 * @return mixed
+	 */
+	public function listProductByCategory($id,$criteria = null){
+		return $this->productUsersRepository->findProductByCategory($id,$criteria);
+	}
+
+	/**
+	 * @param array $arr
+	 *
+	 * @return array
+	 */
+	public function addCriteria( Array $arr ) {
+		return explode('-',$arr['choice']);
+	}
+
+	/**
+	 * @param null $criteria
+	 *
+	 * @return mixed|null
+	 */
+	public function listAllCompanyProducts( $criteria = null ) {
+		try {
+			return $this->productUsersRepository->findAllCompanyProducts( $criteria );
+		} catch ( NonUniqueResultException $e ) {
+		}
+		return  null;
+	}
 }

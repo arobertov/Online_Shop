@@ -15,5 +15,9 @@ interface ProductUsersInterface {
 
 	public function addPromotionByCategory($promotionId = null);
 
-	public function findProductsByProductCategory($id);
+    public function listAllCompanyProducts($criteria = null);
+
+	public function listProductByCategory($id,$criteria = null);
+
+	public function addCriteria(Array $arr);
 }

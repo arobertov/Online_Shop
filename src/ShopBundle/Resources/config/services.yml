@@ -23,3 +23,23 @@ services:
       ShopBundle\Services\ProductService:
               arguments:
                           $targetDir: '%product_image_upload%'
+
+      ShopBundle\Services\ProductServiceInterface:
+              alias: 'ShopBundle\Services\ProductService'
+              public: false
+
+      ShopBundle\Services\ProductUsersInterface:
+              alias: 'ShopBundle\Services\ProductUsersService'
+              public: false
+
+      ShopBundle\Services\PromotionServiceInterface:
+              alias: 'ShopBundle\Services\PromotionService'
+              public: false
+
+      ShopBundle\Services\OrderServiceInterface:
+              alias: 'ShopBundle\Services\OrderService'
+              public: false
+
+      ShopBundle\Services\ProductCategoryInterface:
+              alias: 'ShopBundle\Services\ProductCategoryService'
+              public: false

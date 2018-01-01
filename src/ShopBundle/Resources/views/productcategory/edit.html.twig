@@ -15,7 +15,7 @@
     <div class="well">
         {{ form_start(edit_form) }}
             {{ form_widget(edit_form) }}
-            <a class="btn btn-large btn-default" href="#">Cancel</a>
+            <a class="btn btn-large btn-default" href="{{ path('category_index') }}">Cancel</a>
             <input class="btn btn-large btn-warning" type="submit" value="Edit !" />
         {{ form_end(edit_form) }}
 
