@@ -110,14 +110,15 @@
     <div class="container">
         <div class="row">
             <div class="span3">
-                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     <h5>ACCOUNT</h5>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                     <a href="{{ path('my_profile',{'id':app.user.id}) }}">YOUR ACCOUNT</a>
+                {% endif %}
                     <a href="{{ path('user_register') }}">REGISTER</a>
                     <a href="login.html">ADDRESSES</a>
                     <a href="login.html">DISCOUNT</a>
                     <a href="login.html">ORDER HISTORY</a>
-                {% endif %}
+
             </div>
             <div class="span3">
                 <h5>INFORMATION</h5>
