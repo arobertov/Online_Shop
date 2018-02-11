@@ -5,7 +5,6 @@
     {% if items %}
         <table id="sideManu" >
             {% for i in items %}
-
                 {% if i.parent %}
                     <tr>
                         <td>
@@ -16,6 +15,9 @@
                         </td>
                         <td>
                             <a class="btn btn-mini btn-default" href="{{ path('category_edit',{'id':i.id}) }}">Edit !</a>
+                        </td>
+                         <td>
+                            <a class="btn btn-mini btn-default" href="{{ path('product_category',{'slug':i.slug}) }}">Show !</a>
                         </td>
                         <td>
                             <a class="btn btn-mini btn-danger" href="{{ path('category_delete',{'id':i.id}) }}">Delete !</a>
@@ -28,6 +30,9 @@
                     </td>
                     <td>
                         <a class="btn btn-mini btn-default" href="{{ path('category_edit',{'id':i.id}) }}">Edit !</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-mini btn-default" href="{{ path('product_category',{'slug':i.slug}) }}">Show !</a>
                     </td>
                     <td>
                     <a class="btn btn-mini btn-danger" href="{{ path('category_delete',{'id':i.id}) }}">Delete !</a>

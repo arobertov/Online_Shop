@@ -189,7 +189,7 @@ class ProductUsersRepository extends EntityRepository
 			->from('ShopBundle:ProductUsers','pu')
 			->join('pu.product','p')
 			->join('p.category','cat')
-			->where('cat.id = ?1')
+			->where('cat.slug = ?1')
 			->orderBy($cr[0],$cr[1])
 			->setParameter(1,$id);
 

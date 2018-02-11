@@ -33,18 +33,23 @@ class ProductCategoryService implements ProductCategoryInterface {
 		$options = array(
 			'decorate' => true,
 			'rootOpen' => function($tree) {
-				if(count($tree) && ($tree[0]['lvl'] == 1)){
-					return '<ul>';
-				}
+					if(count($tree) && ($tree[0]['lvl'] == 1)){
+						return '<ul>'.PHP_EOL;
+					}
+					
 				},
-			'rootClose' => '</ul></li>',
+			'rootClose' => function($tree) {
+				if(count($tree) && ($tree[0]['lvl'] == 1)){
+					return '</ul>'.PHP_EOL;
+				}
+			},
 			'childOpen' => '',
 			'childClose' => '',
 			'nodeDecorator' => function($node) {
 				if($node['lvl'] == 0) {
-					return '<li class="subMenu open"><a>' . $node['name'] . '</a>';
-				} else return '<li><a  href="/'.$node['id'].'/category"><i class="icon-chevron-right"></i>'
-				              .$node['name'].' ('.count($node['products']).')</a></li>';
+					return '<li class="subMenu open"><a>' . $node['name'] . '</a>'.PHP_EOL;
+				} else return '<li><a href="/show_products/'.$node['slug'].'"><i class="icon-chevron-right"></i>'
+				              .$node['name'].' ('.count($node['products']).')</a></li>'.PHP_EOL;
 			} )
 		;
 		return  $this->treeRepo->buildTree($query->getArrayResult(), $options);

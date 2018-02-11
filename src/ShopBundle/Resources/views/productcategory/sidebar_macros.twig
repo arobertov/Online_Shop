@@ -8,7 +8,7 @@
 
                  {% if i.parent %}
                      <li>
-                     <a class="active" href="{{ path('products_by_category',{'id':i.id}) }}">
+                     <a class="active" href="{{ path('product_category',{'slug':i.slug}) }}">
                          <i class="icon-chevron-right"></i>
                          {{ i.name }} ({{ i.products|length }})
                      </a>

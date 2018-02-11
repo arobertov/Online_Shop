@@ -13,14 +13,14 @@
     {{ include('@Shop/Default/admin_menu.html.twig') }}
     <h2>List All Category</h2>
         <div class="well" >
-        {% import '@Shop/productcategory/index_macros.twig'  as m %}
-        {{ m.tree(categories) }}
-    </div>
-    <a class="btn btn-warning" href="{{ path('category_new') }}">Add New Category :)</a>
+            {% import '@Shop/productcategory/index_macros.twig'  as m %}
+            {{ m.tree(categories) }}
+        </div>
+        <a class="btn btn-warning" href="{{ path('category_new') }}">Add New Category :)</a>
 </div>
     <style>
         td{
-            padding: 10px 0px;
+            padding: 10px 0;
         }
     </style>
 {% endblock %}

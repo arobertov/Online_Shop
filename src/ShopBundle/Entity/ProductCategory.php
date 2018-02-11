@@ -33,6 +33,14 @@ class ProductCategory
     private $name;
 
 	/**
+	 * @var string
+	 *
+	 * @Gedmo\Slug(fields={"name"})
+	 * @ORM\Column(name="slug", type="string", length=255, unique=true)
+	 */
+    private $slug;
+
+	/**
 	 * @var int
 	 * @Gedmo\TreeLeft
 	 * @ORM\Column(name="lft", type="integer")
@@ -142,6 +150,22 @@ class ProductCategory
     {
         return $this->name;
     }
+
+	/**
+	 * @return string
+	 */
+	public function getSlug(): string {
+		return $this->slug;
+	}
+
+	/**
+	 * @param string $slug
+	 */
+	public function setSlug( string $slug ): void {
+		$this->slug = $slug;
+	}
+
+
 
 	/**
 	 * @return int

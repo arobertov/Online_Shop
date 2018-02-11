@@ -116,27 +116,7 @@ class ProductUserController extends Controller {
 		));
 	}
 
-	/**
-	 * @param $id
-	 *
-	 * @param Request $request
-	 *
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @Route("/{id}/category",name="product_category")
-	 */
-	public function listByCategory($id,Request $request){
-		$products = $this->productUserService->listProductByCategory($id);
-		$form = $this->createForm(OrderViewType::class);
-		$form->handleRequest($request);
-		if($form->isSubmitted()){
-			$criteria = $this->productUserService->addCriteria($form->getData());
-			$products = $this->productUserService->listProductByCategory($id , $criteria);
-		}
-		return $this->render('@Shop/product_users/product_list.html.twig',array(
-			'products'=>$products,
-			'form'=>$form->createView()
-		));
-	}
+	
 
 	/**
 	 * @param Request $request
@@ -162,6 +142,28 @@ class ProductUserController extends Controller {
 			'product' => $productUser,
 			'form'    => $form->createView()
 		) );
+	}
+
+	/**
+	 *
+	 * @Route("/show_products/{slug}",name="product_category")
+	 * @param $slug
+	 * @param Request $request
+	 *
+	 * @return Response
+	 */
+	public function listByCategory($slug,Request $request) {
+		$products = $this->productUserService->listProductByCategory($slug);
+		$form = $this->createForm(OrderViewType::class);
+		$form->handleRequest($request);
+		if($form->isSubmitted()){
+			$criteria = $this->productUserService->addCriteria($form->getData());
+			$products = $this->productUserService->listProductByCategory($slug , $criteria);
+		}
+		return $this->render('@Shop/product_users/product_list.html.twig',array(
+			'products'=>$products,
+			'form'=>$form->createView()
+		));
 	}
 
 	/**
