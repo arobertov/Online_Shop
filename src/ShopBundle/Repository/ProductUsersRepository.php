@@ -48,12 +48,14 @@ class ProductUsersRepository extends EntityRepository
 	/**
 	 *
 	 * @param null $criteria
+	 * @param int $offset
+	 * @param int $limit
 	 *
 	 * @return mixed
 	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
-	public function findAllCompanyProducts($criteria = null){
-		$cr = array('p.dateCreated','DESC');
+	public function findAllCompanyProducts($criteria = null,$offset = 0,$limit = 2){
+		$cr = array('p.dateCreated','ASC');
 		if(null !== $criteria){
 			$cr = $criteria;
 		}
@@ -66,6 +68,8 @@ class ProductUsersRepository extends EntityRepository
 			->join('pu.user','user')
 			->where('user.id = :id')
 			->orderBy($cr[0] , $cr[1])
+			->setFirstResult($offset)
+			->setMaxResults($limit)
 		    ->setParameter('id', $this->getSuperAdminId());
 		$query = $db->getQuery();
 		return $query->getResult();

@@ -29,7 +29,7 @@
                     <img src="{{ asset('themes/my_images/'~product.product.image) }}" alt=""/>
                 </div>
                 <div class="span4">
-                    <h3>{{ product.product.title }}</h3>
+                    <h3><a  href="{{ path('show_product',{'id':product.id}) }}">{{ product.product.title }}</a></h3>
                     <hr class="soft"/>
                     <h5></h5>
                     <p>

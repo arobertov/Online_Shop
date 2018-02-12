@@ -5,8 +5,6 @@ namespace ShopBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use ShopBundle\Entity\Product;
-use ShopBundle\Entity\Promotion;
 
 /**
  * ProductCategory
