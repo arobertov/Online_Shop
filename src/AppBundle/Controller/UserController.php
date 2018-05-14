@@ -9,12 +9,14 @@ use AppBundle\Form\RoleType;
 use AppBundle\Form\UserEditType;
 use AppBundle\Form\UserType;
 use AppBundle\Services\UserService;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Class UserController
@@ -22,6 +24,18 @@ use Symfony\Component\HttpFoundation\Response;
  * @Route("/user")
  */
 class UserController extends Controller {
+	protected $session;
+
+	/**
+	 * UserController constructor.
+	 *
+	 * @param $session
+	 */
+	public function __construct(Session $session ) {
+		$this->session = $session;
+	}
+
+
 	/**
 	 * @param Request $request
 	 *
@@ -37,7 +51,9 @@ class UserController extends Controller {
 
 			$userService = $this->get( UserService::class );
 			$userService->registerUser( $user );
-
+			$this->session->start();
+			$this->session->getFlashBag()->add('success',"New user " . $user->getUsername() . " successful created !
+			Please visit your email address : " . $user->getEmail() ." for confirm registration !");
 			return $this->redirectToRoute( "login" );
 		}
 
@@ -179,8 +195,15 @@ class UserController extends Controller {
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$userService = $this->get( UserService::class );
-			$userService->forgotPassword( $user );
-
+			try{
+				$message = $userService->forgotPassword( $user );
+			} catch (Exception $e) {
+				$this->session->getFlashBag()->add('error',$e->getMessage());
+				return $this->render( "@basic/security/forgot_password.html.twig", array(
+					'form' => $form->createView()
+				) );
+			}
+			$this->session->getFlashBag()->add('success',$message);
 			return $this->redirectToRoute( 'login' );
 		}
 
@@ -205,8 +228,15 @@ class UserController extends Controller {
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$userService = $this->get( UserService::class );
-			$userService->changePassword( $user, $userEdit );
-
+			try {
+				$message = $userService->changePassword( $user, $userEdit );
+			}catch (Exception $e) {
+				$this->session->getFlashBag()->add('error',$e->getMessage());
+				return $this->render( '@basic/security/change_password.html.twig', [
+					'form' => $form->createView()
+				] );
+			}
+			$this->session->getFlashBag()->add('success',$message);
 			return $this->redirectToRoute( 'my_profile', array( 'id' => $user->getId() ) );
 		}
 

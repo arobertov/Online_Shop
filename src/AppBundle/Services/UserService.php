@@ -78,14 +78,15 @@ class UserService {
 		} else {
 		  throw new Exception('Invalid user data!');
         }
+
 		$userObject = $this->em->getRepository( User::class )->findOneBy( array( 'username' => $username ) );
 
 		if ( $userObject === null ) {
-			die( 'username ( ' . $username . ' ) not found' );
+			throw new Exception('Username: ( ' . $username . ' ) not exist !') ;
 		}
 
 		if ( $email !== $userObject->getEmail() ) {
-			die( 'email ' . $email . ' not found' );
+			throw  new Exception( 'Email: ' . $email . ' not exist !' );
 		}
 		 //-- generate new random password
 		$randomPassword = substr( $userObject->getPassword(), 8, 8 );
@@ -98,7 +99,7 @@ class UserService {
 
 		$this->em->persist( $userObject );
 		$this->em->flush();
-
+		return 'Your new password is sent to your email: ' . $email . ' !';
 	}
 
 	public function changePassword(User $user,UserEdit $userEdit){
@@ -109,8 +110,9 @@ class UserService {
             $user->setPassword($password);
             $em->persist($user);
             $em->flush();
+            return 'Password change successful !';
         } else {
-            throw new Exception('Password no change !');
+            throw new Exception('Old password mishmash !');
         }
     }
 }
