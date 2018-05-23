@@ -19,11 +19,11 @@
         <div class="well">
             {{ form_start(edit_form) }}
                 {{ form_widget(edit_form) }}
-            <a class="btn btn-large btn-default" href="{{ path('user_manager') }}">Cancel</a>
+            <a class="btn btn-large btn-default" href="{{ path('my_profile',{'id':user.id}) }}">Cancel</a>
             <input class="btn btn-large btn-warning" type="submit" value="Edit !">
             {{ form_end(edit_form) }}
 
-        <a href="{{ path('user_manager') }}">&larr; Back to user list </a>
+        <a href="{{ path('my_profile',{'id':user.id}) }}">&larr; Back to user profile </a>
         </div>
     </div>
 {% endblock %}

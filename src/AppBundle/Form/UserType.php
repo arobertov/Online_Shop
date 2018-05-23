@@ -59,7 +59,8 @@ class UserType extends AbstractType
                     'first_options' => array('label' => 'Password'),
                     'second_options' => array('label' => 'Repeat Password'),
                 ));
-        } else {
+        }
+        if($options['role'] == 1) {
             $builder
                 ->add('roles', EntityType::class, array(
                     'class' => 'AppBundle:Role',
@@ -83,8 +84,9 @@ class UserType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault('role','role')
-                 ->setDefault('data_class','AppBundle\Entity\User')
+        $resolver
+	        ->setDefault('role','role')
+	        ->setDefault('data_class','AppBundle\Entity\User')
         ;
 
     }

@@ -97,13 +97,13 @@ class Order
     /**
      * @var User $user
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="orders",cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="orders",cascade={"persist","remove"})
      * @ORM\JoinColumn(name="user_id",referencedColumnName="id", nullable= true)
      */
     private $user;
 
 	/**
-	 * @ORM\ManyToMany(targetEntity="ShopBundle\Entity\ProductUsers",inversedBy="orders",cascade={"persist"})
+	 * @ORM\ManyToMany(targetEntity="ShopBundle\Entity\ProductUsers",inversedBy="orders",cascade={"persist","remove"})
 	 * @ORM\JoinTable("orders_products")
 	 */
     private $productUsers;

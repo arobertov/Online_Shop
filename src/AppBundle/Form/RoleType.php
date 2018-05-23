@@ -20,7 +20,8 @@ class RoleType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-
+	     $resolver
+		     ->setDefault('data_class','AppBundle\Entity\Role');
     }
 
     public function getBlockPrefix()

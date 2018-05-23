@@ -47,5 +47,4 @@
       <path value="$PROJECT_DIR$/vendor/yavin/symfony-form-tree" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />
 </project>

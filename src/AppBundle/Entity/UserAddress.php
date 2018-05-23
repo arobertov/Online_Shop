@@ -80,6 +80,9 @@ class UserAddress
 	 * @var User
 	 *
 	 * @ORM\OneToOne(targetEntity="AppBundle\Entity\User", mappedBy="address")
+	 *
+	 * @Assert\Type(type="AppBundle\Entity\User")
+	 * @Assert\Valid()
 	 */
     private $user;
 

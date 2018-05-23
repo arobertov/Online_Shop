@@ -28,7 +28,8 @@ class ProductType extends AbstractType
                 'required' => false
             ))
 	        ->add('image',FileType::class,array(
-	        	'required'=>false
+	        	'required'=>false ,
+		        'data_class'=>null
 	        ))
             ->add('rating', IntegerType::class,array(
             	'required' => false

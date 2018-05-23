@@ -31,7 +31,7 @@ class UserController extends Controller {
 	 *
 	 * @param $session
 	 */
-	public function __construct(Session $session ) {
+	public function __construct( Session $session ) {
 		$this->session = $session;
 	}
 
@@ -52,8 +52,9 @@ class UserController extends Controller {
 			$userService = $this->get( UserService::class );
 			$userService->registerUser( $user );
 			$this->session->start();
-			$this->session->getFlashBag()->add('success',"New user " . $user->getUsername() . " successful created !
-			Please visit your email address : " . $user->getEmail() ." for confirm registration !");
+			$this->session->getFlashBag()->add( 'success', "New user " . $user->getUsername() . " successful created !
+			Please visit your email address : " . $user->getEmail() . " for confirm registration !" );
+
 			return $this->redirectToRoute( "login" );
 		}
 
@@ -116,21 +117,22 @@ class UserController extends Controller {
 	}
 
 	/**
-	 * @Security("has_role('ROLE_EDITOR')")
+	 * @Security("has_role('ROLE_USER')")
 	 * @param Request $request
 	 * @param User $user
 	 *
 	 * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
 	 * @Route("/users/{id}/edit",name="user_edit")
 	 */
-	public function usersEditAction( Request $request, User $user ) {
+	public function userEditAction( Request $request, User $user ) {
 		$editForm = $this->createForm( UserType::class, $user, array( 'role' => $user->getRoleId() ) );
 		$editForm->handleRequest( $request );
 
 		if ( $editForm->isSubmitted() ) {
 			$this->getDoctrine()->getManager()->flush();
-
-			return $this->redirectToRoute( 'user_manager' );
+			
+			$this->addFlash( 'success', 'Your profile edit successful !' );
+			return $this->redirectToRoute( 'my_profile', [ 'id' => $user->getId() ] );
 		}
 
 		return $this->render( '@basic/security/edit_user.html.twig', [
@@ -195,15 +197,17 @@ class UserController extends Controller {
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$userService = $this->get( UserService::class );
-			try{
+			try {
 				$message = $userService->forgotPassword( $user );
-			} catch (Exception $e) {
-				$this->session->getFlashBag()->add('error',$e->getMessage());
+			} catch ( Exception $e ) {
+				$this->session->getFlashBag()->add( 'error', $e->getMessage() );
+
 				return $this->render( "@basic/security/forgot_password.html.twig", array(
 					'form' => $form->createView()
 				) );
 			}
-			$this->session->getFlashBag()->add('success',$message);
+			$this->session->getFlashBag()->add( 'success', $message );
+
 			return $this->redirectToRoute( 'login' );
 		}
 
@@ -230,13 +234,15 @@ class UserController extends Controller {
 			$userService = $this->get( UserService::class );
 			try {
 				$message = $userService->changePassword( $user, $userEdit );
-			}catch (Exception $e) {
-				$this->session->getFlashBag()->add('error',$e->getMessage());
+			} catch ( Exception $e ) {
+				$this->session->getFlashBag()->add( 'error', $e->getMessage() );
+
 				return $this->render( '@basic/security/change_password.html.twig', [
 					'form' => $form->createView()
 				] );
 			}
-			$this->session->getFlashBag()->add('success',$message);
+			$this->session->getFlashBag()->add( 'success', $message );
+
 			return $this->redirectToRoute( 'my_profile', array( 'id' => $user->getId() ) );
 		}
 

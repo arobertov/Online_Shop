@@ -132,33 +132,38 @@ class User implements AdvancedUserInterface, \Serializable {
 	/**
 	 * @var ArrayCollection
 	 * @ORM\OneToMany(targetEntity="BlogBundle\Entity\Article",mappedBy="author")
+	 * @Assert\Valid()
 	 */
 	private $articles;
 
 	/**
 	 * @var Role
-	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role",inversedBy="users" )
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role",inversedBy="users")
 	 * @ORM\JoinColumn(name="roleId",referencedColumnName="id")
 	 *
+	 * @Assert\Valid()
 	 */
 	private $roles;
 
 	/**
-	 * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Order",mappedBy="user")
+	 * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Order",mappedBy="user",cascade={"persist","remove"})
+	 * @Assert\Valid()
 	 */
 	private $orders;
 
 
 	/**
 	 * @ORM\OneToMany(targetEntity="ShopBundle\Entity\ProductUsers",mappedBy="user")
+	 * @Assert\Valid()
 	 */
 	private $productToUsers;
 
 	/**
 	 * @var
 	 *
-	 * @ORM\OneToOne(targetEntity="AppBundle\Entity\UserAddress", inversedBy="user", cascade={"persist"})
+	 * @ORM\OneToOne(targetEntity="AppBundle\Entity\UserAddress", inversedBy="user", cascade={"persist","remove"})
 	 * @ORM\JoinColumn(name="address_id",referencedColumnName="id")
+	 * @Assert\Valid()
 	 */
 	private $address;
 

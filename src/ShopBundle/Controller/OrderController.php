@@ -34,6 +34,7 @@ class OrderController extends Controller {
 	 * OrderController constructor.
 	 *
 	 * @param OrderRepository $orderRepository
+	 * @param OrderServiceInterface $orderService
 	 */
 	public function __construct( OrderRepository $orderRepository ,OrderServiceInterface $orderService) {
 		$this->orderRepository = $orderRepository;
