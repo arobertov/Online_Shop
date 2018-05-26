@@ -43,3 +43,7 @@ services:
             arguments: [ "@doctrine" ]
             tags:
                 - { name: form.type_guesser }
+
+    AppBundle\Services\UserServiceInterface:
+            alias: 'AppBundle\Services\UserService'
+            public: false

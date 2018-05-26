@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserService {
+class UserService implements UserServiceInterface {
 	/**
 	 * @var SendEmailService
 	 */

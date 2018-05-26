@@ -11,6 +11,7 @@ use AppBundle\Form\RoleType;
 use AppBundle\Form\UserEditType;
 use AppBundle\Form\UserType;
 use AppBundle\Services\UserService;
+use AppBundle\Services\UserServiceInterface;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -26,15 +27,19 @@ use Symfony\Component\HttpFoundation\Session\Session;
  * @Route("/user")
  */
 class UserController extends Controller {
-	protected $session;
+
+	/**
+	 * @var UserServiceInterface
+	 */
+	protected $userService;
 
 	/**
 	 * UserController constructor.
 	 *
-	 * @param $session
+	 * @param UserServiceInterface $userService
 	 */
-	public function __construct( Session $session ) {
-		$this->session = $session;
+	public function __construct( UserServiceInterface $userService) {
+		$this->userService = $userService;
 	}
 
 
@@ -47,13 +52,14 @@ class UserController extends Controller {
 	public function registerAction( Request $request ) {
 		$user               = new User();
 		UserType::$register = true;
-		$form               = $this->createForm( UserType::class, $user,array('validation_groups'=>array('Default','registration')) );
+		$form               = $this->createForm( UserType::class, $user, array(
+			'validation_groups'=>array('Default','registration')
+		) );
 		$form->handleRequest( $request );
 		if ( $form->isSubmitted() && $form->isValid() ) {
 
-			$userService = $this->get( UserService::class );
 			try {
-				$message = $userService->registerUser( $user );
+				$message = $this->userService->registerUser( $user );
 			}   catch (Exception $e) {
 				$this->addFlash('error',$e->getMessage());
 				return $this->render( "@basic/security/register.html.twig", [
@@ -136,7 +142,6 @@ class UserController extends Controller {
 			'validation_groups'=>array('Default')
 		) );
 		$editForm->handleRequest( $request );
-		$user->setPlainPassword('~~~~~~~~~');
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
 			$this->getDoctrine()->getManager()->flush();
 			
@@ -159,15 +164,17 @@ class UserController extends Controller {
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function userDeleteAction( Request $request, User $user ) {
-		$user->setPlainPassword( '~~~~~~~~~' );
-		$deleteForm = $this->createForm( UserType::class, $user, array( 'role' => $user->getRoleId() ) );
+		$deleteForm = $this->createForm( UserType::class, $user, array(
+			'role' => $user->getRoleId(),
+			'validation_groups'=>array('Default')
+		) );
 		$deleteForm->handleRequest( $request );
 
 		if ( $deleteForm->isSubmitted() && $deleteForm->isValid() ) {
 			$em = $this->getDoctrine()->getManager();
 			$em->remove( $user );
 			$em->flush();
-
+			$this->addFlash('success','User in username '. $user->getUsername() . ' delete successful !');
 			return $this->redirectToRoute( 'user_manager' );
 		}
 
@@ -204,9 +211,8 @@ class UserController extends Controller {
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			$userService = $this->get( UserService::class );
 			try {
-				$message = $userService->forgotPassword( $form->getData() );
+				$message = $this->userService->forgotPassword( $form->getData() );
 			} catch ( Exception $e ) {
 				$this->addFlash( 'error', $e->getMessage() );
 
@@ -236,17 +242,16 @@ class UserController extends Controller {
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
-			$userService = $this->get( UserService::class );
 			try {
-				$message = $userService->changePassword( $user, $form->getData() );
+				$message = $this->userService->changePassword( $user, $form->getData() );
 			} catch ( Exception $e ) {
-				$this->session->getFlashBag()->add( 'error', $e->getMessage() );
+				$this->addFlash( 'error', $e->getMessage() );
 
 				return $this->render( '@basic/security/change_password.html.twig', [
 					'form' => $form->createView()
 				] );
 			}
-			$this->session->getFlashBag()->add( 'success', $message );
+			$this->addFlash( 'success', $message );
 
 			return $this->redirectToRoute( 'my_profile', array( 'id' => $user->getId() ) );
 		}
