@@ -87,12 +87,13 @@ class User implements AdvancedUserInterface, \Serializable {
 	private $email;
 
 	/**
-	 * @Assert\NotBlank()
+	 * @Assert\NotBlank(groups={"registration"})
 	 * @Assert\Length(
 	 *     min = 6,
 	 *     max = 4096,
 	 *     minMessage = "Your password must be at least {{ limit }} characters long",
-	 *     maxMessage = "Your password cannot be longer than {{ limit }} characters"
+	 *     maxMessage = "Your password cannot be longer than {{ limit }} characters",
+	 *     groups={"registration"}
 	 *     )
 	 */
 	private $plainPassword;

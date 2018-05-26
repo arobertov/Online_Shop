@@ -5,6 +5,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\UserEdit;
 use AppBundle\Entity\User;
+use AppBundle\Form\ChangePasswordType;
+use AppBundle\Form\ForgotPasswordType;
 use AppBundle\Form\RoleType;
 use AppBundle\Form\UserEditType;
 use AppBundle\Form\UserType;
@@ -45,16 +47,20 @@ class UserController extends Controller {
 	public function registerAction( Request $request ) {
 		$user               = new User();
 		UserType::$register = true;
-		$form               = $this->createForm( UserType::class, $user );
+		$form               = $this->createForm( UserType::class, $user,array('validation_groups'=>array('Default','registration')) );
 		$form->handleRequest( $request );
 		if ( $form->isSubmitted() && $form->isValid() ) {
 
 			$userService = $this->get( UserService::class );
-			$userService->registerUser( $user );
-			$this->session->start();
-			$this->session->getFlashBag()->add( 'success', "New user " . $user->getUsername() . " successful created !
-			Please visit your email address : " . $user->getEmail() . " for confirm registration !" );
-
+			try {
+				$message = $userService->registerUser( $user );
+			}   catch (Exception $e) {
+				$this->addFlash('error',$e->getMessage());
+				return $this->render( "@basic/security/register.html.twig", [
+					'form' => $form->createView()
+				] );
+			}
+			$this->addFlash( 'success', $message );
 			return $this->redirectToRoute( "login" );
 		}
 
@@ -125,10 +131,13 @@ class UserController extends Controller {
 	 * @Route("/users/{id}/edit",name="user_edit")
 	 */
 	public function userEditAction( Request $request, User $user ) {
-		$editForm = $this->createForm( UserType::class, $user, array( 'role' => $user->getRoleId() ) );
+		$editForm = $this->createForm( UserType::class, $user, array(
+			'role' => $user->getRoleId(),
+			'validation_groups'=>array('Default')
+		) );
 		$editForm->handleRequest( $request );
-
-		if ( $editForm->isSubmitted() ) {
+		$user->setPlainPassword('~~~~~~~~~');
+		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
 			$this->getDoctrine()->getManager()->flush();
 			
 			$this->addFlash( 'success', 'Your profile edit successful !' );
@@ -191,23 +200,21 @@ class UserController extends Controller {
 	 * @Route("/forgot_password",name="forgot_password")
 	 */
 	public function forgotPasswordAction( Request $request ) {
-		$user = new UserEdit();
-		$form = $this->createForm( UserEditType::class, $user );
+		$form = $this->createForm( ForgotPasswordType::class );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$userService = $this->get( UserService::class );
 			try {
-				$message = $userService->forgotPassword( $user );
+				$message = $userService->forgotPassword( $form->getData() );
 			} catch ( Exception $e ) {
-				$this->session->getFlashBag()->add( 'error', $e->getMessage() );
+				$this->addFlash( 'error', $e->getMessage() );
 
 				return $this->render( "@basic/security/forgot_password.html.twig", array(
 					'form' => $form->createView()
 				) );
 			}
-			$this->session->getFlashBag()->add( 'success', $message );
-
+			$this->addFlash( 'success', $message );
 			return $this->redirectToRoute( 'login' );
 		}
 
@@ -225,15 +232,13 @@ class UserController extends Controller {
 	 * @Route("/{id}/change_password",name="change_password")
 	 */
 	public function changePasswordAction( User $user, Request $request ) {
-		UserEditType::$change = true;
-		$userEdit             = new UserEdit();
-		$form                 = $this->createForm( UserEditType::class, $userEdit );
+		$form                 = $this->createForm( ChangePasswordType::class );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			$userService = $this->get( UserService::class );
 			try {
-				$message = $userService->changePassword( $user, $userEdit );
+				$message = $userService->changePassword( $user, $form->getData() );
 			} catch ( Exception $e ) {
 				$this->session->getFlashBag()->add( 'error', $e->getMessage() );
 

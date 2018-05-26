@@ -57,7 +57,7 @@ class UserType extends AbstractType
                 ->add('plainPassword', RepeatedType::class, array(
                     'type' => PasswordType::class,
                     'first_options' => array('label' => 'Password'),
-                    'second_options' => array('label' => 'Repeat Password'),
+                    'second_options' => array('label' => 'Repeat Password')
                 ));
         }
         if($options['role'] == 1) {
@@ -87,6 +87,7 @@ class UserType extends AbstractType
         $resolver
 	        ->setDefault('role','role')
 	        ->setDefault('data_class','AppBundle\Entity\User')
+	        ->setDefaults(array('validation_groups'=>array('registration')))
         ;
 
     }

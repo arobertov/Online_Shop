@@ -9,7 +9,6 @@
 namespace AppBundle\Services;
 
 
-use AppBundle\Entity\UserEdit;
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,7 +44,12 @@ class UserService {
 		$this->passwordEncoder  = $encoder;
 	}
 
-    public  function registerUser(User $user){
+	/**
+	 * @param User $user
+	 *
+	 * @return string
+	 */
+	public  function registerUser(User $user){
         $password = $this->passwordEncoder
             ->encodePassword($user, $user->getPlainPassword());
         $em = $this->em;
@@ -67,26 +71,34 @@ class UserService {
         $em->flush();
 
         //-- send user confirmation email
-        $verifyEmail = $this->sendEmailService;
-        $verifyEmail->verifyRegistrationEmail($user);
+		try{
+			$verifyEmail = $this->sendEmailService->verifyRegistrationEmail($user);
+		}   catch (Exception $e){
+			throw new Exception($e->getMessage());
+		}
+        if($verifyEmail){
+            return "New user " . $user->getUsername() . " successful created !
+			Please visit your email address : " . $user->getEmail() . " for confirm registration !" ;
+        } else {
+        	throw  new Exception('User unable registered !');
+        }
     }
 
-	public function forgotPassword(UserEdit $userData ) {
-		if ( isset( $userData ) ) {
-			$username = $userData->getUsername();
-			$email    = $userData->getEmail();
+	/**
+	 * @param array $formData
+	 *
+	 * @return string
+	 */
+	public function forgotPassword(array $formData) {
+		if ( filter_var($formData['email'],FILTER_SANITIZE_EMAIL) ) {
+			$email    = $formData['email'];
 		} else {
 		  throw new Exception('Invalid user data!');
         }
 
-		$userObject = $this->em->getRepository( User::class )->findOneBy( array( 'username' => $username ) );
-
-		if ( $userObject === null ) {
-			throw new Exception('Username: ( ' . $username . ' ) not exist !') ;
-		}
-
-		if ( $email !== $userObject->getEmail() ) {
-			throw  new Exception( 'Email: ' . $email . ' not exist !' );
+		$userObject = $this->em->getRepository( User::class )->findOneBy( array( 'email' => $email ) );
+		if ( !isset($userObject) || $email !== $userObject->getEmail() ) {
+			throw  new Exception( 'No user with this email: ' . $email . '!' );
 		}
 		 //-- generate new random password
 		$randomPassword = substr( $userObject->getPassword(), 8, 8 );
@@ -102,10 +114,23 @@ class UserService {
 		return 'Your new password is sent to your email: ' . $email . ' !';
 	}
 
-	public function changePassword(User $user,UserEdit $userEdit){
-        if($this->passwordEncoder->isPasswordValid($user,$userEdit->getOldPassword())) {
+	/**
+	 * @param User $user
+	 * @param array $formData
+	 *
+	 * @return string
+	 */
+	public function changePassword(User $user,array $formData){
+		if( filter_var($formData['oldPassword'],FILTER_SANITIZE_STRING )
+		   && filter_var($formData['newPassword'],FILTER_SANITIZE_STRING )){
+			$oldPassword = $formData['oldPassword']; 
+			$newPassword = $formData['newPassword'];
+		} else {
+			throw new Exception('Invalid user data !');
+		}
+        if($this->passwordEncoder->isPasswordValid($user,$oldPassword)) {
             $password = $this->passwordEncoder
-                ->encodePassword($user, $userEdit->getNewPassword());
+                ->encodePassword($user,$newPassword);
             $em = $this->em;
             $user->setPassword($password);
             $em->persist($user);

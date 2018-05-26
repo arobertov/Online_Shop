@@ -11,6 +11,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 
 class SendEmailService
@@ -44,6 +45,11 @@ class SendEmailService
         $this->template = $template;
     }
 
+	/**
+	 * @param User $user
+	 *
+	 * @return bool
+	 */
     public function verifyRegistrationEmail(User $user){
         $message = (new \Swift_Message('New user registration'))
             ->setFrom($this->adminEmail)
@@ -54,8 +60,11 @@ class SendEmailService
                 ]),
                 'text/html'
             );
-        $this->mailer->send($message);
-        return true;
+        if($this->mailer->send($message)){
+        	return true;
+        } else {
+        	throw new Exception('Cannot send email !');
+        }
     }
 
     public function forgotPasswordEmail($randomPassword,User $user){
