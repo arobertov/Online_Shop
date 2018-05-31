@@ -58,7 +58,6 @@ class User implements AdvancedUserInterface, \Serializable {
 	 */
 	private $firstName;
 
-
 	/**
 	 * @var string
 	 *
@@ -66,14 +65,6 @@ class User implements AdvancedUserInterface, \Serializable {
 	 *
 	 */
 	private $lastName;
-
-	/**
-	 * @return string
-	 */
-	public function getFirstName() {
-		return $this->firstName;
-	}
-
 
 	/**
 	 * @var string
@@ -87,6 +78,20 @@ class User implements AdvancedUserInterface, \Serializable {
 	private $email;
 
 	/**
+	 * @var string
+	 *
+	 * @Assert\NotBlank(groups={"change_password"})
+	 * @Assert\Length(
+	 *     min = 6,
+	 *     max = 4096,
+	 *     minMessage = "Your password must be at least {{ limit }} characters long",
+	 *     maxMessage = "Your password cannot be longer than {{ limit }} characters",
+	 *     groups={"change_password"}
+	 *     )
+	 */
+	private $oldPassword;
+
+	/**
 	 * @Assert\NotBlank(groups={"registration"})
 	 * @Assert\Length(
 	 *     min = 6,
@@ -97,6 +102,20 @@ class User implements AdvancedUserInterface, \Serializable {
 	 *     )
 	 */
 	private $plainPassword;
+
+	/**
+	 * @var \DateTime
+	 *
+	 * @ORM\Column(name="date_registered",type="datetime")
+	 */
+	private $dateRegistered;
+
+	/**
+	 * @var \DateTime
+	 *
+	 * @ORM\Column(name="date_edit",type="datetime")
+	 */
+	private $dateEdit;
 
 	/**
 	 * @var string
@@ -139,7 +158,7 @@ class User implements AdvancedUserInterface, \Serializable {
 
 	/**
 	 * @var Role
-	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role",inversedBy="users")
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role",inversedBy="users",cascade={"remove"})
 	 * @ORM\JoinColumn(name="roleId",referencedColumnName="id")
 	 *
 	 * @Assert\Valid()
@@ -154,7 +173,7 @@ class User implements AdvancedUserInterface, \Serializable {
 
 
 	/**
-	 * @ORM\OneToMany(targetEntity="ShopBundle\Entity\ProductUsers",mappedBy="user")
+	 * @ORM\OneToMany(targetEntity="ShopBundle\Entity\ProductUsers",mappedBy="user",cascade={"remove"})
 	 * @Assert\Valid()
 	 */
 	private $productToUsers;
@@ -169,6 +188,8 @@ class User implements AdvancedUserInterface, \Serializable {
 	private $address;
 
 	public function __construct() {
+		$this->dateRegistered = new \DateTime('now');
+		$this->dateEdit = new \DateTime('now');
 		$this->initialCache   = 5000;
 		$this->isNotLocked    = true;
 		$this->isActive       = false;
@@ -207,6 +228,15 @@ class User implements AdvancedUserInterface, \Serializable {
 	}
 
 	/**
+	 * Get username
+	 *
+	 * @return string
+	 */
+	public function getUsername() {
+		return $this->username;
+	}
+
+	/**
 	 * Set username
 	 *
 	 * @param string $username
@@ -220,12 +250,10 @@ class User implements AdvancedUserInterface, \Serializable {
 	}
 
 	/**
-	 * Get username
-	 *
 	 * @return string
 	 */
-	public function getUsername() {
-		return $this->username;
+	public function getFirstName() {
+		return $this->firstName;
 	}
 
 	/**
@@ -250,6 +278,15 @@ class User implements AdvancedUserInterface, \Serializable {
 	}
 
 	/**
+	 * Get email
+	 *
+	 * @return string
+	 */
+	public function getEmail() {
+		return $this->email;
+	}
+
+	/**
 	 * Set email
 	 *
 	 * @param string $email
@@ -263,12 +300,12 @@ class User implements AdvancedUserInterface, \Serializable {
 	}
 
 	/**
-	 * Get email
+	 * Get password
 	 *
 	 * @return string
 	 */
-	public function getEmail() {
-		return $this->email;
+	public function getPassword() {
+		return $this->password;
 	}
 
 	/**
@@ -285,19 +322,17 @@ class User implements AdvancedUserInterface, \Serializable {
 	}
 
 	/**
-	 * Get password
-	 *
 	 * @return string
 	 */
-	public function getPassword() {
-		return $this->password;
+	public function getOldPassword(): ?string {
+		return $this->oldPassword;
 	}
 
 	/**
-	 * @return mixed
+	 * @param string $oldPassword
 	 */
-	public function getIsActive() {
-		return $this->isActive;
+	public function setOldPassword( string $oldPassword ): void {
+		$this->oldPassword = $oldPassword;
 	}
 
 	/**
@@ -312,41 +347,6 @@ class User implements AdvancedUserInterface, \Serializable {
 	 */
 	public function setInitialCache( $initialCache ) {
 		$this->initialCache = $initialCache;
-	}
-
-
-
-	/**
-	 * @param mixed $isActive
-	 */
-	public function setIsActive( $isActive ) {
-		$this->isActive = $isActive;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getIsNotLocked() {
-		return $this->isNotLocked;
-	}
-
-	/**
-	 * @param mixed $isNotLocked
-	 */
-	public function setIsNotLocked( $isNotLocked ) {
-		$this->isNotLocked = $isNotLocked;
-	}
-
-
-
-	/**
-	 * @param Role $roles
-	 */
-	public function setRoles( Role $roles ) {
-		if ( $this->roles === null ) {
-			$this->roles = $roles->getId();
-		}
-		$this->roles = $roles;
 	}
 
 	/**
@@ -365,6 +365,16 @@ class User implements AdvancedUserInterface, \Serializable {
 		}
 
 		return null;
+	}
+
+	/**
+	 * @param Role $roles
+	 */
+	public function setRoles( Role $roles ) {
+		if ( $this->roles === null ) {
+			$this->roles = $roles->getId();
+		}
+		$this->roles = $roles;
 	}
 
 	public function getSalt() {
@@ -402,12 +412,40 @@ class User implements AdvancedUserInterface, \Serializable {
 		return $this->getIsNotLocked();
 	}
 
+	/**
+	 * @return mixed
+	 */
+	public function getIsNotLocked() {
+		return $this->isNotLocked;
+	}
+
+	/**
+	 * @param mixed $isNotLocked
+	 */
+	public function setIsNotLocked( $isNotLocked ) {
+		$this->isNotLocked = $isNotLocked;
+	}
+
 	public function isCredentialsNonExpired() {
 		return true;
 	}
 
 	public function isEnabled() {
 		return $this->getIsActive();
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getIsActive() {
+		return $this->isActive;
+	}
+
+	/**
+	 * @param mixed $isActive
+	 */
+	public function setIsActive( $isActive ) {
+		$this->isActive = $isActive;
 	}
 
 	/**
@@ -506,6 +544,34 @@ class User implements AdvancedUserInterface, \Serializable {
 	 */
 	public function setAddress( $address ) {
 		$this->address = $address;
+	}
+
+	/**
+	 * @return \DateTime
+	 */
+	public function getDateRegistered(): \DateTime {
+		return $this->dateRegistered;
+	}
+
+	/**
+	 * @param \DateTime $dateRegistered
+	 */
+	public function setDateRegistered( \DateTime $dateRegistered ): void {
+		$this->dateRegistered = $dateRegistered;
+	}
+
+	/**
+	 * @return \DateTime
+	 */
+	public function getDateEdit(): \DateTime {
+		return $this->dateEdit;
+	}
+
+	/**
+	 * @param \DateTime $dateEdit
+	 */
+	public function setDateEdit( \DateTime $dateEdit ): void {
+		$this->dateEdit = $dateEdit;
 	}
 
 }

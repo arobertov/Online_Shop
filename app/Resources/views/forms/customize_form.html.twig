@@ -10,6 +10,25 @@
     </div>
 {% endblock form_row %}
 
+{% block checkbox_widget %}
+    {% spaceless %}
+        <label class="control-label col-sm-2" {% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+            {{ label }}
+        </label>
+        <div class="controls">
+            <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+        </div>
+    {% endspaceless %}
+{% endblock checkbox_widget %}
+
+{% block checkbox_row %}
+    {% spaceless %}
+         <div class="control-group">
+             {{ form_errors(form) }}
+             {{ form_widget(form) }}
+         </div>
+    {% endspaceless %}
+{% endblock checkbox_row %}
 
 {% block form_label %}
     {{ parent() }}
@@ -38,7 +57,7 @@
 {% endblock form_errors %}
 
 {% block submit_row -%}
-    <div class="controls">{#--#}
+    <div class="col-sm-offset-2 col-sm-10">{#--#}
         {{- form_widget(form,{'attr':{'class':'btn btn-large btn-success'}}) -}}
     </div>
 {%- endblock submit_row %}

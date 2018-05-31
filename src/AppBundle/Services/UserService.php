@@ -54,16 +54,23 @@ class UserService implements UserServiceInterface {
             ->encodePassword($user, $user->getPlainPassword());
         $em = $this->em;
         $user->setPassword($password);
+		$user->setDateRegistered(new \DateTime('now'));
+		$user->setDateEdit(new \DateTime('now'));
         //--  initialise firs user and set role super admin
         if(!($em->getRepository(User::class)->findAll())){
-            $roleAdmin = new Role();
-            $roleUser = new Role();
-            $roleAdmin->setName('ROLE_SUPER_ADMIN');
-            $roleUser->setName('ROLE_USER');
-            $em->persist($roleAdmin);
-            $em->persist($roleUser);
-            $em->flush();
-            $user->setRoles($em->getRepository(Role::class)->findOneBy(['name'=>'ROLE_SUPER_ADMIN']));
+		        $roleAdmin = new Role();
+		        $roleUser = new Role();
+		        if(!($em->getRepository(Role::class)->findOneBy(['name'=>'ROLE_SUPER_ADMIN']))){
+			        $roleAdmin->setName('ROLE_SUPER_ADMIN');
+			        $em->persist($roleAdmin);
+		        }
+
+		        if(!($em->getRepository(Role::class)->findOneBy(['name' => 'ROLE_USER']))){
+			        $roleUser->setName('ROLE_USER');
+			        $em->persist($roleUser);
+		        }
+		        $em->flush();
+	        $user->setRoles($em->getRepository(Role::class)->findOneBy(['name'=>'ROLE_SUPER_ADMIN']));
         }else {
             $user->setRoles($em->getRepository(Role::class)->findOneBy(['name' => 'ROLE_USER']));
         }
@@ -116,15 +123,14 @@ class UserService implements UserServiceInterface {
 
 	/**
 	 * @param User $user
-	 * @param array $formData
 	 *
 	 * @return string
 	 */
-	public function changePassword(User $user,array $formData){
-		if( filter_var($formData['oldPassword'],FILTER_SANITIZE_STRING )
-		   && filter_var($formData['newPassword'],FILTER_SANITIZE_STRING )){
-			$oldPassword = $formData['oldPassword']; 
-			$newPassword = $formData['newPassword'];
+	public function changePassword(User $user){
+		if( filter_var($user->getOldPassword(),FILTER_SANITIZE_STRING )
+		   && filter_var($user->getPlainPassword(),FILTER_SANITIZE_STRING )){
+			$oldPassword = $user->getOldPassword();
+			$newPassword = $user->getPlainPassword();
 		} else {
 			throw new Exception('Invalid user data !');
 		}

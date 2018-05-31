@@ -51,13 +51,12 @@ class UserController extends Controller {
 	 */
 	public function registerAction( Request $request ) {
 		$user               = new User();
-		UserType::$register = true;
+		UserType::$fieldsSwitcher = 'registration';
 		$form               = $this->createForm( UserType::class, $user, array(
 			'validation_groups'=>array('Default','registration')
 		) );
 		$form->handleRequest( $request );
 		if ( $form->isSubmitted() && $form->isValid() ) {
-
 			try {
 				$message = $this->userService->registerUser( $user );
 			}   catch (Exception $e) {
@@ -67,6 +66,7 @@ class UserController extends Controller {
 				] );
 			}
 			$this->addFlash( 'success', $message );
+
 			return $this->redirectToRoute( "login" );
 		}
 
@@ -137,6 +137,7 @@ class UserController extends Controller {
 	 * @Route("/users/{id}/edit",name="user_edit")
 	 */
 	public function userEditAction( Request $request, User $user ) {
+		UserType::$fieldsSwitcher = 'edit';
 		$editForm = $this->createForm( UserType::class, $user, array(
 			'role' => $user->getRoleId(),
 			'validation_groups'=>array('Default')
@@ -164,6 +165,7 @@ class UserController extends Controller {
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function userDeleteAction( Request $request, User $user ) {
+		UserType::$fieldsSwitcher = 'edit';
 		$deleteForm = $this->createForm( UserType::class, $user, array(
 			'role' => $user->getRoleId(),
 			'validation_groups'=>array('Default')
@@ -238,12 +240,15 @@ class UserController extends Controller {
 	 * @Route("/{id}/change_password",name="change_password")
 	 */
 	public function changePasswordAction( User $user, Request $request ) {
-		$form                 = $this->createForm( ChangePasswordType::class );
+		UserType::$fieldsSwitcher = 'change_password';
+		$form = $this->createForm( UserType::class,$user,array(
+			'validation_groups'=>array('registration','change_password')
+		) );
 		$form->handleRequest( $request );
 
 		if ( $form->isSubmitted() && $form->isValid() ) {
 			try {
-				$message = $this->userService->changePassword( $user, $form->getData() );
+				$message = $this->userService->changePassword( $user );
 			} catch ( Exception $e ) {
 				$this->addFlash( 'error', $e->getMessage() );
 

@@ -17,6 +17,6 @@ interface UserServiceInterface {
 
 	public function forgotPassword(array $formData);
 
-	public function changePassword(User $user,array $formData);
+	public function changePassword(User $user);
 
 }
