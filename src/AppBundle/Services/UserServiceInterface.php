@@ -19,4 +19,6 @@ interface UserServiceInterface {
 
 	public function changePassword(User $user);
 
+	public function getRegisteredUserDate();
+
 }

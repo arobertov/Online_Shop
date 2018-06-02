@@ -143,6 +143,13 @@ class User implements AdvancedUserInterface, \Serializable {
 	private $isNotLocked;
 
 	/**
+	 * @var bool
+	 *
+	 * @ORM\Column(name="is_not_expired", type="boolean")
+	 */
+	private $isNotExpired;
+
+	/**
 	 * @var float
 	 *
 	 * @ORM\Column(name="initial_cache", type="decimal", precision=8, scale=2)
@@ -191,6 +198,7 @@ class User implements AdvancedUserInterface, \Serializable {
 		$this->dateRegistered = new \DateTime('now');
 		$this->dateEdit = new \DateTime('now');
 		$this->initialCache   = 5000;
+		$this->isNotExpired   = true;
 		$this->isNotLocked    = true;
 		$this->isActive       = false;
 		$this->articles       = new ArrayCollection();
@@ -405,7 +413,7 @@ class User implements AdvancedUserInterface, \Serializable {
 	}
 
 	public function isAccountNonExpired() {
-		return true;
+		return $this->isNotExpired();
 	}
 
 	public function isAccountNonLocked() {
@@ -572,6 +580,20 @@ class User implements AdvancedUserInterface, \Serializable {
 	 */
 	public function setDateEdit( \DateTime $dateEdit ): void {
 		$this->dateEdit = $dateEdit;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function isNotExpired(): ?bool {
+		return $this->isNotExpired;
+	}
+
+	/**
+	 * @param bool $isNotExpired
+	 */
+	public function setIsNotExpired( bool $isNotExpired ): void {
+		$this->isNotExpired = $isNotExpired;
 	}
 
 }

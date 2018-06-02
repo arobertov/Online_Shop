@@ -45,6 +45,27 @@ class UserService implements UserServiceInterface {
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getRegisteredUserDate() {
+		$em = $this->em;
+		$users = $em->getRepository(User::class)->findAll();
+		$i = 0;
+		foreach ($users as $user){
+			$dateRegistered = $user->getDateRegistered();
+			$interval = $dateRegistered->diff(new \DateTime('now'));
+			$i = $interval->format('');
+			if($interval->format('%d' )>=2){
+				$user->setIsNotExpired(false);
+				$em->persist($user);
+				$em->flush();
+			}
+		}
+
+		return "ok $i";
+	}
+
+	/**
 	 * @param User $user
 	 *
 	 * @return string
