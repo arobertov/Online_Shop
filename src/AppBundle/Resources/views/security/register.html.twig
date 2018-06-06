@@ -11,6 +11,11 @@
             <li class="active">Registration</li>
         </ul>
         <h2> Registration</h2>
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-error">
+                {{ message }}
+            </div>
+        {% endfor %}
         <div class="well">
 
                 {{ form_start(form) }}

@@ -11,6 +11,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
+use AppBundle\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -32,37 +33,53 @@ class UserService implements UserServiceInterface {
 	private $passwordEncoder;
 
 	/**
+	 * @var UserRepository $userRepository
+	 */
+	private $userRepository;
+
+	/**
 	 * UserService constructor.
 	 *
 	 * @param SendEmailService $sendEmailService
 	 * @param EntityManagerInterface $em
 	 * @param UserPasswordEncoderInterface $encoder
+	 * @param UserRepository $user_repository
 	 */
-	public function __construct( SendEmailService $sendEmailService, EntityManagerInterface $em, UserPasswordEncoderInterface $encoder ) {
+	public function __construct( SendEmailService $sendEmailService, EntityManagerInterface $em,
+		UserPasswordEncoderInterface $encoder,UserRepository $user_repository ) {
 		$this->sendEmailService = $sendEmailService;
 		$this->em               = $em;
 		$this->passwordEncoder  = $encoder;
+		$this->userRepository = $user_repository;
 	}
 
 	/**
+	 *  set and save in db isNotExpired after 48 hours
+	 *
 	 * @return string
 	 */
-	public function getRegisteredUserDate() {
+	public function checkRegisteredUserDate() {
 		$em = $this->em;
 		$users = $em->getRepository(User::class)->findAll();
-		$i = 0;
 		foreach ($users as $user){
 			$dateRegistered = $user->getDateRegistered();
-			$interval = $dateRegistered->diff(new \DateTime('now'));
-			$i = $interval->format('');
-			if($interval->format('%d' )>=2){
+			$interval = $this->toSeconds($dateRegistered->diff(new \DateTime('now')));
+			if($interval>=172800 && $user->getIsActive() == false){
 				$user->setIsNotExpired(false);
-				$em->persist($user);
 				$em->flush();
 			}
 		}
+		return "Ok";
+	}
 
-		return "ok $i";
+	private function toSeconds($interval)
+	{
+		return ($interval->y * 365 * 24 * 60 * 60) +
+		       ($interval->m * 30 * 24 * 60 * 60) +
+		       ($interval->d * 24 * 60 * 60) +
+		       ($interval->h * 60 * 60) +
+		       ($interval->i * 60) +
+		       $interval->s;
 	}
 
 	/**
@@ -77,26 +94,28 @@ class UserService implements UserServiceInterface {
         $user->setPassword($password);
 		$user->setDateRegistered(new \DateTime('now'));
 		$user->setDateEdit(new \DateTime('now'));
+		$roleUser = $this->userRepository->findRoleUser(['name'=>'ROLE_USER']);
+		$roleSuperAdmin = $this->userRepository->findRoleUser(['name'=>'ROLE_SUPER_ADMIN']);
+		$roleAdminObject = new Role();
+		$roleUserObject = new Role();
         //--  initialise firs user and set role super admin
-        if(!($em->getRepository(User::class)->findAll())){
-		        $roleAdmin = new Role();
-		        $roleUser = new Role();
-		        if(!($em->getRepository(Role::class)->findOneBy(['name'=>'ROLE_SUPER_ADMIN']))){
-			        $roleAdmin->setName('ROLE_SUPER_ADMIN');
-			        $em->persist($roleAdmin);
-		        }
+        if(!($this->userRepository->findAll())){
 
-		        if(!($em->getRepository(Role::class)->findOneBy(['name' => 'ROLE_USER']))){
-			        $roleUser->setName('ROLE_USER');
-			        $em->persist($roleUser);
-		        }
-		        $em->flush();
-	        $user->setRoles($em->getRepository(Role::class)->findOneBy(['name'=>'ROLE_SUPER_ADMIN']));
+	        if(!$roleSuperAdmin){
+	        	$roleAdminObject->setName('ROLE_SUPER_ADMIN');
+	        	$em->persist($roleAdminObject);
+	        }
+
+	        if(!$roleUser){
+	        	$roleUserObject->setName('ROLE_USER');
+	        	$em->persist($roleUserObject);
+	        }
+	        $em->flush();
+	        $user->setRoles($roleSuperAdmin);
         }else {
-            $user->setRoles($em->getRepository(Role::class)->findOneBy(['name' => 'ROLE_USER']));
+            $user->setRoles($roleUser);
         }
-        $em->persist($user);
-        $em->flush();
+        $this->userRepository->createUser($user);
 
         //-- send user confirmation email
 		try{
@@ -140,6 +159,20 @@ class UserService implements UserServiceInterface {
 		$this->em->persist( $userObject );
 		$this->em->flush();
 		return 'Your new password is sent to your email: ' . $email . ' !';
+	}
+
+	/**
+	 * @param User $user
+	 */
+	public function editUser(User $user){
+		$this->userRepository->updateUser($user);
+	}
+
+	/**
+	 * @param User $user
+	 */
+	public function removeUser( User $user ) {
+		$this->userRepository->deleteUser($user);
 	}
 
 	/**

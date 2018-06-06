@@ -138,13 +138,16 @@ class UserController extends Controller {
 	 */
 	public function userEditAction( Request $request, User $user ) {
 		UserType::$fieldsSwitcher = 'edit';
+		$em = $this->getDoctrine()->getRepository(User::class);
+		$adminUser = $em->findRoleUser(['name'=>'ROLE_SUPER_ADMIN']);
+		var_dump($adminUser->getId());
 		$editForm = $this->createForm( UserType::class, $user, array(
-			'role' => $user->getRoleId(),
+			'role' => $adminUser->getId(),
 			'validation_groups'=>array('Default')
 		) );
 		$editForm->handleRequest( $request );
 		if ( $editForm->isSubmitted() && $editForm->isValid() ) {
-			$this->getDoctrine()->getManager()->flush();
+			$this->userService->editUser($user);
 			
 			$this->addFlash( 'success', 'Your profile edit successful !' );
 			return $this->redirectToRoute( 'my_profile', [ 'id' => $user->getId() ] );
@@ -173,9 +176,7 @@ class UserController extends Controller {
 		$deleteForm->handleRequest( $request );
 
 		if ( $deleteForm->isSubmitted() && $deleteForm->isValid() ) {
-			$em = $this->getDoctrine()->getManager();
-			$em->remove( $user );
-			$em->flush();
+			$this->userService->removeUser($user);
 			$this->addFlash('success','User in username '. $user->getUsername() . ' delete successful !');
 			return $this->redirectToRoute( 'user_manager' );
 		}
@@ -192,14 +193,24 @@ class UserController extends Controller {
 	 * @Route("/activate_user/{id}",name="activate_user")
 	 * @Method("GET")
 	 *
-	 * @param User $user
+	 * @param $id
 	 */
-	public function activationEmailSetUser( User $user ) {
-		$user->setIsActive( 1 );
+	public function activationEmailSetUser( $id ) {
+		$this->userService->checkRegisteredUserDate();
 		$em = $this->getDoctrine()->getManager();
-		$em->flush();
-
-		return $this->redirectToRoute( 'login' );
+		$user = $em->getRepository(User::class)->find($id);
+		if($user->isNotExpired() === true){
+			$user->setIsActive( 1 );
+			$em = $this->getDoctrine()->getManager();
+			$em->flush();
+			$this->addFlash('success',"You Account  successful activated !Please Login !");
+			return $this->redirectToRoute( 'login' );
+		}
+		$this->addFlash('error',
+			"Your Account  is not activated. More than 48 hours have elapsed since your registration!
+			Please register again !"
+		);
+		return $this->redirectToRoute('user_register');
 	}
 
 	/**

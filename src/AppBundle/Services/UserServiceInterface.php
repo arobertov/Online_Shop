@@ -15,10 +15,14 @@ interface UserServiceInterface {
 
 	public  function registerUser(User $user);
 
+	public function editUser(User $user);
+
+	public function removeUser(User $user);
+
 	public function forgotPassword(array $formData);
 
 	public function changePassword(User $user);
 
-	public function getRegisteredUserDate();
+	public function checkRegisteredUserDate();
 
 }

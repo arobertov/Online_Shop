@@ -2,7 +2,11 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Role;
+use AppBundle\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping;
 use Doctrine\ORM\NoResultException;
 
 /**
@@ -14,20 +18,53 @@ use Doctrine\ORM\NoResultException;
 class UserRepository extends EntityRepository
 {
 	/**
-	 * @return mixed|null
-	 * @throws \Doctrine\ORM\NonUniqueResultException
+	 * @var EntityManagerInterface $em
 	 */
-	public function findSuperAdminUser(){
-		$em = $this->getEntityManager();
-		$query = $em->createQuery("SELECT u 
-										FROM AppBundle:User u 
-										JOIN u.roles r 
-										WHERE r.name = 'ROLE_SUPER_ADMIN'");
-		try{
-			return $query->getSingleResult();
-		}   catch ( NoResultException $e) {
-			return null;
-		}
+	private $em;
+
+	/**
+	 * UserRepository constructor.
+	 *
+	 * @param EntityManagerInterface $em
+	 */
+	public function __construct(EntityManagerInterface $em ) {
+		parent::__construct( $em, new Mapping\ClassMetadata(User::class) );
+		$this->em = $em;
+	}
+
+	/**
+	 * @param User $user
+	 */
+	public function createUser( User $user ){
+		$em = $this->em;
+		$em->persist($user);
+		$em->flush();
+	}
+
+	/**
+	 * @param User $user
+	 */
+	public function updateUser( User $user ){
+		$this->em->persist( $user );
+		$this->em->flush();
+	}
+
+	/**
+	 * @param User $user
+	 */
+	public function deleteUser( User $user ){
+		$this->em->remove( $user );
+		$this->em->flush();
+	}
+
+	/**
+	 * @param array $roleName
+	 *
+	 * @return Role|array
+	 */
+	public function findRoleUser(Array $roleName){
+		$em = $this->em;
+		return $em->getRepository(Role::class)->findOneBy($roleName);
 	}
 
 	/**
@@ -37,7 +74,7 @@ class UserRepository extends EntityRepository
 	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
 	public function findUserJoinAddress($id){
-		$em = $this->getEntityManager();
+		$em = $this->em;
 		$query = $em->createQuery("SELECT u, adr 
 									  	FROM AppBundle:User u 
 									  	JOIN u.address adr 

@@ -58,7 +58,7 @@ class ProductUserController extends Controller {
 
 			$em = $this->getDoctrine()->getManager();
 			//-- find super admin user and set product ownership
-			$superAdminUser = $em->getRepository( User::class )->findSuperAdminUser();
+			$superAdminUser = $em->getRepository( User::class )->findRoleUser(['name'=>'ROLE_SUPER_ADMIN']);
 			$productUsers->setUser( $superAdminUser );
 			$productUsers = $this->productService->uploadedFile($productUsers);
 			$em->persist( $productUsers );

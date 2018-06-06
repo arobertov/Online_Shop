@@ -36,10 +36,9 @@ class ProductUsersRepository extends EntityRepository
 
 	/**
 	 * @return integer|null
-	 * @throws \Doctrine\ORM\NonUniqueResultException
 	 */
 	private function getSuperAdminId() {
-		if(null !== $superAdmin = $this->em->getRepository(User::class)->findSuperAdminUser()){
+		if(null !== $superAdmin = $this->em->getRepository(User::class)->findRoleUser(['name'=>'ROLE_SUPER_ADMIN'])){
 			return  $superAdmin->getId();
 		}
 		return null;
