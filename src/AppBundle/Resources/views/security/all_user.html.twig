@@ -61,6 +61,10 @@
                         <td>
                             <a class="btn btn-warning" href="{{ path('user_edit',{'id':user.id}) }}">Edit!</a>
                             <a class="btn btn-danger" href="{{ path('user_delete',{'id':user.id}) }}">Delete!</a>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+                                 Delete Modal
+                            </button>
+
                         </td>
                     </tr>
                 {% endfor %}
@@ -69,5 +73,5 @@
             <p><a class="btn  btn-warning" href="{{ path('create_role') }}">Add new role</a></p>
         </div>
     </div>
-
+    {% include '@basic/security/delete_modal.html.twig' %}
 {% endblock %}

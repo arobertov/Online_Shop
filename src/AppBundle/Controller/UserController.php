@@ -140,7 +140,6 @@ class UserController extends Controller {
 		UserType::$fieldsSwitcher = 'edit';
 		$em = $this->getDoctrine()->getRepository(User::class);
 		$adminUser = $em->findRoleUser(['name'=>'ROLE_SUPER_ADMIN']);
-		var_dump($adminUser->getId());
 		$editForm = $this->createForm( UserType::class, $user, array(
 			'role' => $adminUser->getId(),
 			'validation_groups'=>array('Default')
