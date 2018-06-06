@@ -39,7 +39,7 @@ class Role
 
     /**
      * @var User
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\User",mappedBy="roles",cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\User",mappedBy="roles")
      */
     private $users;
 

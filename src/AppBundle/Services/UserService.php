@@ -98,7 +98,7 @@ class UserService implements UserServiceInterface {
 		$roleSuperAdmin = $this->userRepository->findRoleUser(['name'=>'ROLE_SUPER_ADMIN']);
 		$roleAdminObject = new Role();
 		$roleUserObject = new Role();
-        //--  initialise firs user and set role super admin
+        //--  initialise first user and set role super admin
         if(!($this->userRepository->findAll())){
 
 	        if(!$roleSuperAdmin){
@@ -111,9 +111,9 @@ class UserService implements UserServiceInterface {
 	        	$em->persist($roleUserObject);
 	        }
 	        $em->flush();
-	        $user->setRoles($roleSuperAdmin);
+	        $user->setRoles($this->userRepository->findRoleUser(['name'=>'ROLE_SUPER_ADMIN']));
         }else {
-            $user->setRoles($roleUser);
+            $user->setRoles($this->userRepository->findRoleUser(['name'=>'ROLE_USER']));
         }
         $this->userRepository->createUser($user);
 

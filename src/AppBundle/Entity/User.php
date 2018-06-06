@@ -165,7 +165,7 @@ class User implements AdvancedUserInterface, \Serializable {
 
 	/**
 	 * @var Role
-	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role",inversedBy="users",cascade={"remove"})
+	 * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Role",inversedBy="users")
 	 * @ORM\JoinColumn(name="roleId",referencedColumnName="id")
 	 *
 	 * @Assert\Valid()
@@ -398,6 +398,7 @@ class User implements AdvancedUserInterface, \Serializable {
 			$this->id,
 			$this->username,
 			$this->password,
+			$this->roles
 
 		) );
 	}

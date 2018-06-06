@@ -60,7 +60,7 @@ class UserRepository extends EntityRepository
 	/**
 	 * @param array $roleName
 	 *
-	 * @return Role|array
+	 * @return Role
 	 */
 	public function findRoleUser(Array $roleName){
 		$em = $this->em;
