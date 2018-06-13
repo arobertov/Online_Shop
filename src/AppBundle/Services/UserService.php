@@ -165,14 +165,20 @@ class UserService implements UserServiceInterface {
 	 * @param User $user
 	 */
 	public function editUser(User $user){
+		$user->setDateEdit(new \DateTime('now'));
 		$this->userRepository->updateUser($user);
 	}
 
 	/**
 	 * @param User $user
+	 *
+	 * @return bool
 	 */
 	public function removeUser( User $user ) {
-		$this->userRepository->deleteUser($user);
+		if($this->userRepository->deleteUser($user)){
+			return true;
+		}
+		return false;
 	}
 
 	/**

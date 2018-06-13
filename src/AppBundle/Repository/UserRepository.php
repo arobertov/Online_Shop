@@ -51,10 +51,13 @@ class UserRepository extends EntityRepository
 
 	/**
 	 * @param User $user
+	 *
+	 * @return bool
 	 */
 	public function deleteUser( User $user ){
 		$this->em->remove( $user );
 		$this->em->flush();
+		return true;
 	}
 
 	/**

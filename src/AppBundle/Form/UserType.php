@@ -85,7 +85,7 @@ class UserType extends AbstractType {
 				->add( 'address', UserAddressType::class )
 			;
 		}
-		if ( $options['role'] == 1 ) {
+		if ( $options['isSuperAdmin']==1 ) {
 			$builder
 				->add( 'roles', EntityType::class, array(
 					'class'        => 'AppBundle:Role',
@@ -110,6 +110,7 @@ class UserType extends AbstractType {
 	public function configureOptions( OptionsResolver $resolver ) {
 		$resolver
 			->setDefault( 'role', 'role' )
+			->setDefault('isSuperAdmin','isSuperAdmin')
 			->setDefault( 'data_class', 'AppBundle\Entity\User' )
 			->setDefaults( array( 'validation_groups' => array( 'registration', 'change_password' ) ) );
 

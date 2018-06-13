@@ -1,6 +1,12 @@
 #mainBody {/* background: url(../images/seperator.png) repeat-x 0 0; */ border-top:2px solid #dedede; padding-top: 18px;}
 #carouselBlk,#header{background: url(../images/headerRepeat.png) repeat-x 0 0 #f7f7f7;}
 #srchFld {background: url(../images/search.png) no-repeat 4px center #fff;}
+#text-username {
+ padding-left: 3px;
+ font-weight: bold;
+ font-size: 1.2em;
+ color: #7b7e80
+}
 .tag {background:url(../images/new.png) no-repeat 0 0; position: absolute; display:block; top: -4px;right: -18px; height:48px; width:48px;}
 .clr{clear:both;}
 .cntr{text-align:center}
@@ -116,4 +122,5 @@ span.text-warning {padding-left: 20px}
 #topMenu{height: auto;float: none;}
 #topMenu li{float: none;}
 .navbar .nav > li > a {border-top:1px solid #666; padding:0}
+
 }

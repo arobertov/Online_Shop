@@ -33,7 +33,7 @@
         <div id="welcomeLine" class="row">
             <div class="span6">
                 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                    Welcome!<strong> {{ app.user.username }}</strong>
+                    Welcome <span id="text-username"> {{ app.user.username }}</span>
                 {% endif %}
             </div>
             <div class="span6">
@@ -75,8 +75,7 @@
                         </li>
                     {% else %}
                         <li class=""> <a href="{{ path('user_register') }}">Register</a></li>
-                        <li class=""> <a href="{{ path('login') }}" role="button" data-toggle="modal" style="padding-right:0"><span class="btn btn-large btn-success">Login</span></a></li>
-
+                        <li class=""> <a type="button" data-toggle="modal" data-target="#loginModal"><span class="btn btn-large btn-success">Login</span></a></li>
                     {% endif %}
 
                 </ul>
@@ -84,6 +83,9 @@
         </div>
     </div>
 </div>
+
+{{ include('@App/forms/login_modal.html.twig') }}
+
 <!-- Header End====================================================================== -->
     {% block carousel %}
 
@@ -151,6 +153,7 @@
         <script src="{{ asset('themes/js/google-code-prettify/prettify.js') }}"></script>
         <script src="{{ asset('themes/js/bootshop.js') }}"></script>
         <script src="{{ asset('themes/js/jquery.lightbox-0.5.js') }}"></script>
+        <script src="{{ asset('themes/js/main.js') }}"></script>
     {% endblock %}
 <!-- Themes switcher section ============================================================================================= -->
 </body>

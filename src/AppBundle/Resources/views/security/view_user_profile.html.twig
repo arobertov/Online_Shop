@@ -8,13 +8,7 @@
     <div class="span9">
 
     <h2>Profile view</h2>
-
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{ message }}
-            </div>
-        {% endfor %}
-
+        {% include '@App/notise.html.twig' %}
         <div class="well">
             <ul>
                 <li>Your username : {{ user.username }}</li>

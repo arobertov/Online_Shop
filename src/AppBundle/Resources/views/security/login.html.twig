@@ -10,13 +10,7 @@
         <li><a href="{{ path('home_page') }}">Home</a> <span class="divider">/</span></li>
         <li class="active">Login</li>
     </ul>
-
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-    {% endfor %}
-
+    {% include '@App/notise.html.twig' %}
     <h3> Login</h3>
     <hr class="soft"/>
 
@@ -24,13 +18,11 @@
         <div class="span8">
             <div class="well">
 
-                {% if error %}
-                    <div class="alert alert-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-                {% endif %}
 
-                <form action="{{ path('login') }}" method="post" name="form_login">
+
+                <form action="{{ path('proba') }}" method="post" name="form_login">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" name="_username" value="{{ last_username }}" /><br/>
+                    <input type="text" id="username" name="_username" /><br/>
 
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="_password" /><br/>

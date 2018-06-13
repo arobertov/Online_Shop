@@ -8,6 +8,7 @@ security:
     encoders:
         AppBundle\Entity\User:
            algorithm: bcrypt
+
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         db_provider:
@@ -16,7 +17,10 @@ security:
                   property: username
 
     firewalls:
-        secured_area:
+        main:
+              guard:
+                  authenticators: [AppBundle\Security\TokenAuthenticator]
+
               pattern: ^/
 
               anonymous: true
@@ -35,9 +39,11 @@ security:
                   target: home_page
 
               remember_me:
-                          secret:  '%secret%'
-                          lifetime: 604800 # 1 week in seconds
-                          path: /
+                  secret:  '%secret%'
+                  lifetime: 604800 # 1 week in seconds
+                  path: ~
+                  domain: ~
+                  always_remember_me: true
     access_control:
         - { path: ^/product, roles: ROLE_EDITOR }
         - { path: ^/category, roles: ROLE_EDITOR }

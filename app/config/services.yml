@@ -47,3 +47,4 @@ services:
     AppBundle\Services\UserServiceInterface:
             alias: 'AppBundle\Services\UserService'
             public: false
+

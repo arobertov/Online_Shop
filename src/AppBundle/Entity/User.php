@@ -15,10 +15,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * User
  *
- * @ORM\Table(name="user")
+ * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
- * @UniqueEntity(fields="email", message="Email already taken")
- * @UniqueEntity(fields="username", message="Username already taken")
+ * @UniqueEntity(fields="email", message="Email already taken !")
+ * @UniqueEntity(fields="username", message="Username already taken !")
  *
  */
 class User implements AdvancedUserInterface, \Serializable {
@@ -195,8 +195,6 @@ class User implements AdvancedUserInterface, \Serializable {
 	private $address;
 
 	public function __construct() {
-		$this->dateRegistered = new \DateTime('now');
-		$this->dateEdit = new \DateTime('now');
 		$this->initialCache   = 5000;
 		$this->isNotExpired   = true;
 		$this->isNotLocked    = true;
